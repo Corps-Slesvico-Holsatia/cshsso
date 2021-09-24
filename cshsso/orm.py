@@ -32,7 +32,7 @@ class Account(CSHSSOModel):     # pylint: disable=R0903
     password = Argon2Field()
     first_name = CharField()
     last_name = CharField()
-    role = EnumField(Role, name=True)
+    role = EnumField(Role, use_name=True)
 
 
 class Session(CSHSSOModel):     # pylint: disable=R0903
