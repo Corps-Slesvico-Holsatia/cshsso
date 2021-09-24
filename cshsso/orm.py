@@ -1,9 +1,12 @@
 """Object-relational mappings."""
 
+from __future__ import annotations
+
 from peewee import CharField, ForeignKeyField, MySQLDatabase
 
 from peeweeplus import Argon2Field, EnumField, JSONModel
 
+from cshsso.functions import genpw
 from cshsso.roles import Role
 
 
@@ -38,3 +41,8 @@ class Session(CSHSSOModel):     # pylint: disable=R0903
     account = ForeignKeyField(Account, column_name='account',
                               on_delete='CASCADE')
     password = Argon2Field()
+
+    @classmethod
+    def open(cls, account: Account) -> Session:
+        """Opens a new session for the given account."""
+        return cls(account=account, passwd=genpw())
