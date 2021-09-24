@@ -4,10 +4,10 @@ from enum import Enum
 from typing import NamedTuple, Optional
 
 
-__all__ = ['MemberType', 'Member', 'Guest', 'Group']
+__all__ = ['RoleType', 'Role', 'Group']
 
 
-class MemberType(NamedTuple):
+class RoleType(NamedTuple):
     """Role names."""
 
     name: str
@@ -17,31 +17,28 @@ class MemberType(NamedTuple):
         return self.abbreviation or self.name
 
 
-class Member(Enum):
-    """Member roles."""
+class Role(Enum):
+    """Role roles."""
 
-    EB = MemberType('Ehrenbursche', 'EB')
-    CB = MemberType('Corpsbursche', 'CB')
-    IACB = MemberType('inaktiver Corpsbursche', 'iaCB')
-    IACBOB = MemberType('inaktiver Corpsbursche ohne Band', 'iaCBoB')
-    AH = MemberType('Alter Herr', 'AH')
-    BBZ = MemberType('Burschenbierzipfler', 'BBZ')
-    F = MemberType('Fuchs', 'F')
-    FCK = MemberType('Fuchsenconkneipant', 'FCK')
-
-
-class Guest(Enum):
-    """Gues roles."""
-
-    SPEF = MemberType('Spefuchs', 'Spef.')
-    CS = MemberType('Corpsschwester')
-    FDC = MemberType('Freund des Corps', 'FdC')
-    VG = MemberType('Verkehrsgast', 'VG')
+    # Members
+    EB = RoleType('Ehrenbursche', 'EB')
+    CB = RoleType('Corpsbursche', 'CB')
+    IACB = RoleType('inaktiver Corpsbursche', 'iaCB')
+    IACBOB = RoleType('inaktiver Corpsbursche ohne Band', 'iaCBoB')
+    AH = RoleType('Alter Herr', 'AH')
+    BBZ = RoleType('Burschenbierzipfler', 'BBZ')
+    F = RoleType('Fuchs', 'F')
+    FCK = RoleType('Fuchsenconkneipant', 'FCK')
+    # Guests
+    SPEF = RoleType('Spefuchs', 'Spef.')
+    CS = RoleType('Corpsschwester')
+    FDC = RoleType('Freund des Corps', 'FdC')
+    VG = RoleType('Verkehrsgast', 'VG')
 
 
 class Group(Enum):
     """Corps groups."""
 
-    INNER = frozenset({Member.EB, Member.CB, Member.IACB, Member.AH})
-    OUTER = frozenset({Member.IACBOB, Member.BBZ, Member.F, Member.FCK})
-    GUEST = frozenset({Guest.SPEF, Guest.CS, Guest.FDC, Guest.VG})
+    INNER = frozenset({Role.EB, Role.CB, Role.IACB, Role.AH})
+    OUTER = frozenset({Role.IACBOB, Role.BBZ, Role.F, Role.FCK})
+    GUEST = frozenset({Role.SPEF, Role.CS, Role.FDC, Role.VG})
