@@ -7,6 +7,9 @@ from enum import Enum
 from typing import NamedTuple
 
 
+__all__ = ['SemesterType', 'Semester']
+
+
 class SemesterType(Enum):
     """Type of semester."""
 
