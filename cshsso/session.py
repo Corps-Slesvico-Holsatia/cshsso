@@ -2,6 +2,7 @@
 
 from datetime import datetime, timedelta
 
+from argon2.exceptions import VerifyMismatchError
 from flask import request, Response
 
 from cshsso.config import CONFIG
@@ -33,10 +34,12 @@ def get_session() -> Session:
     except Session.DoesNotExist:
         raise NotLoggedIn() from None
 
-    if session.password.verify(session_password):
-        return session
+    try:
+        session.password.verify(session_password)
+    except VerifyMismatchError:
+        raise NotLoggedIn() from None
 
-    raise NotLoggedIn()
+    return session
 
 
 def get_duration() -> timedelta:
