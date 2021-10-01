@@ -12,6 +12,9 @@ from cshsso.roles import Group
 __all__ = ['authenticated', 'authorized']
 
 
+Decorator = Callable[Callable[..., Any], Callable[..., Any]]
+
+
 def authenticated(function: Callable[..., Any]) -> Callable[..., Any]:
     """Ensures authentication."""
 
@@ -25,7 +28,7 @@ def authenticated(function: Callable[..., Any]) -> Callable[..., Any]:
     return wrapper
 
 
-def authorized(group: Group) -> Callable[Callable[..., Any], Any]:
+def authorized(group: Group) -> Decorator:
     """Determines whether the current account is authorized."""
 
     def decorator(function: Callable[..., Any]) -> Callable[..., Any]:
