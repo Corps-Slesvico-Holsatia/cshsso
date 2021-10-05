@@ -60,27 +60,47 @@ def get_deadline() -> datetime:
     return datetime.now() + get_duration()
 
 
-def create(user: User) -> tuple[int, str]:
-    """Creates a new session for the given user."""
+def create(user: User, deadline: datetime) -> tuple[Session, str]:
+    """Opens a new session for the given user."""
 
-    session = Session(user=user, deadline=get_deadline(),
-                      passwd=(passwd := genpw()))
-    session.save()
-    return (session.id, passwd)
+    session = Session(user=user, deadline=deadline, passwd=(passwd := genpw()))
+    return (session, passwd)
 
 
-def renew(session: Session) -> tuple[int, str]:
+def for_user(user: User, deadline: datetime) -> tuple[Session, str]:
+    """Returns a session and a session password for the given user."""
+
+    sessions = set()
+
+    for session in Session.select().where(Session.user == user):
+        if session.active:
+            sessions.add(session)
+        else:
+            session.delete_instance()
+
+    try:
+        *old, last = sessions
+    except ValueError:
+        return create(user=user, deadline=deadline)
+
+    for session in old:
+        session.delete_instance()
+
+    return (last, last.renew(deadline))
+
+
+def renew(session: Session) -> tuple[Session, str]:
     """Renews the session and returns the new password."""
 
     session.passwd = passwd = genpw()
     session.deadline = get_deadline()
     session.save()
-    return (session.id, passwd)
+    return (session, passwd)
 
 
-def set_cookies(response: Response) -> None:
+def set_cookies(response: Response, *, session: Session = SESSION) -> None:
     """Sets session cookies."""
 
-    ident, passwd = renew(SESSION)
-    response.set_cookie('cshsso-session-id', str(ident))
+    session, passwd = renew(session)
+    response.set_cookie('cshsso-session-id', str(session.id))
     response.set_cookie('cshsso-session-passwd', passwd)
