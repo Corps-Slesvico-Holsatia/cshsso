@@ -99,9 +99,10 @@ def renew(session: Session) -> tuple[Session, str]:
 
 
 def set_cookies(response: Response, session: Session, *,
-                passwd: Optional[str] = None) -> None:
+                passwd: Optional[str] = None) -> Response:
     """Sets session cookies."""
 
     session, passwd = renew(session) if passwd is None else (session, passwd)
     response.set_cookie('cshsso-session-id', str(session.id))
     response.set_cookie('cshsso-session-passwd', passwd)
+    return response
