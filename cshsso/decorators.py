@@ -11,7 +11,7 @@ from cshsso.roles import Circle, CommissionGroup
 from cshsso.typing import Decorator
 
 
-__all__ = ['authenticated', 'authorized', 'Authorization']
+__all__ = ['authenticated', 'authorized', 'admin', 'Authorization']
 
 
 def authenticated(function: Callable[..., Any]) -> Callable[..., Any]:
@@ -41,6 +41,19 @@ def authorized(target: Union[Circle, CommissionGroup]) -> Decorator:
         return wrapper
 
     return decorator
+
+
+def admin(function: Callable[..., Any]) -> Callable[..., Any]:
+    """Checks whether the user is an admin."""
+
+    @wraps(function)
+    def wrapper(*args, **kwargs) -> Any:
+        if USER.admin:
+            return function(*args, **kwargs)
+
+        raise NotAuthorized()
+
+    return wrapper
 
 
 class Authorization(Enum):
