@@ -1,15 +1,24 @@
 """Decorators for authentication and authorization."""
 
 from functools import wraps
-from typing import Any, Callable
+from typing import Any, Callable, Union
 
-from cshsso.authorization import check_group_authorization
+from cshsso.authorization import check_minimum_circle
+from cshsso.authorization import check_commission_group
 from cshsso.exceptions import NotAuthorized, NotLoggedIn
 from cshsso.localproxies import USER, SESSION
-from cshsso.roles import Group
+from cshsso.roles import Circle, CommissionGroup
 
 
-__all__ = ['authenticated', 'authorized']
+__all__ = [
+    'authenticated',
+    'authorized',
+    'inner',
+    'outer',
+    'guests',
+    'charged',
+    'ahv'
+]
 
 
 Decorator = Callable[Callable[..., Any], Callable[..., Any]]
@@ -28,13 +37,20 @@ def authenticated(function: Callable[..., Any]) -> Callable[..., Any]:
     return wrapper
 
 
-def authorized(group: Group) -> Decorator:
+def authorized(target: Union[Circle, CommissionGroup]) -> Decorator:
     """Determines whether the current user is authorized."""
+
+    if isinstance(target, Circle):
+        check = check_minimum_circle
+    elif isinstance(target, CommissionGroup):
+        check = check_commission_group
+    else:
+        raise TypeError('Must specify either Circle or CommissionGroup.')
 
     def decorator(function: Callable[..., Any]) -> Callable[..., Any]:
         @wraps(function)
         def wrapper(*args, **kwargs) -> Any:
-            if check_group_authorization(USER, group):
+            if check(USER, target):
                 return function(*args, **kwargs)
 
             raise NotAuthorized()
@@ -42,3 +58,10 @@ def authorized(group: Group) -> Decorator:
         return wrapper
 
     return decorator
+
+
+inner = authorized(Circle.INNER)
+outer = authorized(Circle.OUTER)
+guests = authorized(Circle.GUESTS)
+charged = authorized(CommissionGroup.CHARGES)
+ahv = authorized(CommissionGroup.AHV)
