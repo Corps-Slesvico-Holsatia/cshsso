@@ -5,7 +5,8 @@ from typing import Callable
 from flask import Response
 
 
-__all__ = ['ErrorHandlers']
+__all__ = ['ErrorHandler', 'ErrorHandlers']
 
 
-ErrorHandlers = dict[type, Callable[[Exception], Response]]
+ErrorHandler = Callable[[Exception], Response]
+ErrorHandlers = dict[type, ErrorHandler]
