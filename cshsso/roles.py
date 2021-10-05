@@ -4,11 +4,11 @@ from enum import Enum
 from typing import NamedTuple, Optional
 
 
-__all__ = ['RoleType', 'Role', 'Charge', 'Group']
+__all__ = ['RoleType', 'Status', 'Circle', 'Commission', 'CommissionGroup']
 
 
 class RoleType(NamedTuple):
-    """Role names."""
+    """Status names."""
 
     name: str
     abbreviation: Optional[str] = None
@@ -17,8 +17,8 @@ class RoleType(NamedTuple):
         return self.abbreviation or self.name
 
 
-class Role(Enum):
-    """Role roles."""
+class Status(Enum):
+    """Member status."""
 
     # Members
     EB = RoleType('Ehrenbursche', 'EB')
@@ -31,24 +31,46 @@ class Role(Enum):
     FCK = RoleType('Fuchsenconkneipant', 'FCK')
     # Guests
     SPEF = RoleType('Spefuchs', 'Spef.')
+    VG = RoleType('Verkehrsgast', 'VG')
     CS = RoleType('Corpsschwester')
     FDC = RoleType('Freund des Corps', 'FdC')
-    VG = RoleType('Verkehrsgast', 'VG')
 
 
-class Charge(Enum):
-    """Charges."""
+class Circle(Enum):
+    """Corps circles."""
 
+    INNER = frozenset({Status.EB, Status.CB, Status.IACB, Status.AH})
+    OUTER = frozenset({Status.IACBOB, Status.BBZ, Status.F, Status.FCK})
+    GUESTS = frozenset({Status.SPEF, Status.CS, Status.FDC, Status.VG})
+
+
+class Commission(Enum):
+    """Commission types."""
+
+    # Chargen
     SENIOR = RoleType('Senior', 'xxx')
     CONSENIOR = RoleType('Consenior', 'xx')
     SUBSENIOR = RoleType('Subsenior', 'x')
     FUCHSMAJOR = RoleType('Fuchsmajor', 'FM')
+    # Ämter
+    KW = RoleType('CC-Kassenwart', 'KW')
+    HW = RoleType('Hauswart', 'HW')
+    GW = RoleType('Getränkewart')
+    KEILWART = RoleType('Keilwart')
+    EDV = RoleType('EDV-Wart')
+    # AHV
+    AHV = RoleType('Altherrenvorstandsvorsitzender', 'AHV')
+    AHV_STELLV = RoleType('stellvertretender Altherrenvorstandsvorsitzender',
+                          'stellv. AHV')
+    AHKW = RoleType('Altherren-Kassenwart', 'AHKW')
 
 
-class Group(Enum):
-    """Corps groups."""
+class CommissionGroup(Enum):
+    """Commission groups."""
 
-    CHARGES = frozenset(Charge)
-    INNER = frozenset({Role.EB, Role.CB, Role.IACB, Role.AH})
-    OUTER = frozenset({Role.IACBOB, Role.BBZ, Role.F, Role.FCK})
-    GUEST = frozenset({Role.SPEF, Role.CS, Role.FDC, Role.VG})
+    CHARGES = frozenset({Commission.SENIOR, Commission.CONSENIOR,
+                        Commission.SENIOR, Commission.FUCHSMAJOR})
+    COMMISSIONS = frozenset({Commission.KW, Commission.HW, Commission.GW,
+                            Commission.KEILWART, Commission.EDV})
+    AHV = frozenset({Commission.AHV, Commission.AHV_STELLV,
+                    Commission.AHKW})
