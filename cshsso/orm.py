@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from argon2.exceptions import VerifyMismatchError
 from peewee import CharField, DateTimeField, ForeignKeyField, IntegerField
 
 from peeweeplus import Argon2Field, EnumField, JSONModel, MySQLDatabase
@@ -27,11 +28,25 @@ class User(CSHSSOModel):     # pylint: disable=R0903
     """A user account."""
 
     email = CharField(unique=True)
-    password = Argon2Field()
+    passwd = Argon2Field()
     first_name = CharField()
     last_name = CharField()
     role = EnumField(Role, use_name=True)
     failed_logins = IntegerField(default=0)
+
+    def login(self, passwd: str) -> bool:
+        """Attempts a login."""
+        try:
+            self.passwd.verify(passwd)
+        except VerifyMismatchError:
+            self.failed_logins += 1
+            self.save()
+            return False
+
+        if self.passwd.needs_rehash:
+            self.passwd = passwd
+
+        return True
 
 
 class Session(CSHSSOModel):     # pylint: disable=R0903
