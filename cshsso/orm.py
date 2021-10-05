@@ -56,6 +56,15 @@ class User(CSHSSOModel):     # pylint: disable=R0903
 
         return True
 
+    def to_json(self) -> dict:
+        """Returns a JSON-ish dict of core information."""
+        return {
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'status': self.status.value.to_json(),
+            'registered': self.registered.isoformat()
+        }
+
 
 class Session(CSHSSOModel):     # pylint: disable=R0903
     """A user session."""
