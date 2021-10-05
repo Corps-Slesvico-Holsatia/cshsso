@@ -62,7 +62,8 @@ class User(CSHSSOModel):     # pylint: disable=R0903
             'first_name': self.first_name,
             'last_name': self.last_name,
             'status': self.status.value.to_json(),
-            'registered': self.registered.isoformat()
+            'registered': self.registered.isoformat(),
+            'commissions': [c.to_json() for c in self.commissions]
         }
 
 
