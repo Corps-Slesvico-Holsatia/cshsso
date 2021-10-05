@@ -1,6 +1,7 @@
 """Manage sessions."""
 
 from datetime import datetime, timedelta
+from typing import Optional
 
 from argon2.exceptions import VerifyMismatchError
 from flask import request, Response
@@ -97,9 +98,10 @@ def renew(session: Session) -> tuple[Session, str]:
     return (session, passwd)
 
 
-def set_cookies(response: Response, session: Session) -> None:
+def set_cookies(response: Response, session: Session, *,
+                passwd: Optional[str] = None) -> None:
     """Sets session cookies."""
 
-    session, passwd = renew(session)
+    session, passwd = renew(session) if passwd is None else (session, passwd)
     response.set_cookie('cshsso-session-id', str(session.id))
     response.set_cookie('cshsso-session-passwd', passwd)
