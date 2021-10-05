@@ -47,4 +47,4 @@ class UserCharge(CSHSSOModel):  # pylint: disable=R0903
 
     occupant = ForeignKeyField(User, column_name='occupant',
                                on_delete='CASCADE')
-    charge = EnumField(Charge, use_name=True)
+    charge = EnumField(Charge, use_name=True, unique=True)
