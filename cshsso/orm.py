@@ -1,9 +1,14 @@
 """Object-relational mappings."""
 
 from __future__ import annotations
+from datetime import datetime
 
 from argon2.exceptions import VerifyMismatchError
-from peewee import CharField, DateTimeField, ForeignKeyField, IntegerField
+from peewee import BooleanField
+from peewee import CharField
+from peewee import DateTimeField
+from peewee import ForeignKeyField
+from peewee import IntegerField
 
 from peeweeplus import Argon2Field, EnumField, JSONModel, MySQLDatabase
 
@@ -32,6 +37,8 @@ class User(CSHSSOModel):     # pylint: disable=R0903
     first_name = CharField()
     last_name = CharField()
     role = EnumField(Role, use_name=True)
+    registered = DateTimeField(default=datetime.now)
+    verified = BooleanField(default=False)
     failed_logins = IntegerField(default=0)
 
     @property
