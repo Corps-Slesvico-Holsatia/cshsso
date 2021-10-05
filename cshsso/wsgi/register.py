@@ -2,9 +2,9 @@
 
 from flask import request, Response
 from peewee import IntegrityError
+from recaptcha import recaptcha
 
 from cshsso.config import CONFIG
-from cshsso.decorators import recaptcha
 from cshsso.orm import User
 from cshsso.roles import Status
 
