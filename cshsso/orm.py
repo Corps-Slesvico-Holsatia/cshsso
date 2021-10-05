@@ -26,8 +26,8 @@ class CSHSSOModel(JSONModel):   # pylint: disable=R0903
 class User(CSHSSOModel):     # pylint: disable=R0903
     """A user account."""
 
-    name = CharField()
-    email = CharField()
+    name = CharField(unique=True)
+    email = CharField(unique=True)
     password = Argon2Field()
     first_name = CharField()
     last_name = CharField()
