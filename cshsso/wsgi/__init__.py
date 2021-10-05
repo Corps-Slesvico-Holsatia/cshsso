@@ -10,6 +10,6 @@ __all__ = ['APPLICATION']
 
 
 APPLICATION = Application('CSHSSO')
-APPLICATION.route('/login', methods=['POST'], strict_slashes=False)(login)
-APPLICATION.route('/logout', methods=['POST'], strict_slashes=False)(logout)
-APPLICATION.route('/register', methods=['POST'], strict_slashes=False)(register)
+APPLICATION.route('/login', methods=['POST'])(login)
+APPLICATION.route('/logout', methods=['POST'])(logout)
+APPLICATION.route('/register', methods=['POST'])(register)
