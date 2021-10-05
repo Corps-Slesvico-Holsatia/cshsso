@@ -51,10 +51,14 @@ class Session(CSHSSOModel):     # pylint: disable=R0903
     deadline = DateTimeField()
     password = Argon2Field()
 
+    @property
+    def charged(self) -> bool:
+        """Determines whether the user is charged."""
+        return self.charges.count() > 0
 
 class UserCharge(CSHSSOModel):  # pylint: disable=R0903
     """Charges."""
 
-    occupant = ForeignKeyField(User, column_name='occupant',
+    occupant = ForeignKeyField(User, column_name='occupant', backref='charges',
                                on_delete='CASCADE')
     charge = EnumField(Charge, use_name=True, unique=True)
