@@ -12,10 +12,10 @@ from peewee import IntegerField
 
 from peeweeplus import Argon2Field, EnumField, JSONModel, MySQLDatabase
 
-from cshsso.roles import Role, Charge
+from cshsso.roles import Status, Commission
 
 
-__all__ = ['DATABASE', 'User', 'Session', 'UserCharge']
+__all__ = ['DATABASE', 'User', 'Session', 'UserCommission']
 
 
 DATABASE = MySQLDatabase('cshsso')
@@ -36,7 +36,7 @@ class User(CSHSSOModel):     # pylint: disable=R0903
     passwd = Argon2Field()
     first_name = CharField()
     last_name = CharField()
-    role = EnumField(Role, use_name=True)
+    status = EnumField(Status, use_name=True)
     registered = DateTimeField(default=datetime.now)
     verified = BooleanField(default=False)
     failed_logins = IntegerField(default=0)
@@ -70,9 +70,9 @@ class Session(CSHSSOModel):     # pylint: disable=R0903
     passwd = Argon2Field()
 
 
-class UserCharge(CSHSSOModel):  # pylint: disable=R0903
-    """Charges."""
+class UserCommission(CSHSSOModel):  # pylint: disable=R0903
+    """User commissions."""
 
-    occupant = ForeignKeyField(User, column_name='occupant', backref='charges',
-                               on_delete='CASCADE')
-    charge = EnumField(Charge, use_name=True, unique=True)
+    occupant = ForeignKeyField(User, column_name='occupant',
+                               backref='commissions', on_delete='CASCADE')
+    commission = EnumField(Commission, use_name=True, unique=True)
