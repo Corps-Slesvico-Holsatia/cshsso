@@ -1,6 +1,8 @@
 """Object-relational mappings."""
 
 from __future__ import annotations
+from configparser import ConfigParser
+from typing import Union
 
 from peewee import CharField, DateTimeField, ForeignKeyField, MySQLDatabase
 
@@ -9,10 +11,18 @@ from peeweeplus import Argon2Field, EnumField, JSONModel
 from cshsso.roles import Role, Charge
 
 
-__all__ = ['User', 'Session', 'UserCharge']
+__all__ = ['init', 'User', 'Session', 'UserCharge']
 
 
 DATABASE = MySQLDatabase('cshsso')
+
+
+def init(config: Union[dict, ConfigParser]) -> None:
+    """Initialize the database configuration."""
+
+    DATABASE.init(DATABASE.database, host=config.get('host'),
+                  user=config.get('user'),
+                  passwd=config.get('passwd'))
 
 
 class CSHSSOModel(JSONModel):   # pylint: disable=R0903
