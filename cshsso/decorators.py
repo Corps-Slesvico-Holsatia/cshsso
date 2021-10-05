@@ -8,6 +8,7 @@ from cshsso.authorization import check_commission_group
 from cshsso.exceptions import NotAuthorized, NotLoggedIn
 from cshsso.localproxies import USER, SESSION
 from cshsso.roles import Circle, CommissionGroup
+from cshsso.typing import Decorator
 
 
 __all__ = [
@@ -19,9 +20,6 @@ __all__ = [
     'charged',
     'ahv'
 ]
-
-
-Decorator = Callable[Callable[..., Any], Callable[..., Any]]
 
 
 def authenticated(function: Callable[..., Any]) -> Callable[..., Any]:
