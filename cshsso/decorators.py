@@ -29,7 +29,7 @@ def authenticated(function: Callable[..., Any]) -> Callable[..., Any]:
 
 
 def authorized(group: Group) -> Decorator:
-    """Determines whether the current account is authorized."""
+    """Determines whether the current user is authorized."""
 
     def decorator(function: Callable[..., Any]) -> Callable[..., Any]:
         @wraps(function)

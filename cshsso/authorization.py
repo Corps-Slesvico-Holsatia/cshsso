@@ -8,7 +8,7 @@ __all__ = ['check_group_authorization']
 
 
 def check_group_authorization(user: User, group: Group) -> bool:
-    """Determines whether the account is authorized for the given group."""
+    """Determines whether the user is authorized for the given group."""
 
     if user.group == Group.INNER:
         return True
