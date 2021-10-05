@@ -73,7 +73,7 @@ class CommissionGroup(Enum):
     """Commission groups."""
 
     CHARGES = frozenset({Commission.SENIOR, Commission.CONSENIOR,
-                        Commission.SENIOR, Commission.FUCHSMAJOR})
+                        Commission.SUBSENIOR, Commission.FUCHSMAJOR})
     COMMISSIONS = frozenset({Commission.KW, Commission.HW, Commission.GW,
                             Commission.KEILWART, Commission.EDV})
     AHV = frozenset({Commission.AHV, Commission.AHV_STELLV,
