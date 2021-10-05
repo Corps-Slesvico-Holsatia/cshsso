@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from peewee import CharField, DateTimeField, ForeignKeyField, MySQLDatabase
+from peewee import CharField, DateTimeField, ForeignKeyField
 
-from peeweeplus import Argon2Field, EnumField, JSONModel
+from peeweeplus import Argon2Field, EnumField, JSONModel, MySQLDatabase
 
 from cshsso.roles import Role, Charge
 
