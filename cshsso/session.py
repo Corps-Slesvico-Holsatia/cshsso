@@ -9,7 +9,7 @@ from cshsso.config import CONFIG
 from cshsso.exceptions import NotLoggedIn
 from cshsso.functions import genpw
 from cshsso.localproxies import SESSION
-from cshsso.orm import Account, Session
+from cshsso.orm import User, Session
 
 
 __all__ = ['get_session', 'create', 'renew', 'set_cookies']
@@ -29,7 +29,7 @@ def get_session() -> Session:
         raise NotLoggedIn() from None
 
     try:
-        session = Session.select(Session, Account).join(Account).where(
+        session = Session.select(Session, User).join(User).where(
             Session.id == session_id).get()
     except Session.DoesNotExist:
         raise NotLoggedIn() from None
@@ -60,10 +60,10 @@ def get_deadline() -> datetime:
     return datetime.now() + get_duration()
 
 
-def create(account: Account) -> tuple[int, str]:
-    """Creates a new session for the given account."""
+def create(user: User) -> tuple[int, str]:
+    """Creates a new session for the given user."""
 
-    session = Session(account=account, deadline=get_deadline(),
+    session = Session(user=user, deadline=get_deadline(),
                       password=(password := genpw()))
     session.save()
     return (session.id, password)

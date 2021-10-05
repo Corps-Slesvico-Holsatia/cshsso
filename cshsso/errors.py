@@ -1,12 +1,12 @@
 """Common error handlers."""
 
-from cshsso.orm import Account, Session
+from cshsso.orm import User, Session
 
 
 __all__ = ['ERRORS']
 
 
 ERRORS = {
-    Account.DoesNotExist: lambda _: ('No such account.', 404),
+    User.DoesNotExist: lambda _: ('No such user.', 404),
     Session.DoesNotExist: lambda _: ('No such session.', 404)
 }
