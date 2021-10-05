@@ -4,7 +4,7 @@ from enum import Enum
 from typing import NamedTuple, Optional
 
 
-__all__ = ['RoleType', 'Role', 'Group', 'Charge']
+__all__ = ['RoleType', 'Role', 'Charge', 'Group']
 
 
 class RoleType(NamedTuple):
@@ -36,14 +36,6 @@ class Role(Enum):
     VG = RoleType('Verkehrsgast', 'VG')
 
 
-class Group(Enum):
-    """Corps groups."""
-
-    INNER = frozenset({Role.EB, Role.CB, Role.IACB, Role.AH})
-    OUTER = frozenset({Role.IACBOB, Role.BBZ, Role.F, Role.FCK})
-    GUEST = frozenset({Role.SPEF, Role.CS, Role.FDC, Role.VG})
-
-
 class Charge(Enum):
     """Charges."""
 
@@ -51,3 +43,12 @@ class Charge(Enum):
     CONSENIOR = RoleType('Consenior', 'xx')
     SUBSENIOR = RoleType('Subsenior', 'x')
     FUCHSMAJOR = RoleType('Fuchsmajor', 'FM')
+
+
+class Group(Enum):
+    """Corps groups."""
+
+    INNER = frozenset({Role.EB, Role.CB, Role.IACB, Role.AH})
+    OUTER = frozenset({Role.IACBOB, Role.BBZ, Role.F, Role.FCK})
+    GUEST = frozenset({Role.SPEF, Role.CS, Role.FDC, Role.VG})
+    CHARGES = frozenset(Charge)
