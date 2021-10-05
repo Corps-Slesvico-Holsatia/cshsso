@@ -1,6 +1,6 @@
 """User registration."""
 
-from flask import request, Response
+from flask import request, Response, jsonify
 from peewee import IntegrityError
 from recaptcha import recaptcha
 
@@ -40,4 +40,4 @@ def register() -> Response:
     except IntegrityError:
         return ('Email address already taken.', 400)
 
-    return ('User added.', 201)
+    return (jsonify(message='User added.', id=user.id), 201)
