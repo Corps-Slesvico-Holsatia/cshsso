@@ -41,11 +41,6 @@ class User(CSHSSOModel):     # pylint: disable=R0903
     verified = BooleanField(default=False)
     failed_logins = IntegerField(default=0)
 
-    @property
-    def charged(self) -> bool:
-        """Determines whether the user is charged."""
-        return self.charges.count() > 0
-
     def login(self, passwd: str) -> bool:
         """Attempts a login."""
         try:
