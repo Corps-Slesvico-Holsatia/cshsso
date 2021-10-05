@@ -84,4 +84,4 @@ class UserCommission(CSHSSOModel):  # pylint: disable=R0903
 
     def to_json(self) -> dict:
         """Returns a JSON-ish dict."""
-        return self.commission.to_json()
+        return self.commission.value.to_json()
