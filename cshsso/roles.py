@@ -48,7 +48,7 @@ class Charge(Enum):
 class Group(Enum):
     """Corps groups."""
 
+    CHARGES = frozenset(Charge)
     INNER = frozenset({Role.EB, Role.CB, Role.IACB, Role.AH})
     OUTER = frozenset({Role.IACBOB, Role.BBZ, Role.F, Role.FCK})
     GUEST = frozenset({Role.SPEF, Role.CS, Role.FDC, Role.VG})
-    CHARGES = frozenset(Charge)
