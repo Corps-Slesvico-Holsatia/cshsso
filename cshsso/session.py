@@ -63,9 +63,8 @@ def get_deadline() -> datetime:
 def create(account: Account) -> tuple[int, str]:
     """Creates a new session for the given account."""
 
-    password = genpw()
     session = Session(account=account, deadline=get_deadline(),
-                      password=password)
+                      password=(password := genpw()))
     session.save()
     return (session.id, password)
 
