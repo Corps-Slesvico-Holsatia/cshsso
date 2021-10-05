@@ -9,8 +9,17 @@ from cshsso.session import for_user, get_deadline, set_cookies
 __all__ = ['login']
 
 
+INVALID_USER_NAME_OR_PASSWORD = ('Invalid user name or password.', 400)
+
+
 def login() -> Response:
-    """Logs in a user."""
+    """Logs in a user.
+    POST: application/json
+    {
+        "email": <email_address>,
+        "passwd": <password>
+    }
+    """
 
     if not (email := request.json.get('email')):
         return ('No email address provided.', 400)
@@ -21,10 +30,10 @@ def login() -> Response:
     try:
         user = User.get(User.email == email)
     except User.DoesNotExist:
-        return ('Invalid user name or password.', 400)
+        return INVALID_USER_NAME_OR_PASSWORD
 
     if not user.login(passwd):
-        return ('Invalid user name or password.', 400)
+        return INVALID_USER_NAME_OR_PASSWORD
 
     session, passwd = for_user(user=user, deadline=get_deadline())
     session.save()
