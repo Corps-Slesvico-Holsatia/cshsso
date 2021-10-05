@@ -1,5 +1,6 @@
 """Decorators for authentication and authorization."""
 
+from enum import Enum
 from functools import wraps
 from typing import Any, Callable, Union
 
@@ -11,15 +12,7 @@ from cshsso.roles import Circle, CommissionGroup
 from cshsso.typing import Decorator
 
 
-__all__ = [
-    'authenticated',
-    'authorized',
-    'inner',
-    'outer',
-    'guests',
-    'charged',
-    'ahv'
-]
+__all__ = ['authenticated', 'authorized', 'Authorization']
 
 
 def authenticated(function: Callable[..., Any]) -> Callable[..., Any]:
@@ -58,8 +51,15 @@ def authorized(target: Union[Circle, CommissionGroup]) -> Decorator:
     return decorator
 
 
-inner = authorized(Circle.INNER)
-outer = authorized(Circle.OUTER)
-guests = authorized(Circle.GUESTS)
-charged = authorized(CommissionGroup.CHARGES)
-ahv = authorized(CommissionGroup.AHV)
+class Authorization(Enum):
+    """Authorization modes."""
+
+    INNER = authorized(Circle.INNER)
+    OUTER = authorized(Circle.OUTER)
+    GUESTS = authorized(Circle.GUESTS)
+    CHARGES = authorized(CommissionGroup.CHARGES)
+    AHV = authorized(CommissionGroup.AHV)
+
+    def __call__(self, *args, **kwargs) -> Any:
+        """Delegate to decorator function."""
+        return self.value(*args, **kwargs)
