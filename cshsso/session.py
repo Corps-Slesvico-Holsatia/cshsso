@@ -51,7 +51,7 @@ def get_duration() -> timedelta:
         duration = CONFIG.getint('session', 'duration',
                                  fallback=DEFAULT_DURATION)
 
-    return timedelta(seconds=min((duration, MAX_DURATION)))
+    return timedelta(seconds=min([duration, MAX_DURATION]))
 
 
 def get_deadline() -> datetime:
