@@ -5,11 +5,12 @@ from typing import Optional
 
 from argon2.exceptions import VerifyMismatchError
 from flask import request, Response
+from peewee import JOIN
 
 from cshsso.config import CONFIG
 from cshsso.exceptions import NotLoggedIn
 from cshsso.functions import genpw
-from cshsso.orm import User, Session
+from cshsso.orm import User, Session, UserCommission
 
 
 __all__ = ['get_session', 'create', 'for_user', 'renew', 'set_cookies']
@@ -29,7 +30,9 @@ def get_session() -> Session:
         raise NotLoggedIn() from None
 
     try:
-        session = Session.select(Session, User).join(User).where(
+        session = Session.select(Session, User, UserCommission).join(
+            User).join(UserCommission, on=UserCommission.user == User.id,
+                       join_type=JOIN.LEFT_OUTER).where(
             Session.id == session_id).get()
     except Session.DoesNotExist:
         raise NotLoggedIn() from None
