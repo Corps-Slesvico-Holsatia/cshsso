@@ -38,4 +38,4 @@ def login() -> Response:
     session, passwd = for_user(user=user, deadline=get_deadline())
     session.save()
     response = make_response(('Login successful.', 200))
-    return set_cookies(response, session=session)
+    return set_cookies(response, session=session, passwd=passwd)
