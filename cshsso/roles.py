@@ -1,7 +1,7 @@
 """User roles."""
 
 from enum import Enum
-from typing import NamedTuple, Optional
+from typing import Any, NamedTuple, Optional
 
 
 __all__ = ['RoleType', 'Status', 'Circle', 'Commission', 'CommissionGroup']
@@ -43,9 +43,12 @@ class Status(Enum):
 class Circle(Enum):
     """Corps circles."""
 
-    INNER = frozenset({Status.EB, Status.CB, Status.IACB, Status.AH})
-    OUTER = frozenset({Status.IACBOB, Status.BBZ, Status.F, Status.FCK})
-    GUESTS = frozenset({Status.SPEF, Status.CS, Status.FDC, Status.VG})
+    INNER = {Status.EB, Status.CB, Status.IACB, Status.AH}
+    OUTER = {Status.IACBOB, Status.BBZ, Status.F, Status.FCK}
+    GUESTS = {Status.SPEF, Status.CS, Status.FDC, Status.VG}
+
+    def __contains__(self, value: Any) -> bool:
+        return value in self.value
 
 
 class Commission(Enum):
@@ -72,9 +75,11 @@ class Commission(Enum):
 class CommissionGroup(Enum):
     """Commission groups."""
 
-    CHARGES = frozenset({Commission.SENIOR, Commission.CONSENIOR,
-                        Commission.SUBSENIOR, Commission.FUCHSMAJOR})
-    COMMISSIONS = frozenset({Commission.KW, Commission.HW, Commission.GW,
-                            Commission.KEILWART, Commission.EDV})
-    AHV = frozenset({Commission.AHV, Commission.AHV_STELLV,
-                    Commission.AHKW})
+    CHARGES = {Commission.SENIOR, Commission.CONSENIOR, Commission.SUBSENIOR,
+               Commission.FUCHSMAJOR}
+    COMMISSIONS = {Commission.KW, Commission.HW, Commission.GW,
+                   Commission.KEILWART, Commission.EDV}
+    AHV = {Commission.AHV, Commission.AHV_STELLV, Commission.AHKW}
+
+    def __contains__(self, value: Any) -> bool:
+        return value in self.value
