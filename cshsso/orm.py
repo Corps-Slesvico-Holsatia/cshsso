@@ -34,6 +34,11 @@ class User(CSHSSOModel):     # pylint: disable=R0903
     role = EnumField(Role, use_name=True)
     failed_logins = IntegerField(default=0)
 
+    @property
+    def charged(self) -> bool:
+        """Determines whether the user is charged."""
+        return self.charges.count() > 0
+
     def login(self, passwd: str) -> bool:
         """Attempts a login."""
         try:
@@ -55,11 +60,6 @@ class Session(CSHSSOModel):     # pylint: disable=R0903
     user = ForeignKeyField(User, column_name='user', on_delete='CASCADE')
     deadline = DateTimeField()
     passwd = Argon2Field()
-
-    @property
-    def charged(self) -> bool:
-        """Determines whether the user is charged."""
-        return self.charges.count() > 0
 
 
 class UserCharge(CSHSSOModel):  # pylint: disable=R0903
