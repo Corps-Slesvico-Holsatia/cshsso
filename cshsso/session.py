@@ -24,7 +24,7 @@ def get_session() -> Session:
 
     try:
         session_id = request.cookies['cshsso-session-id']
-        session_password = request.cookies['cshsso-session-password']
+        session_password = request.cookies['cshsso-session-passwd']
     except KeyError:
         raise NotLoggedIn() from None
 
@@ -35,7 +35,7 @@ def get_session() -> Session:
         raise NotLoggedIn() from None
 
     try:
-        session.password.verify(session_password)
+        session.passwd.verify(session_password)
     except VerifyMismatchError:
         raise NotLoggedIn() from None
 
@@ -64,23 +64,23 @@ def create(user: User) -> tuple[int, str]:
     """Creates a new session for the given user."""
 
     session = Session(user=user, deadline=get_deadline(),
-                      password=(password := genpw()))
+                      passwd=(passwd := genpw()))
     session.save()
-    return (session.id, password)
+    return (session.id, passwd)
 
 
 def renew(session: Session) -> tuple[int, str]:
     """Renews the session and returns the new password."""
 
-    session.password = password = genpw()
+    session.passwd = passwd = genpw()
     session.deadline = get_deadline()
     session.save()
-    return (session.id, password)
+    return (session.id, passwd)
 
 
 def set_cookies(response: Response) -> None:
     """Sets session cookies."""
 
-    ident, password = renew(SESSION)
+    ident, passwd = renew(SESSION)
     response.set_cookie('cshsso-session-id', str(ident))
-    response.set_cookie('cshsso-session-password', password)
+    response.set_cookie('cshsso-session-passwd', passwd)

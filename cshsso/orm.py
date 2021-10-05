@@ -54,7 +54,7 @@ class Session(CSHSSOModel):     # pylint: disable=R0903
 
     user = ForeignKeyField(User, column_name='user', on_delete='CASCADE')
     deadline = DateTimeField()
-    password = Argon2Field()
+    passwd = Argon2Field()
 
     @property
     def charged(self) -> bool:
