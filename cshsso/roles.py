@@ -16,6 +16,10 @@ class RoleType(NamedTuple):
     def __str__(self):
         return self.abbreviation or self.name
 
+    def to_json(self) -> dict:
+        """Returns a JSON-ish dict."""
+        return {'name': self.name, 'abbreviation': self.abbreviation}
+
 
 class Status(Enum):
     """Member status."""
