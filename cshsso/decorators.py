@@ -1,8 +1,12 @@
 """Decorators for authentication and authorization."""
 
+from configparser import ConfigParser
 from enum import Enum
 from functools import wraps
 from typing import Any, Callable, Union
+
+from flask import request
+from recaptcha import verify
 
 from cshsso.authorization import check_minimum_circle
 from cshsso.authorization import check_commission_group
@@ -42,6 +46,28 @@ def authorized(target: Union[Circle, CommissionGroup]) -> Decorator:
         @wraps(function)
         def wrapper(*args, **kwargs) -> Any:
             if check(USER, target):
+                return function(*args, **kwargs)
+
+            raise NotAuthorized()
+
+        return wrapper
+
+    return decorator
+
+
+def recaptcha(config: ConfigParser, section: str = 'recaptcha') -> Decorator:
+    """Decorator to run a function with previous recaptcha check."""
+
+    def decorator(function: Callable[..., Any]) -> Callable[..., Any]:
+        @wraps(function)
+        def wrapper(*args, **kwargs) -> Any:
+            secret = config.get(section, 'secret')
+            check_ip = config.get(section, 'check_ip', fallback=False)
+            remote_ip = request.remote_addr if check_ip else None
+            json_key = config.get(section, 'json_key', fallback='response')
+            response = request.json.get(json_key)
+
+            if verify(secret, response, remote_ip, fail_silently=True):
                 return function(*args, **kwargs)
 
             raise NotAuthorized()
