@@ -3,9 +3,9 @@
 from functools import wraps
 from typing import Any, Callable
 
-from cshsso.authorization import is_authorized
+from cshsso.authorization import check_group_authorization
 from cshsso.exceptions import NotAuthorized, NotLoggedIn
-from cshsso.localproxies import ACCOUNT, SESSION
+from cshsso.localproxies import USER, SESSION
 from cshsso.roles import Group
 
 
@@ -34,7 +34,7 @@ def authorized(group: Group) -> Decorator:
     def decorator(function: Callable[..., Any]) -> Callable[..., Any]:
         @wraps(function)
         def wrapper(*args, **kwargs) -> Any:
-            if is_authorized(ACCOUNT, group):
+            if check_group_authorization(USER, group):
                 return function(*args, **kwargs)
 
             raise NotAuthorized()

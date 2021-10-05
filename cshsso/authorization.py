@@ -4,10 +4,10 @@ from cshsso.orm import User
 from cshsso.roles import Group
 
 
-__all__ = ['is_authorized']
+__all__ = ['check_group_authorization']
 
 
-def is_authorized(user: User, group: Group) -> bool:
+def check_group_authorization(user: User, group: Group) -> bool:
     """Determines whether the account is authorized for the given group."""
 
     if user.group == Group.INNER:
@@ -16,4 +16,7 @@ def is_authorized(user: User, group: Group) -> bool:
     if user.group == Group.OUTER:
         return group in {Group.OUTER, Group.GUEST}
 
-    return group == Group.GUEST
+    if user.group == Group.GUEST:
+        return group == Group.GUEST
+
+    return False
