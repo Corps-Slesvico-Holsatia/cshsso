@@ -40,6 +40,7 @@ class User(CSHSSOModel):     # pylint: disable=R0903
     registered = DateTimeField(default=datetime.now)
     verified = BooleanField(default=False)
     failed_logins = IntegerField(default=0)
+    admin = BooleanField(default=False)
 
     def login(self, passwd: str) -> bool:
         """Attempts a login."""
