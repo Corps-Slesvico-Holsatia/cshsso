@@ -12,7 +12,7 @@ from cshsso.localproxies import SESSION
 from cshsso.orm import User, Session
 
 
-__all__ = ['get_session', 'create', 'renew', 'set_cookies']
+__all__ = ['get_session', 'create', 'for_user', 'renew', 'set_cookies']
 
 
 DEFAULT_DURATION = 60 * 60      # One hour.
