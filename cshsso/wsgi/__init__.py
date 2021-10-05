@@ -5,6 +5,9 @@ from cshsso.wsgi.login import login
 from cshsso.wsgi.logout import logout
 
 
+__all__ = ['APPLICATION']
+
+
 APPLICATION = Application('CSHSSO')
 APPLICATION.route('/login', methods=['POST'], strict_slashes=False)(login)
 APPLICATION.route('/logout', methods=['POST'], strict_slashes=False)(logout)
