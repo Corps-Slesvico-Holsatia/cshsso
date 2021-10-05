@@ -56,6 +56,7 @@ class Session(CSHSSOModel):     # pylint: disable=R0903
         """Determines whether the user is charged."""
         return self.charges.count() > 0
 
+
 class UserCharge(CSHSSOModel):  # pylint: disable=R0903
     """Charges."""
 
