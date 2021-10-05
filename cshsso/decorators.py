@@ -16,7 +16,7 @@ from cshsso.roles import Circle, CommissionGroup
 from cshsso.typing import Decorator
 
 
-__all__ = ['authenticated', 'authorized', 'Authorization']
+__all__ = ['authenticated', 'authorized', 'recaptcha', 'Authorization']
 
 
 def authenticated(function: Callable[..., Any]) -> Callable[..., Any]:
