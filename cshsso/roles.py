@@ -39,6 +39,10 @@ class Status(Enum):
     CS = RoleType('Corpsschwester')
     FDC = RoleType('Freund des Corps', 'FdC')
 
+    def to_json(self) -> dict:
+        """Returns a JSON-ish dict."""
+        return self.value.to_json()
+
 
 class Circle(Enum):
     """Corps circles."""
@@ -70,6 +74,10 @@ class Commission(Enum):
     AHV_STELLV = RoleType('stellvertretender Altherrenvorstandsvorsitzender',
                           'stellv. AHV')
     AHKW = RoleType('Altherren-Kassenwart', 'AHKW')
+
+    def to_json(self) -> dict:
+        """Returns a JSON-ish dict."""
+        return self.value.to_json()
 
 
 class CommissionGroup(Enum):
