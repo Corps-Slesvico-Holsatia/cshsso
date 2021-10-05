@@ -8,7 +8,6 @@ from flask import request, Response
 from cshsso.config import CONFIG
 from cshsso.exceptions import NotLoggedIn
 from cshsso.functions import genpw
-from cshsso.localproxies import SESSION
 from cshsso.orm import User, Session
 
 
@@ -98,7 +97,7 @@ def renew(session: Session) -> tuple[Session, str]:
     return (session, passwd)
 
 
-def set_cookies(response: Response, *, session: Session = SESSION) -> None:
+def set_cookies(response: Response, session: Session) -> None:
     """Sets session cookies."""
 
     session, passwd = renew(session)
