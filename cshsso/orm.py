@@ -50,6 +50,7 @@ class User(CSHSSOModel):     # pylint: disable=R0903
 
         if self.passwd.needs_rehash:
             self.passwd = passwd
+            self.save()
 
         return True
 
