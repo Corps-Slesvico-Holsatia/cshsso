@@ -9,7 +9,7 @@ from peeweeplus import Argon2Field, EnumField, JSONModel
 from cshsso.roles import Role, Charge
 
 
-__all__ = ['User', 'Session', 'UserCharge']
+__all__ = ['DATABASE', 'User', 'Session', 'UserCharge']
 
 
 DATABASE = MySQLDatabase('cshsso')
