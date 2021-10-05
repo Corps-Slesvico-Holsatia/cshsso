@@ -3,7 +3,7 @@
 from flask import request, Response, make_response
 
 from cshsso.orm import User
-from cshsso.session import set_cookies
+from cshsso.session import for_user, get_deadline, set_cookies
 
 
 __all__ = ['login']
@@ -23,12 +23,10 @@ def login() -> Response:
     except User.DoesNotExist:
         return ('Invalid user name or password.', 400)
 
-    try:
-        user.passwd.verify(passwd)
-    except VerificationError:
+    if not user.login(passwd):
         return ('Invalid user name or password.', 400)
 
-    session = Session(user=user, deadline=get_deadline(),
-                      password=(password := genpw()))
+    session, passwd = for_user(user=user, deadline=get_deadline())
     session.save()
-    return set_cookies(make_response(('Login successful.', 200)))
+    response = make_response(('Login successful.', 200))
+    return set_cookies(response, session=session)
