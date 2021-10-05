@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from peewee import CharField, DateTimeField, ForeignKeyField
+from peewee import CharField, DateTimeField, ForeignKeyField, IntegerField
 
 from peeweeplus import Argon2Field, EnumField, JSONModel, MySQLDatabase
 
@@ -31,6 +31,7 @@ class User(CSHSSOModel):     # pylint: disable=R0903
     first_name = CharField()
     last_name = CharField()
     role = EnumField(Role, use_name=True)
+    failed_logins = IntegerField(default=0)
 
 
 class Session(CSHSSOModel):     # pylint: disable=R0903
