@@ -3,6 +3,7 @@
 from flask import Flask
 
 from cshsso.errors import ERRORS
+from cshsso.init import init
 from cshsso.typing import ErrorHandlers
 
 
@@ -15,6 +16,7 @@ class Application(Flask):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.register_error_handlers(ERRORS)
+        self.before_first_request(init)
 
     def register_error_handlers(self, handlers: ErrorHandlers) -> None:
         """Add error handlers."""
