@@ -81,3 +81,7 @@ class UserCommission(CSHSSOModel):  # pylint: disable=R0903
     occupant = ForeignKeyField(User, column_name='occupant',
                                backref='commissions', on_delete='CASCADE')
     commission = EnumField(Commission, use_name=True, unique=True)
+
+    def to_json(self) -> dict:
+        """Returns a JSON-ish dict."""
+        return self.commission.to_json()
