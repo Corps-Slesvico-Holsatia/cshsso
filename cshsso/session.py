@@ -1,11 +1,11 @@
 """Manage sessions."""
 
 from datetime import datetime, timedelta
-from typing import Optional
 
 from argon2.exceptions import VerifyMismatchError
 from flask import request, Response
 from peewee import JOIN
+from werkzeug.http import dump_cookie
 
 from cshsso.config import CONFIG
 from cshsso.exceptions import NotLoggedIn
@@ -13,7 +13,14 @@ from cshsso.functions import genpw
 from cshsso.orm import User, Session, UserCommission
 
 
-__all__ = ['get_session', 'create', 'for_user', 'set_cookies']
+__all__ = [
+    'get_session',
+    'create',
+    'for_user',
+    'set_session_cookie',
+    'delete_session_cookie',
+    'postprocess_response'
+]
 
 
 DEFAULT_DURATION = 60 * 60      # One hour.
@@ -92,24 +99,57 @@ def for_user(user: User, deadline: datetime) -> tuple[Session, str]:
     return (last, last.renew(deadline))
 
 
-def set_cookies(response: Response, session: Session, *,
-                passwd: Optional[str] = None) -> Response:
-    """Sets session cookies."""
+def set_cookie(response: Response, *args, **kwargs):
+    """A workaround for explicitly setting SameSite to None
+    Until the following fix is released:
+    https://github.com/pallets/werkzeug/issues/1549
+    """
 
-    if passwd is None:
-        passwd = session.renew()
+    cookie = dump_cookie(*args, **kwargs)
 
-    for domain in CONFIG.get('session', 'domains').split():
-        response.set_cookie('cshsso-session-id', str(session.id),
-                            domain=domain, secure=True, samesite=None)
-        response.set_cookie('cshsso-session-passwd', passwd,
-                            domain=domain, secure=True, samesite=None)
+    if 'samesite' in kwargs and kwargs['samesite'] is None:
+        cookie = f'{cookie}; SameSite=None'
+
+    response.headers.add('Set-Cookie', cookie)
+
+
+def set_session_cookie(response: Response, session: Session,
+                       secret: str = None) -> Response:
+    """Sets the session cookie."""
+
+    secret = session.renew() if secret is None else secret
+
+    for domain in CONFIG.get('auth', 'domains').split():
+        set_cookie(
+            response, 'cshsso-session-id', str(session.id),
+            expires=session.end, domain=domain, secure=True, samesite=None)
+        set_cookie(
+            response, 'cshsso-session-secret', secret,
+            expires=session.end, domain=domain, secure=True, samesite=None)
+
     return response
 
 
-def terminate(response: Response) -> Response:
-    """Terminates the given session."""
+def delete_session_cookie(response: Response) -> Response:
+    """Deletes the session cookie."""
 
-    for domain in CONFIG.get('session', 'domains').split():
+    for domain in CONFIG.get('auth', 'domains').split():
         response.delete_cookie('cshsso-session-id', domain=domain)
-        response.delete_cookie('cshsso-session-passwd', domain=domain)
+        response.delete_cookie('cshsso-session-secret', domain=domain)
+
+    return response
+
+
+def postprocess_response(response: Response) -> Response:
+    """Sets the session cookie on the respective response."""
+
+    # Do not override an already set session cookie i.e. on deletion.
+    if 'Set-Cookie' in response.headers:
+        return response
+
+    try:
+        session = get_session()
+    except NotLoggedIn:
+        return delete_session_cookie(response)
+
+    return set_session_cookie(response, session)

@@ -2,11 +2,12 @@
 
 from typing import Union
 
-from flask import request, Response, jsonify
+from flask import request, Response, jsonify, make_response
 
 from cshsso.decorators import authenticated
 from cshsso.localproxies import USER, SESSION
 from cshsso.orm import User, Session
+from cshsso.session import delete_session_cookie
 
 
 __all__ = ['logout']
@@ -21,14 +22,14 @@ def terminate_all_sessions(user: Union[User, int]) -> Response:
         sessions.append(session.id)
         session.delete_instance()
 
-    return jsonify(sessions)
+    return delete_session_cookie(make_response(jsonify(sessions)))
 
 
 def terminate_session(session: Session) -> Response:
     """Terminates the given session."""
 
     session.delete_instance()
-    return jsonify([session.id])
+    return delete_session_cookie(make_response(jsonify([session.id])))
 
 
 @authenticated
