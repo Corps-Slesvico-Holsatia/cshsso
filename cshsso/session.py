@@ -15,7 +15,6 @@ from cshsso.orm import User, Session, UserCommission
 
 __all__ = [
     'get_session',
-    'create',
     'for_user',
     'set_session_cookie',
     'delete_session_cookie',
