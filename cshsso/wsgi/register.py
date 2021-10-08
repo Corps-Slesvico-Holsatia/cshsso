@@ -2,9 +2,12 @@
 
 from flask import request, Response, jsonify
 from peewee import IntegrityError
+
+from emaillib import EMail
 from recaptcha import recaptcha
 
 from cshsso.config import CONFIG
+from cshsso.email import send
 from cshsso.orm import User
 from cshsso.roles import Status
 
@@ -24,6 +27,15 @@ def user_from_json(json: dict) -> User:
     )
 
 
+def get_email(user: User, *, section: str = 'registration') -> EMail:
+    """Returns a registration email for the given user."""
+
+    return EMail(
+        CONFIG.get(section, 'subject'), CONFIG.get(section, 'sender'),
+        user.email, plain=CONFIG.get(section, 'template').format(user)
+    )
+
+
 @recaptcha(CONFIG)
 def register() -> Response:
     """Registers a new user."""
@@ -40,4 +52,5 @@ def register() -> Response:
     except IntegrityError:
         return ('Email address already taken.', 400)
 
-    return (jsonify(message='User added.', id=user.id), 201)
+    email = send(get_email(user))
+    return (jsonify(message='User added.', email=email, id=user.id), 201)
