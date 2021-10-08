@@ -13,7 +13,7 @@ from cshsso.functions import genpw
 from cshsso.orm import User, Session, UserCommission
 
 
-__all__ = ['get_session', 'create', 'for_user', 'renew', 'set_cookies']
+__all__ = ['get_session', 'create', 'for_user', 'set_cookies']
 
 
 DEFAULT_DURATION = 60 * 60      # One hour.
@@ -92,20 +92,24 @@ def for_user(user: User, deadline: datetime) -> tuple[Session, str]:
     return (last, last.renew(deadline))
 
 
-def renew(session: Session) -> tuple[Session, str]:
-    """Renews the session and returns the new password."""
-
-    session.passwd = passwd = genpw()
-    session.deadline = get_deadline()
-    session.save()
-    return (session, passwd)
-
-
 def set_cookies(response: Response, session: Session, *,
                 passwd: Optional[str] = None) -> Response:
     """Sets session cookies."""
 
-    session, passwd = renew(session) if passwd is None else (session, passwd)
-    response.set_cookie('cshsso-session-id', str(session.id))
-    response.set_cookie('cshsso-session-passwd', passwd)
+    if passwd is None:
+        passwd = session.renew()
+
+    for domain in CONFIG.get('session', 'domains').split():
+        response.set_cookie('cshsso-session-id', str(session.id),
+                            domain=domain, secure=True, samesite=None)
+        response.set_cookie('cshsso-session-passwd', passwd,
+                            domain=domain, secure=True, samesite=None)
     return response
+
+
+def terminate(response: Response) -> Response:
+    """Terminates the given session."""
+
+    for domain in CONFIG.get('session', 'domains').split():
+        response.delete_cookie('cshsso-session-id', domain=domain)
+        response.delete_cookie('cshsso-session-passwd', domain=domain)
