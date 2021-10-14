@@ -1,7 +1,7 @@
 """The Corps' covents."""
 
 from enum import Enum
-from typing import NamedTuple
+from typing import Any, NamedTuple
 
 
 __all__ = ['Convent', 'ConventAuthorization']
@@ -31,8 +31,24 @@ class Convent(Enum):
         return self.value.to_json()
 
 
-class ConventAuthorization(NamedTuple):
+class ConventAuthorizationType(NamedTuple):
     """Convent authorizations."""
 
     convent: Convent
     vote: bool
+
+
+class ConventAuthorization(Enum):
+    """Available convent authorizations."""
+
+    AHC = ConventAuthorizationType(Convent.AHC, False)
+    AHC_VOTE = ConventAuthorizationType(Convent.AHC, True)
+    CC = ConventAuthorizationType(Convent.CC, False)
+    CC_VOTE = ConventAuthorizationType(Convent.CC, True)
+    FC = ConventAuthorizationType(Convent.FC, False)
+    FC_VOTE = ConventAuthorizationType(Convent.FC, True)
+    FCC = ConventAuthorizationType(Convent.FCC, False)
+    FCC_VOTE = ConventAuthorizationType(Convent.FCC, True)
+
+    def __getattr__(self, attribute: str) -> Any:
+        return getattr(self.value, attribute)
