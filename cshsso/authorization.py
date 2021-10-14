@@ -43,15 +43,14 @@ def check_minimum_circle(user: User, circle: Circle) -> bool:
 def check_commission_group(user: User, group: CommissionGroup) -> bool:
     """Checks whether the user is authorized for the given commission group."""
 
-    return any(uc.commission in group for uc in user.commissions)
+    return any(commission in group for commission in user.commissions)
 
 
 def can_sit_ahc(user: User) -> bool:
     """Determines whether the user can sit on the AHC."""
 
-    return user.status in {Status.AH, Status.BBZ} or any(
-        uc.commission is Commission.SENIOR for uc in user.commissions
-    )
+    return (user.status in {Status.AH, Status.BBZ}
+            or Commission.SENIOR in user.commissions)
 
 
 def check_ahc(user: User, vote: bool) -> bool:
@@ -64,7 +63,7 @@ def can_vote_cc(user: User) -> bool:
     """Determines whether the user can vote on the CC."""
 
     return user.status is Status.CB or any(
-        uc.commission in CommissionGroup.AHV for uc in user.commissions
+        commission in CommissionGroup.AHV for commission in user.commissions
     )
 
 
@@ -77,9 +76,7 @@ def check_cc(user: User, vote: bool) -> bool:
 def can_vote_fc(user: User) -> bool:
     """Determines whether the user can vote on the FC."""
 
-    return user.status is Status.F or any(
-        uc.commission is Commission.FM for uc in user.commissions
-    )
+    return user.status is Status.F or Commission.FM in user.commissions
 
 
 def check_fc(user: User, vote: bool) -> bool:
