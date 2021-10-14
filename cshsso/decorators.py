@@ -19,7 +19,7 @@ def authenticated(function: Callable[..., Any]) -> Callable[..., Any]:
 
     @wraps(function)
     def wrapper(*args, **kwargs) -> Any:
-        if SESSION.active:
+        if (user := SESSION.user).verified and not user.locked:
             return function(*args, **kwargs)
 
         raise NotLoggedIn()

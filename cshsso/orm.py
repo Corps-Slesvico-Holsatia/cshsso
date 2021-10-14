@@ -39,6 +39,7 @@ class User(CSHSSOModel):     # pylint: disable=R0903
     status = EnumField(Status, use_name=True)
     registered = DateTimeField(default=datetime.now)
     verified = BooleanField(default=False)
+    locked = BooleanField(default=False)
     failed_logins = IntegerField(default=0)
     admin = BooleanField(default=False)
 
