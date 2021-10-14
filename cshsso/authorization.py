@@ -7,7 +7,7 @@ from cshsso.orm import User
 from cshsso.roles import Circle, Commission, CommissionGroup, Status
 
 
-__all__ = ['check_minimum_circle', 'check_commission_group', 'check_target']
+__all__ = ['AuthorizationTarget', 'check_target']
 
 
 AuthorizationTarget = Union[Circle, CommissionGroup, ConventAuthorization]
