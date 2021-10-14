@@ -17,7 +17,7 @@ def genpw(*, pool: str = ascii_letters + digits, length: int = 16) -> str:
 
 
 def parse_or_none(value: Optional[str], parser: Callable[[str], Any]) -> Any:
-    """Parses a JSON value or returns None."""
+    """Parse a value or return None."""
 
     return None if value is None else parser(value)
 
