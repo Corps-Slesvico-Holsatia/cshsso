@@ -25,10 +25,11 @@ __all__ = [
 ]
 
 
-USER_VIEW_FIELDS = frozenset({
-    'email', 'first_name', 'last_name', 'status', 'registered'
-})
-USER_PATCH_FIELDS = frozenset({'first_name', 'last_name'})
+USER_VIEW_FIELDS = {
+    'email', 'first_name', 'last_name', 'status', 'registered', 'acception',
+    'reception'
+}
+USER_PATCH_FIELDS = {'first_name', 'last_name'}
 
 
 def get_user_as_json(session: Session, user: User) -> dict:
