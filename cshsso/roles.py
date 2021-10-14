@@ -1,7 +1,7 @@
 """User roles."""
 
 from enum import Enum
-from typing import Any, NamedTuple, Optional
+from typing import Iterator, NamedTuple, Optional
 
 
 __all__ = ['RoleType', 'Status', 'Circle', 'Commission', 'CommissionGroup']
@@ -51,8 +51,11 @@ class Circle(Enum):
     OUTER = {Status.IACBOB, Status.BBZ, Status.F, Status.FCK}
     GUESTS = {Status.SPEF, Status.CS, Status.FDC, Status.VG}
 
-    def __contains__(self, value: Any) -> bool:
+    def __contains__(self, value: Status) -> bool:
         return value in self.value
+
+    def __iter__(self) -> Iterator[Status]:
+        return iter(self.value)
 
 
 class Commission(Enum):
@@ -89,5 +92,8 @@ class CommissionGroup(Enum):
                    Commission.KEILWART, Commission.EDV}
     AHV = {Commission.AHV, Commission.AHV_STELLV, Commission.AHKW}
 
-    def __contains__(self, value: Any) -> bool:
+    def __contains__(self, value: Commission) -> bool:
         return value in self.value
+
+    def __iter__(self) -> Iterator[Status]:
+        return iter(self.value)
