@@ -1,7 +1,11 @@
 """Common exceptions."""
 
 
-__all__ = ['NotLoggedIn', 'NotAuthorized']
+__all__ = ['InvalidPassword', 'NotLoggedIn', 'NotAuthorized']
+
+
+class InvalidPassword(Exception):
+    """Indicates an invalid password."""
 
 
 class NotLoggedIn(Exception):
