@@ -25,13 +25,13 @@ def check_minimum_circle(user: User, circle: Circle) -> bool:
     """Determines whether the user is authorized for the given circle."""
 
     if circle is Circle.INNER:
-        return is_in_inner_circle(user)
+        return user.status in Circle.INNER
 
     if circle is Circle.OUTER:
-        return is_in_inner_circle(user) or is_in_outer_circle(user)
+        return user.status in {*Circle.INNER, *Circle.OUTER}
 
     if circle is Circle.GUESTS:
-        return True
+        return user.status in {*Circle.INNER, *Circle.OUTER, *Circle.GUESTS}
 
     raise NotImplementedError(f'Handling of circle {circle} not implemented.')
 
