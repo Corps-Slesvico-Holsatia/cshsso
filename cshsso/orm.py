@@ -6,6 +6,7 @@ from datetime import datetime
 from argon2.exceptions import VerifyMismatchError
 from peewee import BooleanField
 from peewee import CharField
+from peewee import DateField
 from peewee import DateTimeField
 from peewee import ForeignKeyField
 from peewee import IntegerField
@@ -43,6 +44,8 @@ class User(CSHSSOModel):     # pylint: disable=R0903
     locked = BooleanField(default=False)
     failed_logins = IntegerField(default=0)
     admin = BooleanField(default=False)
+    acc = DateField(null=True)  # Acception
+    rec = DateField(null=True)  # Reception
 
     @property
     def disabled(self) -> bool:
