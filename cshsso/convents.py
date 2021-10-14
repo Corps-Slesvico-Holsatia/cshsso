@@ -4,7 +4,7 @@ from enum import Enum
 from typing import NamedTuple
 
 
-__all__ = ['Convent']
+__all__ = ['Convent', 'ConventAuthorization']
 
 
 class ConventType(NamedTuple):
@@ -29,3 +29,10 @@ class Convent(Enum):
     def to_json(self) -> dict:
         """Returns a JSON-ish dict."""
         return self.value.to_json()
+
+
+class ConventAuthorization(NamedTuple):
+    """Convent authorizations."""
+
+    convent: Convent
+    vote: bool
