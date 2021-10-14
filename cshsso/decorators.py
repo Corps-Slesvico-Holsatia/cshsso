@@ -19,7 +19,7 @@ def authenticated(function: Callable[..., Any]) -> Callable[..., Any]:
 
     @wraps(function)
     def wrapper(*args, **kwargs) -> Any:
-        if (user := SESSION.user).verified and not user.locked:
+        if (user := SESSION.user).verified and not user.disabled:
             return function(*args, **kwargs)
 
         raise NotAuthenticated(user.verified, user.locked)

@@ -12,6 +12,7 @@ from peewee import IntegerField
 
 from peeweeplus import Argon2Field, EnumField, JSONModel, MySQLDatabase
 
+from cshsso.config import CONFIG
 from cshsso.roles import Status, Commission
 
 
@@ -43,6 +44,12 @@ class User(CSHSSOModel):     # pylint: disable=R0903
     failed_logins = IntegerField(default=0)
     admin = BooleanField(default=False)
 
+    @property
+    def disabled(self) -> bool:
+        """Determines whether the user is diabled."""
+        return self.locked or self.failed_logins > CONFIG.getint(
+            'user', 'max_failed_logins', fallback=3)
+
     def login(self, passwd: str) -> bool:
         """Attempts a login."""
         try:
@@ -54,8 +61,9 @@ class User(CSHSSOModel):     # pylint: disable=R0903
 
         if self.passwd.needs_rehash:
             self.passwd = passwd
-            self.save()
 
+        self.failed_logins = 0
+        self.save()
         return True
 
     def to_json(self, *args, **kwargs) -> dict:
