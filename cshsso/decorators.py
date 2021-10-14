@@ -1,18 +1,29 @@
 """Decorators for authentication and authorization."""
 
 from enum import Enum
-from functools import wraps
+from functools import partial, wraps
 from typing import Any, Callable
 
-from cshsso.authorization import AuthorizationTarget, check_target
+from cshsso.authorization import check_circle, check_convent, check_group
 from cshsso.convents import Convent, ConventAuthorization
 from cshsso.exceptions import NotAuthenticated, NotAuthorized
 from cshsso.localproxies import USER, SESSION
+from cshsso.orm import User
 from cshsso.roles import Circle, CommissionGroup
 from cshsso.typing import Decorator
 
 
 __all__ = ['authenticated', 'admin', 'Authorization']
+
+
+AHC = ConventAuthorization(Convent.AHC, False)
+AHC_VOTE = ConventAuthorization(Convent.AHC, True)
+CC = ConventAuthorization(Convent.CC, False)
+CC_VOTE = ConventAuthorization(Convent.CC, True)
+FC = ConventAuthorization(Convent.FC, False)
+FC_VOTE = ConventAuthorization(Convent.FC, True)
+FCC = ConventAuthorization(Convent.FCC, False)
+FCC_VOTE = ConventAuthorization(Convent.FCC, True)
 
 
 def authenticated(function: Callable[..., Any]) -> Callable[..., Any]:
@@ -28,16 +39,16 @@ def authenticated(function: Callable[..., Any]) -> Callable[..., Any]:
     return wrapper
 
 
-def authorized(target: AuthorizationTarget) -> Decorator:
+def authorized(check_func: Callable[[User], bool]) -> Decorator:
     """Determines whether the current user is authorized."""
 
     def decorator(function: Callable[..., Any]) -> Callable[..., Any]:
         @wraps(function)
         def wrapper(*args, **kwargs) -> Any:
-            if check_target(USER, target):
+            if check_func(USER):
                 return function(*args, **kwargs)
 
-            raise NotAuthorized(target.name)
+            raise NotAuthorized(check_func.__name__)
 
         return wrapper
 
@@ -61,21 +72,21 @@ class Authorization(Enum):
     """Authorization modes."""
 
     # Circles
-    INNER = authorized(Circle.INNER)
-    OUTER = authorized(Circle.OUTER)
-    GUESTS = authorized(Circle.GUESTS)
+    INNER = authorized(partial(check_circle, circle=Circle.INNER))
+    OUTER = authorized(partial(check_circle, circle=Circle.OUTER))
+    GUESTS = authorized(partial(check_circle, circle=Circle.GUESTS))
     # Commissions
-    CHARGES = authorized(CommissionGroup.CHARGES)
-    AHV = authorized(CommissionGroup.AHV)
+    CHARGES = authorized(partial(check_group, group=CommissionGroup.CHARGES))
+    AHV = authorized(partial(check_group, group=CommissionGroup.AHV))
     # Convents
-    AHC = authorized(ConventAuthorization(Convent.AHC))
-    AHC_VOTE = authorized(ConventAuthorization(Convent.AHC, True))
-    CC = authorized(ConventAuthorization(Convent.CC))
-    CC_VOTE = authorized(ConventAuthorization(Convent.CC, True))
-    FC = authorized(ConventAuthorization(Convent.FC))
-    FC_VOTE = authorized(ConventAuthorization(Convent.FC, True))
-    FCC = authorized(ConventAuthorization(Convent.FCC))
-    FCC_VOTE = authorized(ConventAuthorization(Convent.FCC, True))
+    AHC = authorized(partial(check_convent, convent=AHC))
+    AHC_VOTE = authorized(partial(check_convent, convent=AHC_VOTE))
+    CC = authorized(partial(check_convent, convent=CC))
+    CC_VOTE = authorized(partial(check_convent, convent=CC_VOTE))
+    FC = authorized(partial(check_convent, convent=FC))
+    FC_VOTE = authorized(partial(check_convent, convent=FC_VOTE))
+    FCC = authorized(partial(check_convent, convent=FCC))
+    FCC_VOTE = authorized(partial(check_convent, convent=FCC_VOTE))
 
     def __call__(self, *args, **kwargs) -> Any:
         """Delegate to decorator function."""

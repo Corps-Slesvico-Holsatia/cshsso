@@ -1,16 +1,11 @@
 """Authorization checks."""
 
-from typing import Union
-
 from cshsso.convents import Convent, ConventAuthorization
 from cshsso.orm import User
 from cshsso.roles import Circle, Commission, CommissionGroup, Status
 
 
-__all__ = ['AuthorizationTarget', 'check_target']
-
-
-AuthorizationTarget = Union[Circle, CommissionGroup, ConventAuthorization]
+__all__ = ['check_circle', 'check_convent', 'check_group']
 
 
 def is_in_inner_circle(user: User) -> bool:
@@ -25,7 +20,7 @@ def is_in_outer_circle(user: User) -> bool:
     return user.status in Circle.OUTER
 
 
-def check_minimum_circle(user: User, circle: Circle) -> bool:
+def check_circle(user: User, circle: Circle) -> bool:
     """Determines whether the user is authorized for the given circle."""
 
     if circle is Circle.INNER:
@@ -40,7 +35,7 @@ def check_minimum_circle(user: User, circle: Circle) -> bool:
     raise NotImplementedError(f'Handling of circle {circle} not implemented.')
 
 
-def check_commission_group(user: User, group: CommissionGroup) -> bool:
+def check_group(user: User, group: CommissionGroup) -> bool:
     """Checks whether the user is authorized for the given commission group."""
 
     return any(commission in group for commission in user.commissions)
@@ -104,18 +99,3 @@ def check_convent(user: User, convent: ConventAuthorization) -> bool:
         return check_fc(user, convent.vote)
 
     raise NotImplementedError(f'Convent {convent.convent} is not implemented.')
-
-
-def check_target(user: User, target: AuthorizationTarget) -> bool:
-    """Checks a user against a Corps circle or commission group."""
-
-    if isinstance(target, Circle):
-        return check_minimum_circle(user, target)
-
-    if isinstance(target, CommissionGroup):
-        return check_commission_group(user, target)
-
-    if isinstance(target, ConventAuthorization):
-        return check_convent(user, target)
-
-    raise TypeError(f'Invalid target type: {type(target)}.')
