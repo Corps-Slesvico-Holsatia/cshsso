@@ -1,5 +1,6 @@
 """Manage accounts."""
 
+from datetime import date
 from typing import Optional
 
 from flask import request
@@ -13,7 +14,15 @@ from cshsso.orm import Session, User, UserCommission
 from cshsso.roles import Commission, Status
 
 
-__all__ = ['show', 'patch', 'delete', 'set_status', 'set_commissions']
+__all__ = [
+    'show',
+    'patch',
+    'delete',
+    'set_acception',
+    'set_reception',
+    'set_status',
+    'set_commissions'
+]
 
 
 USER_VIEW_FIELDS = frozenset({
@@ -75,6 +84,52 @@ def delete() -> JSONMessage:
 
     delete_user(SESSION, USER, passwd=request.json.get('passwd'))
     return JSONMessage('User deleted.', status=200)
+
+
+@authenticated
+@Authorization.OUTER
+def set_acception() -> JSONMessage:
+    """Set the acception date."""
+
+    user = USER._get_current_object()   # pylint: disable=W0212
+
+    try:
+        acception = request.json['acception']
+    except KeyError:
+        return JSONMessage('No acception date provided.', status=400)
+
+    if acception is not None:
+        try:
+            acception = date.fromisoformat(acception)
+        except ValueError:
+            return JSONMessage('Invalid acception date provided.', status=400)
+
+    user.acception = acception
+    user.save()
+    return JSONMessage('Acception date set.', status=200)
+
+
+@authenticated
+@Authorization.INNER
+def set_reception() -> JSONMessage:
+    """Set the reception date."""
+
+    user = USER._get_current_object()   # pylint: disable=W0212
+
+    try:
+        reception = request.json['reception']
+    except KeyError:
+        return JSONMessage('No reception date provided.', status=400)
+
+    if reception is not None:
+        try:
+            reception = date.fromisoformat(reception)
+        except ValueError:
+            return JSONMessage('Invalid reception date provided.', status=400)
+
+    user.reception = reception
+    user.save()
+    return JSONMessage('Reception date set.', status=200)
 
 
 @authenticated
