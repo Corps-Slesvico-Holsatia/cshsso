@@ -5,7 +5,7 @@ from functools import wraps
 from typing import Any, Callable, Union
 
 from cshsso.authorization import check_target
-from cshsso.exceptions import NotAuthorized, NotLoggedIn
+from cshsso.exceptions import NotAuthenticated, NotAuthorized
 from cshsso.localproxies import USER, SESSION
 from cshsso.roles import Circle, CommissionGroup
 from cshsso.typing import Decorator
@@ -22,7 +22,7 @@ def authenticated(function: Callable[..., Any]) -> Callable[..., Any]:
         if (user := SESSION.user).verified and not user.locked:
             return function(*args, **kwargs)
 
-        raise NotLoggedIn()
+        raise NotAuthenticated()
 
     return wrapper
 
