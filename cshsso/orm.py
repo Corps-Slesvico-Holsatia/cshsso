@@ -50,6 +50,11 @@ class User(CSHSSOModel):     # pylint: disable=R0903
         return self.locked or self.failed_logins > CONFIG.getint(
             'user', 'max_failed_logins', fallback=3)
 
+    @property
+    def commissions(self) -> set[Commission]:
+        """Returns the user's commissions."""
+        return {uc.commission for uc in self.user_commissions}
+
     def login(self, passwd: str) -> bool:
         """Attempts a login."""
         try:
@@ -84,9 +89,5 @@ class UserCommission(CSHSSOModel):  # pylint: disable=R0903
     """User commissions."""
 
     occupant = ForeignKeyField(User, column_name='occupant',
-                               backref='commissions', on_delete='CASCADE')
+                               backref='user_commissions', on_delete='CASCADE')
     commission = EnumField(Commission, use_name=True, unique=True)
-
-    def to_json(self) -> dict:
-        """Returns a JSON-ish dict."""
-        return self.commission.value.to_json()
