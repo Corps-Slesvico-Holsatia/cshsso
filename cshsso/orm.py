@@ -19,6 +19,9 @@ __all__ = ['DATABASE', 'User', 'Session', 'UserCommission']
 
 
 DATABASE = MySQLDatabase('cshsso')
+USER_ONLY_FIELDS = frozenset({
+    'first_name', 'last_name', 'status', 'registered'
+})
 
 
 class CSHSSOModel(JSONModel):   # pylint: disable=R0903
@@ -57,15 +60,12 @@ class User(CSHSSOModel):     # pylint: disable=R0903
 
         return True
 
-    def to_json(self) -> dict:
+    def to_json(self, *args, only: set = USER_ONLY_FIELDS,
+                commissions: bool = True, **kwargs) -> dict:
         """Returns a JSON-ish dict of core information."""
-        return {
-            'first_name': self.first_name,
-            'last_name': self.last_name,
-            'status': self.status.value.to_json(),
-            'registered': self.registered.isoformat(),
-            'commissions': [c.to_json() for c in self.commissions]
-        }
+        json = super().to_json(*args, only=only, **kwargs)
+        json['commissions'] = [c.to_json() for c in self.commissions]
+        return json
 
 
 class Session(CSHSSOModel):     # pylint: disable=R0903
