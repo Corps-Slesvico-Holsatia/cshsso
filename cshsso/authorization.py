@@ -118,4 +118,4 @@ def check_target(user: User, target: AuthorizationTarget) -> bool:
     if isinstance(target, ConventAuthorization):
         return check_convent(user, target)
 
-    raise TypeError('Must specify either Circle or CommissionGroup.')
+    raise TypeError(f'Invalid target type: {type(target)}.')
