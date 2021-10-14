@@ -22,7 +22,7 @@ def authenticated(function: Callable[..., Any]) -> Callable[..., Any]:
         if (user := SESSION.user).verified and not user.locked:
             return function(*args, **kwargs)
 
-        raise NotAuthenticated()
+        raise NotAuthenticated(user.verified, user.locked)
 
     return wrapper
 
@@ -36,7 +36,7 @@ def authorized(target: Union[Circle, CommissionGroup]) -> Decorator:
             if check_target(USER, target):
                 return function(*args, **kwargs)
 
-            raise NotAuthorized()
+            raise NotAuthorized(target.name)
 
         return wrapper
 
@@ -51,7 +51,7 @@ def admin(function: Callable[..., Any]) -> Callable[..., Any]:
         if USER.admin:
             return function(*args, **kwargs)
 
-        raise NotAuthorized()
+        raise NotAuthorized('Admin')
 
     return wrapper
 

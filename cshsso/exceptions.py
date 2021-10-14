@@ -16,9 +16,18 @@ class InvalidPassword(Exception):
 class NotAuthenticated(Exception):
     """Indicates that the user is not authenticated."""
 
+    def __init__(self, verified: bool, locked: bool):
+        super().__init__(verified, locked)
+        self.verified = verified
+        self.locked = locked
+
 
 class NotAuthorized(Exception):
     """Indicates that the user is not authorized to perform a request."""
+
+    def __init__(self, target: str):
+        super().__init__(target)
+        self.target = target
 
 
 class NotLoggedIn(Exception):
