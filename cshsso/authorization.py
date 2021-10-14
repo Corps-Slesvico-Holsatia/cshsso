@@ -21,14 +21,8 @@ def is_in_outer_circle(user: User) -> bool:
     return user.status in Circle.OUTER
 
 
-def is_guest(user: User) -> bool:
-    """Checks whether the user is a guest."""
-
-    return user.status in Circle.GUESTS
-
-
 def check_minimum_circle(user: User, circle: Circle) -> bool:
-    """Determines whether the user is authorized for the given group."""
+    """Determines whether the user is authorized for the given circle."""
 
     if is_in_inner_circle(user):
         return True
@@ -40,7 +34,7 @@ def check_minimum_circle(user: User, circle: Circle) -> bool:
 
 
 def check_commission_group(user: User, group: CommissionGroup) -> bool:
-    """Checks whether the user is charged."""
+    """Checks whether the user is authorized for the given commission group."""
 
     return any(uc.commission in group for uc in user.commissions)
 
