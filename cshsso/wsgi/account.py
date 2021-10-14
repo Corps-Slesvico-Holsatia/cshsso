@@ -1,6 +1,5 @@
 """Manage accounts."""
 
-from datetime import date
 from typing import Optional
 
 from flask import request
@@ -9,6 +8,7 @@ from wsgilib import JSON, JSONMessage
 
 from cshsso.decorators import authenticated, Authorization
 from cshsso.exceptions import InvalidPassword
+from cshsso.functions import date_or_none
 from cshsso.localproxies import SESSION, USER
 from cshsso.orm import Session, User, UserCommission
 from cshsso.roles import Commission, Status
@@ -95,17 +95,12 @@ def set_acception() -> JSONMessage:
     user = USER._get_current_object()   # pylint: disable=W0212
 
     try:
-        acception = request.json['acception']
+        user.acception = date_or_none(request.json['acception'])
     except KeyError:
         return JSONMessage('No acception date provided.', status=400)
+    except ValueError:
+        return JSONMessage('Invalid acception date provided.', status=400)
 
-    if acception is not None:
-        try:
-            acception = date.fromisoformat(acception)
-        except ValueError:
-            return JSONMessage('Invalid acception date provided.', status=400)
-
-    user.acception = acception
     user.save()
     return JSONMessage('Acception date set.', status=200)
 
@@ -118,17 +113,12 @@ def set_reception() -> JSONMessage:
     user = USER._get_current_object()   # pylint: disable=W0212
 
     try:
-        reception = request.json['reception']
+        user.reception = date_or_none(request.json['reception'])
     except KeyError:
         return JSONMessage('No reception date provided.', status=400)
+    except ValueError:
+        return JSONMessage('Invalid reception date provided.', status=400)
 
-    if reception is not None:
-        try:
-            reception = date.fromisoformat(reception)
-        except ValueError:
-            return JSONMessage('Invalid reception date provided.', status=400)
-
-    user.reception = reception
     user.save()
     return JSONMessage('Reception date set.', status=200)
 
