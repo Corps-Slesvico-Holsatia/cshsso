@@ -69,7 +69,7 @@ class Commission(Enum):
     # Ämter
     KW = RoleType('CC-Kassenwart', 'KW')
     HW = RoleType('Hauswart', 'HW')
-    GW = RoleType('Getränkewart')
+    GW = RoleType('Getränkewart', 'GW')
     KEILWART = RoleType('Keilwart')
     EDV = RoleType('EDV-Wart')
     # AHV
