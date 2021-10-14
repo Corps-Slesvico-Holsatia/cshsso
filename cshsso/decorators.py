@@ -39,7 +39,7 @@ def authenticated(function: Callable[..., Any]) -> Callable[..., Any]:
     return wrapper
 
 
-def authorized(check_func: Callable[[User], bool]) -> Decorator:
+def authorized(check_func: partial[[User], bool]) -> Decorator:
     """Determines whether the current user is authorized."""
 
     def decorator(function: Callable[..., Any]) -> Callable[..., Any]:
@@ -48,7 +48,7 @@ def authorized(check_func: Callable[[User], bool]) -> Decorator:
             if check_func(USER):
                 return function(*args, **kwargs)
 
-            raise NotAuthorized(check_func.__name__)
+            raise NotAuthorized(list(check_func.keywords.values())[0].name)
 
         return wrapper
 
