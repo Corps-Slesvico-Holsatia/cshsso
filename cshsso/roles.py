@@ -65,7 +65,7 @@ class Commission(Enum):
     SENIOR = RoleType('Senior', 'xxx')
     CONSENIOR = RoleType('Consenior', 'xx')
     SUBSENIOR = RoleType('Subsenior', 'x')
-    FUCHSMAJOR = RoleType('Fuchsmajor', 'FM')
+    FM = RoleType('Fuchsmajor', 'FM')
     # Ämter
     KW = RoleType('CC-Kassenwart', 'KW')
     HW = RoleType('Hauswart', 'HW')
