@@ -5,7 +5,7 @@ from functools import partial, wraps
 from typing import Any, Callable
 
 from cshsso.authorization import check_circle, check_convent, check_group
-from cshsso.convents import ConventAuthorization
+from cshsso.convents import ConventAuth
 from cshsso.exceptions import NotAuthenticated, NotAuthorized
 from cshsso.localproxies import USER, SESSION
 from cshsso.orm import User
@@ -69,18 +69,14 @@ class Authorization(Enum):
     CHARGES = authorized(partial(check_group, group=CommissionGroup.CHARGES))
     AHV = authorized(partial(check_group, group=CommissionGroup.AHV))
     # Convents
-    AHC = authorized(partial(check_convent, convent=ConventAuthorization.AHC))
-    AHC_VOTE = authorized(
-        partial(check_convent, convent=ConventAuthorization.AHC_VOTE))
-    CC = authorized(partial(check_convent, convent=ConventAuthorization.CC))
-    CC_VOTE = authorized(
-        partial(check_convent, convent=ConventAuthorization.CC_VOTE))
-    FC = authorized(partial(check_convent, convent=ConventAuthorization.FC))
-    FC_VOTE = authorized(
-        partial(check_convent, convent=ConventAuthorization.FC_VOTE))
-    FCC = authorized(partial(check_convent, convent=ConventAuthorization.FCC))
-    FCC_VOTE = authorized(
-        partial(check_convent, convent=ConventAuthorization.FCC_VOTE))
+    AHC = authorized(partial(check_convent, convent=ConventAuth.AHC))
+    AHC_VOTE = authorized(partial(check_convent, convent=ConventAuth.AHC_VOTE))
+    CC = authorized(partial(check_convent, convent=ConventAuth.CC))
+    CC_VOTE = authorized(partial(check_convent, convent=ConventAuth.CC_VOTE))
+    FC = authorized(partial(check_convent, convent=ConventAuth.FC))
+    FC_VOTE = authorized(partial(check_convent, convent=ConventAuth.FC_VOTE))
+    FCC = authorized(partial(check_convent, convent=ConventAuth.FCC))
+    FCC_VOTE = authorized(partial(check_convent, convent=ConventAuth.FCC_VOTE))
 
     def __call__(self, *args, **kwargs) -> Any:
         """Delegate to decorator function."""
