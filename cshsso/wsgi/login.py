@@ -32,6 +32,9 @@ def login() -> Response:
     except User.DoesNotExist:
         return INVALID_USER_NAME_OR_PASSWORD
 
+    if user.disabled:
+        return INVALID_USER_NAME_OR_PASSWORD
+
     if not user.login(passwd):
         return INVALID_USER_NAME_OR_PASSWORD
 
