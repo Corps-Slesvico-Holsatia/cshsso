@@ -54,10 +54,6 @@ class Circle(Enum):
     def __contains__(self, value: Any) -> bool:
         return value in self.value
 
-    def to_json(self) -> list[dict]:
-        """Returns a JSON-ish list."""
-        return [status.to_json() for status in self.value]
-
 
 class Commission(Enum):
     """Commission types."""
@@ -95,7 +91,3 @@ class CommissionGroup(Enum):
 
     def __contains__(self, value: Any) -> bool:
         return value in self.value
-
-    def to_json(self) -> list[dict]:
-        """Returns a JSON-ish list."""
-        return [status.to_json() for status in self.value]
