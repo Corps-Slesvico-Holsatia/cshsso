@@ -44,8 +44,8 @@ class User(CSHSSOModel):     # pylint: disable=R0903
     locked = BooleanField(default=False)
     failed_logins = IntegerField(default=0)
     admin = BooleanField(default=False)
-    acc = DateField(null=True)  # Acception
-    rec = DateField(null=True)  # Reception
+    acception = DateField(null=True)
+    reception = DateField(null=True)
 
     @property
     def disabled(self) -> bool:
