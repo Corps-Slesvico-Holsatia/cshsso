@@ -68,8 +68,7 @@ class Session(CSHSSOModel):     # pylint: disable=R0903
     """A user session."""
 
     user = ForeignKeyField(User, column_name='user', on_delete='CASCADE')
-    deadline = DateTimeField()
-    passwd = Argon2Field()
+    secret = Argon2Field()
 
 
 class UserCommission(CSHSSOModel):  # pylint: disable=R0903

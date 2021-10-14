@@ -1,7 +1,5 @@
 """Manage sessions."""
 
-from datetime import datetime, timedelta
-
 from argon2.exceptions import VerifyMismatchError
 from flask import request, Response
 from peewee import JOIN
@@ -16,14 +14,10 @@ from cshsso.orm import User, Session, UserCommission
 __all__ = [
     'get_session',
     'for_user',
-    'set_session_cookie',
-    'delete_session_cookie',
+    'set_session_cookies',
+    'delete_session_cookies',
     'postprocess_response'
 ]
-
-
-DEFAULT_DURATION = 60 * 60      # One hour.
-MAX_DURATION = 24 * 60 * 60     # One day.
 
 
 def get_session() -> Session:
@@ -31,7 +25,7 @@ def get_session() -> Session:
 
     try:
         session_id = request.cookies['cshsso-session-id']
-        session_password = request.cookies['cshsso-session-passwd']
+        secret = request.cookies['cshsso-session-secret']
     except KeyError:
         raise NotLoggedIn() from None
 
@@ -44,39 +38,21 @@ def get_session() -> Session:
         raise NotLoggedIn() from None
 
     try:
-        session.passwd.verify(session_password)
+        session.secret.verify(secret)
     except VerifyMismatchError:
         raise NotLoggedIn() from None
 
     return session
 
 
-def get_duration() -> timedelta:
-    """Returns the session duration."""
-
-    try:
-        duration = int(request.cookies['cshsso-session-duration'])
-    except (KeyError, ValueError):
-        duration = CONFIG.getint('session', 'duration',
-                                 fallback=DEFAULT_DURATION)
-
-    return timedelta(seconds=min([duration, MAX_DURATION]))
-
-
-def get_deadline() -> datetime:
-    """Returns the session deadline."""
-
-    return datetime.now() + get_duration()
-
-
-def create(user: User, deadline: datetime) -> tuple[Session, str]:
+def create(user: User) -> tuple[Session, str]:
     """Opens a new session for the given user."""
 
-    session = Session(user=user, deadline=deadline, passwd=(passwd := genpw()))
-    return (session, passwd)
+    session = Session(user=user, secret=(secret := genpw()))
+    return (session, secret)
 
 
-def for_user(user: User, deadline: datetime) -> tuple[Session, str]:
+def for_user(user: User) -> tuple[Session, str]:
     """Returns a session and a session password for the given user."""
 
     sessions = set()
@@ -90,12 +66,14 @@ def for_user(user: User, deadline: datetime) -> tuple[Session, str]:
     try:
         *old, last = sessions
     except ValueError:
-        return create(user=user, deadline=deadline)
+        return create(user=user)
 
     for session in old:
         session.delete_instance()
 
-    return (last, last.renew(deadline))
+    last.secret = secret = genpw()
+    last.save()
+    return (last, secret)
 
 
 def set_cookie(response: Response, *args, **kwargs):
@@ -112,11 +90,13 @@ def set_cookie(response: Response, *args, **kwargs):
     response.headers.add('Set-Cookie', cookie)
 
 
-def set_session_cookie(response: Response, session: Session,
-                       secret: str = None) -> Response:
+def set_session_cookies(response: Response, session: Session,
+                        secret: str = None) -> Response:
     """Sets the session cookie."""
 
-    secret = session.renew() if secret is None else secret
+    if secret is None:
+        session.secret = secret = genpw()
+        session.save()
 
     for domain in CONFIG.get('auth', 'domains').split():
         set_cookie(
@@ -129,7 +109,7 @@ def set_session_cookie(response: Response, session: Session,
     return response
 
 
-def delete_session_cookie(response: Response) -> Response:
+def delete_session_cookies(response: Response) -> Response:
     """Deletes the session cookie."""
 
     for domain in CONFIG.get('auth', 'domains').split():
@@ -149,6 +129,6 @@ def postprocess_response(response: Response) -> Response:
     try:
         session = get_session()
     except NotLoggedIn:
-        return delete_session_cookie(response)
+        return delete_session_cookies(response)
 
-    return set_session_cookie(response, session)
+    return set_session_cookies(response, session)
