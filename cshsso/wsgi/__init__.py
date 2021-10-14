@@ -1,14 +1,14 @@
 """Core WSGI interface for session and user handling."""
 
 from cshsso.application import Application
-from cshsso.wsgi.login import login
-from cshsso.wsgi.logout import logout
-from cshsso.wsgi.register import register
 from cshsso.wsgi.account import show as show_account
 from cshsso.wsgi.account import patch as patch_account
 from cshsso.wsgi.account import delete as delete_account
 from cshsso.wsgi.account import set_status
 from cshsso.wsgi.account import set_commissions
+from cshsso.wsgi.login import login
+from cshsso.wsgi.logout import logout
+from cshsso.wsgi.register import register
 from cshsso.wsgi.roles import list_circles
 from cshsso.wsgi.roles import list_commissions
 from cshsso.wsgi.roles import list_commission_groups
