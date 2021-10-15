@@ -87,7 +87,7 @@ class CommissionGroup(Enum):
     """Commission groups."""
 
     CHARGES = {Commission.SENIOR, Commission.CONSENIOR, Commission.SUBSENIOR,
-               Commission.FUCHSMAJOR}
+               Commission.FM}
     COMMISSIONS = {Commission.KW, Commission.HW, Commission.GW,
                    Commission.KEILWART, Commission.EDV}
     AHV = {Commission.AHV, Commission.AHV_STELLV, Commission.AHKW}
