@@ -22,4 +22,4 @@ def parse_or_none(value: Optional[str], parser: Callable[[str], Any]) -> Any:
     return None if value is None else parser(value)
 
 
-date_or_none = partial(parse_or_none, parser=date.isoformat)
+date_or_none = partial(parse_or_none, parser=date.fromisoformat)
