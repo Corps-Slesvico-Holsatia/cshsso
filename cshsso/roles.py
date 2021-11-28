@@ -95,5 +95,5 @@ class CommissionGroup(Enum):
     def __contains__(self, value: Commission) -> bool:
         return value in self.value
 
-    def __iter__(self) -> Iterator[Status]:
+    def __iter__(self) -> Iterator[Commission]:
         return iter(self.value)
