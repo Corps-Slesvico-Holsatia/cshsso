@@ -1,7 +1,7 @@
 """Object-relational mappings."""
 
 from __future__ import annotations
-from datetime import datetime
+from datetime import datetime, timedelta
 from uuid import uuid4
 
 from argon2.exceptions import VerifyMismatchError
@@ -107,5 +107,12 @@ class UserCommission(CSHSSOModel):  # pylint: disable=R0903
 class PasswordResetToken(CSHSSOModel):
     """A per-user password reset token."""
 
+    VALIDITY = timedelta(days=1)
+
     user = ForeignKeyField(User, column_name='user', on_delete='CASCADE')
     token = UUIDField(default=uuid4)
+    issued = DateTimeField(default=datetime.now)
+
+    def is_valid(self) -> bool:
+        """Determines whether the password reset token is currently valid."""
+        return self.issued + self.VALIDITY > datetime.now()
