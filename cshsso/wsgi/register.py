@@ -71,4 +71,4 @@ def confirm_registration() -> Response:
 
     user.verified = True
     user.save()
-    return (jsonify(message='User verified.', user=user.id), 200)
+    return ('User verified.', 200)
