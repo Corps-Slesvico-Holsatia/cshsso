@@ -13,7 +13,7 @@ from cshsso.orm import User
 from cshsso.roles import Status
 
 
-__all__ = ['register']
+__all__ = ['register', 'confirm_registration']
 
 
 def user_from_json(json: dict) -> User:
