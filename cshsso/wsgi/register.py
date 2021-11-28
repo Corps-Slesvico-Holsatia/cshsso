@@ -62,10 +62,13 @@ def register() -> Response:
 def confirm_registration() -> Response:
     """Confirms a registration."""
 
-    try:
-        user = User.select().where(User.id == request.json.get('user')).get()
-    except TypeError:
+    if not (user_id := request.json.get('user')):
         return ('No user ID specified.', 400)
+
+    try:
+        user = User.select().where(User.id == user_id).get()
+    except ValueError:
+        return ('Invalid user ID.', 400)
     except User.DoesNotExist:
         return ('No such user.', 404)
 
