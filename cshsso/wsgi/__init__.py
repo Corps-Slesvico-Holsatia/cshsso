@@ -8,6 +8,7 @@ from cshsso.wsgi.account import set_status
 from cshsso.wsgi.account import set_commissions
 from cshsso.wsgi.login import login
 from cshsso.wsgi.logout import logout
+from cshsso.wsgi.pwreset import request_pw_reset, confirm_pw_reset
 from cshsso.wsgi.register import register, confirm_registration
 from cshsso.wsgi.roles import list_circles
 from cshsso.wsgi.roles import list_commissions
@@ -21,6 +22,8 @@ __all__ = ['APPLICATION']
 APPLICATION = Application('CSHSSO')
 APPLICATION.route('/login', methods=['POST'])(login)
 APPLICATION.route('/logout', methods=['POST'])(logout)
+APPLICATION.route('/pwreset', methods=['POST'])(request_pw_reset)
+APPLICATION.route('/pwreset/confirm', methods=['POST'])(confirm_pw_reset)
 APPLICATION.route('/register', methods=['POST'])(register)
 APPLICATION.route('/register/confirm', methods=['POST'])(confirm_registration)
 APPLICATION.route('/account', methods=['GET'])(show_account)
