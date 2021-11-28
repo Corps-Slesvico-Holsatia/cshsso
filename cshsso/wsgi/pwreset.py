@@ -20,7 +20,7 @@ __all__ = ['request_pw_reset', 'confirm_pw_reset']
 EMAIL_TEXT = '''Sehr geehrter Nutzer,
 
 bitte folgen Sie dem unten stehenden Link um
-Ihre neue E-Mail Adresse zu bestätigen.
+Ihr Password zurückzusetzen.
 
 {}
 
