@@ -111,9 +111,6 @@ def confirm_pw_reset() -> Response:
     if not (password := request.json.get('passwd')):
         return ('No password specified.', 400)
 
-    if password != request.json.get('repetition'):
-        return ('Passwords do not match.', 400)
-
     try:
         (user := password_reset_token.user).password = password
     except PasswordTooShort:
