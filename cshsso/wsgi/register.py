@@ -7,6 +7,7 @@ from emaillib import EMail
 from recaptcha import recaptcha
 
 from cshsso.config import CONFIG
+from cshsso.decorators import authenticated, Authorization
 from cshsso.email import send
 from cshsso.orm import User
 from cshsso.roles import Status
@@ -54,3 +55,20 @@ def register() -> Response:
 
     sent = send([get_email(user)])
     return (jsonify(message='User added.', email_sent=sent, id=user.id), 201)
+
+
+@authenticated
+@Authorization.CHARGES
+def confirm_registration() -> Response:
+    """Confirms a registration."""
+
+    try:
+        user = User.select().where(User.id == request.json.get('user')).get()
+    except TypeError:
+        return ('No user ID specified.', 400)
+    except User.DoesNotExist:
+        return ('No such user.', 404)
+
+    user.verified = True
+    user.save()
+    return (jsonify(message='User verified.', user=user.id), 200)
