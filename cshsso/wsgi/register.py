@@ -51,7 +51,7 @@ def register() -> Response:
     except ValueError:
         return ('Invalid value(s) provided.', 400)
     except IntegrityError:
-        return ('Email address already taken.', 400)
+        return ('User already exists.', 400)
 
     sent = send([get_email(user)])
     return (jsonify(message='User added.', email_sent=sent, id=user.id), 201)
