@@ -52,5 +52,5 @@ def register() -> Response:
     except IntegrityError:
         return ('Email address already taken.', 400)
 
-    email = send(get_email(user))
-    return (jsonify(message='User added.', email=email, id=user.id), 201)
+    sent = send([get_email(user)])
+    return (jsonify(message='User added.', email_sent=sent, id=user.id), 201)
