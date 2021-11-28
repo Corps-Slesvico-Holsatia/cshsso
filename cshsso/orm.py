@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 from datetime import datetime
+from uuid import uuid4
 
 from argon2.exceptions import VerifyMismatchError
 from peewee import BooleanField
@@ -10,6 +11,7 @@ from peewee import DateField
 from peewee import DateTimeField
 from peewee import ForeignKeyField
 from peewee import IntegerField
+from peewee import UUIDField
 
 from peeweeplus import Argon2Field, EnumField, JSONModel, MySQLDatabase
 
@@ -17,7 +19,13 @@ from cshsso.config import CONFIG
 from cshsso.roles import Status, Commission
 
 
-__all__ = ['DATABASE', 'User', 'Session', 'UserCommission']
+__all__ = [
+    'DATABASE',
+    'User',
+    'Session',
+    'UserCommission',
+    'PasswordResetToken'
+]
 
 
 DATABASE = MySQLDatabase('cshsso')
@@ -94,3 +102,10 @@ class UserCommission(CSHSSOModel):  # pylint: disable=R0903
     occupant = ForeignKeyField(User, column_name='occupant',
                                backref='user_commissions', on_delete='CASCADE')
     commission = EnumField(Commission, use_name=True, unique=True)
+
+
+class PasswordResetToken(CSHSSOModel):
+    """A per-user password reset token."""
+
+    user = ForeignKeyField(User, column_name='user', on_delete='CASCADE')
+    token = UUIDField(default=uuid4)
