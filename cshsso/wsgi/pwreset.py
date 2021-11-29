@@ -48,17 +48,18 @@ def password_reset_pending(user: Union[User, int]) -> bool:
     return result
 
 
-def get_email(password_reset_token: str, email_address: str) -> EMail:
+def get_email(password_reset_token: str, email_address: str, *,
+              section: str = 'pwreset') -> EMail:
     """Returns an email object."""
 
     return EMail(
-        CONFIG.get('pwreset', 'subject',
+        CONFIG.get(section, 'subject',
                    fallback='Zurücklsetzen Ihres Passworts'),
-        CONFIG.get('pwreset', 'sender',
+        CONFIG.get(section, 'sender',
                    fallback='noreply@cshsso.slesvico-holsatia.org'),
         email_address,
-        plain=CONFIG.get('pwreset', 'template', fallback=EMAIL_TEXT).format(
-            CONFIG.get('pwreset', 'url', fallback=RESET_URL).format(
+        plain=CONFIG.get(section, 'template', fallback=EMAIL_TEXT).format(
+            CONFIG.get(section, 'url', fallback=RESET_URL).format(
                 password_reset_token
             )
         )
