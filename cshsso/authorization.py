@@ -1,6 +1,6 @@
 """Authorization checks."""
 
-from cshsso.convents import Convent, ConventAuthorization
+from cshsso.convents import Convent, ConventAuth
 from cshsso.orm import User
 from cshsso.roles import Circle, Commission, CommissionGroup, Status
 
@@ -85,7 +85,7 @@ def check_fc(user: User, vote: bool) -> bool:
     return can_vote_fc(user) if vote else user.status in INNER_OUTER
 
 
-def check_convent(user: User, convent: ConventAuthorization) -> bool:
+def check_convent(user: User, convent: ConventAuth) -> bool:
     """Checks whether the user is authorized for the given convent."""
 
     if convent.convent is Convent.AHC:
