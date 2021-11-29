@@ -1,11 +1,15 @@
 """Authorization checks."""
 
-from cshsso.convents import Convent, ConventAuthorization
+from cshsso.convents import Convent, ConventAuth
 from cshsso.orm import User
 from cshsso.roles import Circle, Commission, CommissionGroup, Status
 
 
 __all__ = ['check_circle', 'check_convent', 'check_group']
+
+
+INNER_OUTER = {*Circle.INNER, *Circle.OUTER}
+INNER_OUTER_GUEST = {*INNER_OUTER, *Circle.GUESTS}
 
 
 def is_in_inner_circle(user: User) -> bool:
@@ -27,10 +31,10 @@ def check_circle(user: User, circle: Circle) -> bool:
         return user.status in Circle.INNER
 
     if circle is Circle.OUTER:
-        return user.status in {*Circle.INNER, *Circle.OUTER}
+        return user.status in INNER_OUTER
 
     if circle is Circle.GUESTS:
-        return user.status in {*Circle.INNER, *Circle.OUTER, *Circle.GUESTS}
+        return user.status in INNER_OUTER_GUEST
 
     raise NotImplementedError(f'Handling of circle {circle} not implemented.')
 
@@ -44,22 +48,21 @@ def check_group(user: User, group: CommissionGroup) -> bool:
 def can_sit_ahc(user: User) -> bool:
     """Determines whether the user can sit on the AHC."""
 
-    return (user.status in {Status.AH, Status.BBZ}
-            or Commission.SENIOR in user.commissions)
+    return (user.status in {Status.AH, Status.EB, Status.BBZ}
+            or user.has_commission(Commission.SENIOR))
 
 
 def check_ahc(user: User, vote: bool) -> bool:
     """Checks authorization for the AHC."""
 
-    return user.status is Status.AH if vote else can_sit_ahc(user)
+    return user.status in {Status.AH, Status.EB} if vote else can_sit_ahc(user)
 
 
 def can_vote_cc(user: User) -> bool:
     """Determines whether the user can vote on the CC."""
 
-    return user.status is Status.CB or any(
-        commission in CommissionGroup.AHV for commission in user.commissions
-    )
+    return user.status in {Status.CB, Status.EB} or check_group(
+        user, CommissionGroup.AHV)
 
 
 def check_cc(user: User, vote: bool) -> bool:
@@ -71,19 +74,17 @@ def check_cc(user: User, vote: bool) -> bool:
 def can_vote_fc(user: User) -> bool:
     """Determines whether the user can vote on the FC."""
 
-    return user.status is Status.F or Commission.FM in user.commissions
+    return user.status in {Status.F, Status.EB} or user.has_commission(
+        Commission.FM)
 
 
 def check_fc(user: User, vote: bool) -> bool:
     """Checks authorization for the FC."""
 
-    if vote:
-        return can_vote_fc(user)
-
-    return user.status in {*Circle.INNER, *Circle.OUTER}
+    return can_vote_fc(user) if vote else user.status in INNER_OUTER
 
 
-def check_convent(user: User, convent: ConventAuthorization) -> bool:
+def check_convent(user: User, convent: ConventAuth) -> bool:
     """Checks whether the user is authorized for the given convent."""
 
     if convent.convent is Convent.AHC:

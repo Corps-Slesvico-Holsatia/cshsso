@@ -16,7 +16,7 @@ class RoleType(NamedTuple):
     def __str__(self):
         return self.abbreviation or self.name
 
-    def to_json(self) -> dict:
+    def to_json(self) -> dict[str, str]:
         """Returns a JSON-ish dict."""
         return {'name': self.name, 'abbreviation': self.abbreviation}
 
@@ -39,7 +39,7 @@ class Status(Enum):
     CS = RoleType('Corpsschwester')
     FDC = RoleType('Freund des Corps', 'FdC')
 
-    def to_json(self) -> dict:
+    def to_json(self) -> dict[str, str]:
         """Returns a JSON-ish dict."""
         return self.value.to_json()
 
@@ -78,7 +78,7 @@ class Commission(Enum):
                           'stellv. AHV')
     AHKW = RoleType('Altherren-Kassenwart', 'AHKW')
 
-    def to_json(self) -> dict:
+    def to_json(self) -> dict[str, str]:
         """Returns a JSON-ish dict."""
         return self.value.to_json()
 
@@ -95,5 +95,5 @@ class CommissionGroup(Enum):
     def __contains__(self, value: Commission) -> bool:
         return value in self.value
 
-    def __iter__(self) -> Iterator[Status]:
+    def __iter__(self) -> Iterator[Commission]:
         return iter(self.value)

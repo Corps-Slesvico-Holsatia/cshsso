@@ -1,7 +1,8 @@
 """Object-relational mappings."""
 
 from __future__ import annotations
-from datetime import datetime
+from datetime import datetime, timedelta
+from uuid import uuid4
 
 from argon2.exceptions import VerifyMismatchError
 from peewee import BooleanField
@@ -10,6 +11,8 @@ from peewee import DateField
 from peewee import DateTimeField
 from peewee import ForeignKeyField
 from peewee import IntegerField
+from peewee import ModelSelect
+from peewee import UUIDField
 
 from peeweeplus import Argon2Field, EnumField, JSONModel, MySQLDatabase
 
@@ -17,7 +20,13 @@ from cshsso.config import CONFIG
 from cshsso.roles import Status, Commission
 
 
-__all__ = ['DATABASE', 'User', 'Session', 'UserCommission']
+__all__ = [
+    'DATABASE',
+    'User',
+    'Session',
+    'UserCommission',
+    'PasswordResetToken'
+]
 
 
 DATABASE = MySQLDatabase('cshsso')
@@ -48,10 +57,15 @@ class User(CSHSSOModel):     # pylint: disable=R0903
     reception = DateField(null=True)
 
     @property
+    def failed_logins_exceeded(self) -> bool:
+        """Checks whether the failed logins are exceeded."""
+        return self.failed_logins > CONFIG.getint(
+            'user', 'max_failed_logins', fallback=3)
+
+    @property
     def disabled(self) -> bool:
         """Determines whether the user is diabled."""
-        return self.locked or self.failed_logins > CONFIG.getint(
-            'user', 'max_failed_logins', fallback=3)
+        return not self.verified or self.locked or self.failed_logins_exceeded
 
     @property
     def commissions(self) -> set[Commission]:
@@ -74,6 +88,11 @@ class User(CSHSSOModel):     # pylint: disable=R0903
         self.save()
         return True
 
+    def has_commission(self, commission: Commission) -> ModelSelect:
+        """Selects commissions of the given type of the user."""
+        return self.user_commissions.where(
+            UserCommission.commission == commission)
+
     def to_json(self, *args, **kwargs) -> dict:
         """Returns a JSON-ish dict of core information."""
         json = super().to_json(*args, **kwargs)
@@ -94,3 +113,17 @@ class UserCommission(CSHSSOModel):  # pylint: disable=R0903
     occupant = ForeignKeyField(User, column_name='occupant',
                                backref='user_commissions', on_delete='CASCADE')
     commission = EnumField(Commission, use_name=True, unique=True)
+
+
+class PasswordResetToken(CSHSSOModel):
+    """A per-user password reset token."""
+
+    VALIDITY = timedelta(days=1)
+
+    user = ForeignKeyField(User, column_name='user', on_delete='CASCADE')
+    token = UUIDField(default=uuid4)
+    issued = DateTimeField(default=datetime.now)
+
+    def is_valid(self) -> bool:
+        """Determines whether the password reset token is currently valid."""
+        return self.issued + self.VALIDITY > datetime.now()

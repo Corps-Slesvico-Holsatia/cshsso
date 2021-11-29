@@ -7,12 +7,13 @@ from emaillib import EMail
 from recaptcha import recaptcha
 
 from cshsso.config import CONFIG
+from cshsso.decorators import authenticated, Authorization
 from cshsso.email import send
 from cshsso.orm import User
 from cshsso.roles import Status
 
 
-__all__ = ['register']
+__all__ = ['register', 'confirm_registration']
 
 
 def user_from_json(json: dict) -> User:
@@ -50,7 +51,27 @@ def register() -> Response:
     except ValueError:
         return ('Invalid value(s) provided.', 400)
     except IntegrityError:
-        return ('Email address already taken.', 400)
+        return ('User already exists.', 400)
 
-    email = send(get_email(user))
-    return (jsonify(message='User added.', email=email, id=user.id), 201)
+    sent = send([get_email(user)])
+    return (jsonify(message='User added.', email_sent=sent, id=user.id), 201)
+
+
+@authenticated
+@Authorization.CHARGES
+def confirm_registration() -> Response:
+    """Confirms a registration."""
+
+    if not (user_id := request.json.get('user')):
+        return ('No user ID specified.', 400)
+
+    try:
+        user = User.select().where(User.id == user_id).get()
+    except ValueError:
+        return ('Invalid user ID.', 400)
+    except User.DoesNotExist:
+        return ('No such user.', 404)
+
+    user.verified = True
+    user.save()
+    return ('User verified.', 200)

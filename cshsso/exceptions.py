@@ -16,10 +16,12 @@ class InvalidPassword(Exception):
 class NotAuthenticated(Exception):
     """Indicates that the user is not authenticated."""
 
-    def __init__(self, verified: bool, locked: bool):
+    def __init__(self, verified: bool, locked: bool,
+                 failed_logins_exceeded: bool):
         super().__init__(verified, locked)
         self.verified = verified
         self.locked = locked
+        self.failed_logins_exceeded = failed_logins_exceeded
 
 
 class NotAuthorized(Exception):
