@@ -11,6 +11,7 @@ from peewee import DateField
 from peewee import DateTimeField
 from peewee import ForeignKeyField
 from peewee import IntegerField
+from peewee import ModelSelect
 from peewee import UUIDField
 
 from peeweeplus import Argon2Field, EnumField, JSONModel, MySQLDatabase
@@ -86,6 +87,11 @@ class User(CSHSSOModel):     # pylint: disable=R0903
         self.failed_logins = 0
         self.save()
         return True
+
+    def has_commission(self, commission: Commission) -> ModelSelect:
+        """Selects commissions of the given type of the user."""
+        return self.user_commissions.where(
+            UserCommission.commission == commission)
 
     def to_json(self, *args, **kwargs) -> dict:
         """Returns a JSON-ish dict of core information."""
