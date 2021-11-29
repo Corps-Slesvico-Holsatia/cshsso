@@ -56,10 +56,15 @@ class User(CSHSSOModel):     # pylint: disable=R0903
     reception = DateField(null=True)
 
     @property
+    def failed_logins_exceeded(self) -> bool:
+        """Checks whether the failed logins are exceeded."""
+        return self.failed_logins > CONFIG.getint(
+            'user', 'max_failed_logins', fallback=3)
+
+    @property
     def disabled(self) -> bool:
         """Determines whether the user is diabled."""
-        return self.locked or self.failed_logins > CONFIG.getint(
-            'user', 'max_failed_logins', fallback=3)
+        return not self.verified or self.locked or self.failed_logins_exceeded
 
     @property
     def commissions(self) -> set[Commission]:
