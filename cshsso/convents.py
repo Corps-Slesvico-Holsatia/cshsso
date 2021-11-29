@@ -1,7 +1,7 @@
 """The Corps' covents."""
 
 from enum import Enum
-from typing import Any, NamedTuple
+from typing import NamedTuple
 
 
 __all__ = ['Convent', 'ConventAuth']
@@ -50,5 +50,12 @@ class ConventAuth(Enum):
     FCC = ConventAuthType(Convent.FCC, False)
     FCC_VOTE = ConventAuthType(Convent.FCC, True)
 
-    def __getattr__(self, attribute: str) -> Any:
-        return getattr(self.value, attribute)
+    @property
+    def convent(self) -> Convent:
+        """Returns the Convent type."""
+        return self.value.convent
+
+    @property
+    def vote(self) -> bool:
+        """Returns the vote flag."""
+        return self.value.vote
