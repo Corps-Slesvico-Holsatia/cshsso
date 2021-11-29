@@ -49,7 +49,7 @@ def can_sit_ahc(user: User) -> bool:
     """Determines whether the user can sit on the AHC."""
 
     return (user.status in {Status.AH, Status.EB, Status.BBZ}
-            or Commission.SENIOR in user.commissions)
+            or user.has_commission(Commission.SENIOR))
 
 
 def check_ahc(user: User, vote: bool) -> bool:
@@ -61,9 +61,8 @@ def check_ahc(user: User, vote: bool) -> bool:
 def can_vote_cc(user: User) -> bool:
     """Determines whether the user can vote on the CC."""
 
-    return user.status in {Status.CB, Status.EB} or any(
-        commission in CommissionGroup.AHV for commission in user.commissions
-    )
+    return user.status in {Status.CB, Status.EB} or check_group(
+        user, CommissionGroup.AHV)
 
 
 def check_cc(user: User, vote: bool) -> bool:
@@ -75,8 +74,8 @@ def check_cc(user: User, vote: bool) -> bool:
 def can_vote_fc(user: User) -> bool:
     """Determines whether the user can vote on the FC."""
 
-    return (user.status in {Status.F, Status.EB}
-            or Commission.FM in user.commissions)
+    return user.status in {Status.F, Status.EB} or user.has_commission(
+        Commission.FM)
 
 
 def check_fc(user: User, vote: bool) -> bool:
