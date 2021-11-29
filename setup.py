@@ -29,5 +29,10 @@ setup(
         'cshsso',
         'cshsso.wsgi'
     ],
+    entry_points={
+        'console_scripts': [
+            'cshsso-setup-db = cshsso.install:setup_db'
+        ],
+    },
     description='Corps Slesvico-Holsatia Single-Sign-On Framework.'
 )

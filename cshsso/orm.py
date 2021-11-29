@@ -22,6 +22,7 @@ from cshsso.roles import Status, Commission
 
 __all__ = [
     'DATABASE',
+    'MODELS',
     'User',
     'Session',
     'UserCommission',
@@ -127,3 +128,6 @@ class PasswordResetToken(CSHSSOModel):
     def is_valid(self) -> bool:
         """Determines whether the password reset token is currently valid."""
         return self.issued + self.VALIDITY > datetime.now()
+
+
+MODELS = [User, Session, UserCommission, PasswordResetToken]
