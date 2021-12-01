@@ -4,6 +4,7 @@ from cshsso.application import Application
 from cshsso.decorators import admin, authenticated, Authorization
 from cshsso.init import init
 from cshsso.localproxies import SESSION, USER
+from cshsso.mailinglist import get_emails
 from cshsso.orm import User
 from cshsso.semester import Semester
 from cshsso.wsgi import APPLICATION
@@ -19,5 +20,6 @@ __all__ = [
     'User',
     'admin',
     'authenticated',
+    'get_emails',
     'init'
 ]
