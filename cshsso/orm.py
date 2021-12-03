@@ -16,6 +16,7 @@ from peewee import UUIDField
 
 from peeweeplus import Argon2Field, EnumField, JSONModel, MySQLDatabaseProxy
 
+from cshsso.config import CONFIG
 from cshsso.roles import Status, Commission
 
 
