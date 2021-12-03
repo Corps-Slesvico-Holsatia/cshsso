@@ -116,7 +116,7 @@ class UserCommission(CSHSSOModel):  # pylint: disable=R0903
     commission = EnumField(Commission, use_name=True, unique=True)
 
 
-class PasswordResetToken(CSHSSOModel):
+class PasswordResetToken(CSHSSOModel):  # pylint: disable=R0903
     """A per-user password reset token."""
 
     VALIDITY = timedelta(days=1)
