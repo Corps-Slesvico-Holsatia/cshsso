@@ -14,9 +14,8 @@ from peewee import IntegerField
 from peewee import ModelSelect
 from peewee import UUIDField
 
-from peeweeplus import Argon2Field, EnumField, JSONModel, MySQLDatabase
+from peeweeplus import Argon2Field, EnumField, JSONModel, MySQLDatabaseProxy
 
-from cshsso.config import CONFIG
 from cshsso.roles import Status, Commission
 
 
@@ -30,7 +29,7 @@ __all__ = [
 ]
 
 
-DATABASE = MySQLDatabase('cshsso')
+DATABASE = MySQLDatabaseProxy('cshsso')
 
 
 class CSHSSOModel(JSONModel):   # pylint: disable=R0903
