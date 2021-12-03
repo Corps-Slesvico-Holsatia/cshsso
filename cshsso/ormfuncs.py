@@ -2,8 +2,9 @@
 
 from peewee import JOIN
 
+from cshsso.authorization import check_group
 from cshsso.orm import User, UserCommission
-from cshsso.roles import Commission
+from cshsso.roles import Commission, CommissionGroup, Status
 
 
 __all__ = ['get_user', 'pass_commission']
@@ -36,4 +37,21 @@ def pass_commission(commission: Commission, src: User, dst: User) -> bool:
 
     user_commission = UserCommission(occupant=dst, commission=commission)
     user_commission.save()
+    return True
+
+
+def can_change_status(user: User) -> bool:
+    """Checks whether the user can change status of arbitrary users."""
+
+    return user.admin or check_group(user, CommissionGroup.CHARGES)
+
+
+def set_status(status: Status, actor: User, target: User) -> bool:
+    """Sets the status of the target user."""
+
+    if not can_change_status(actor):
+        return False
+
+    target.status = status
+    target.save()
     return True
