@@ -33,7 +33,7 @@ def get_session() -> Session:
     try:
         session = Session.select(Session, User, UserCommission).join(
             User).join(UserCommission, on=UserCommission.user == User.id,
-                       join_type=JOIN.LEFT_OUTER).where(
+                       join_type=JOIN.LEFT_OUTER).group_by(Session).where(
             Session.id == session_id).get()
     except Session.DoesNotExist:
         raise NotLoggedIn() from None
