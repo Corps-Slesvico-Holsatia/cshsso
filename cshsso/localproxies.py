@@ -26,7 +26,7 @@ def get_user(session: Session) -> User:
 
     return User.select(User, UserCommission).join(
         UserCommission, on=UserCommission.user == User.id,
-        join_type=JOIN.LEFT_OUTER).where(User.id == uid).get()
+        join_type=JOIN.LEFT_OUTER).where(User.id == uid).group_by(User).get()
 
 
 SESSION = LocalProxy(get_session)
