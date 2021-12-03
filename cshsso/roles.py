@@ -46,7 +46,7 @@ class Status(Enum):
     FDC = RoleType('Freund des Corps', 'FdC')
 
     @classmethod
-    def from_json(cls, string: str) -> Status:
+    def from_string(cls, string: str) -> Status:
         """Creates a Status element from a JSON string."""
         with suppress(ValueError):
             return cls[string]
@@ -97,8 +97,8 @@ class Commission(Enum):
     AHKW = RoleType('Altherren-Kassenwart', 'AHKW')
 
     @classmethod
-    def from_json(cls, string: str) -> Commission:
-        """Creates a Commission element from a JSON string."""
+    def from_string(cls, string: str) -> Commission:
+        """Creates a Commission element from a string."""
         with suppress(ValueError):
             return cls[string]
 

@@ -17,7 +17,7 @@ def pass_commission() -> Response:
     """Pass a commission to another user."""
 
     try:
-        commission = Commission.from_json(request.json['commission'])
+        commission = Commission.from_string(request.json['commission'])
     except ValueError:
         return ('No such commission.', 404)
 
