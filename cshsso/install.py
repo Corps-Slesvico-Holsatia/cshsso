@@ -3,7 +3,7 @@
 from argparse import ArgumentParser
 from logging import DEBUG, INFO, basicConfig, getLogger
 
-from cshsso.init import init
+from cshsso.config import CONFIG, CONFIG_FILE
 from cshsso.orm import MODELS
 
 
@@ -23,7 +23,7 @@ def setup_db() -> int:
     args = DB_SETUP_PARSER.parse_args()
     basicConfig(level=DEBUG if args.verbose else INFO)
     logger = getLogger('cshsso-setup-db')
-    init()
+    CONFIG.read(CONFIG_FILE)
 
     for model in MODELS:
         try:
