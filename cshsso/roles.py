@@ -1,5 +1,6 @@
 """User roles."""
 
+from __future__ import annotations
 from enum import Enum
 from typing import Iterator, NamedTuple, Optional
 
@@ -38,6 +39,11 @@ class Status(Enum):
     VG = RoleType('Verkehrsgast', 'VG')
     CORPSSCHWESTER = RoleType('Corpsschwester')
     FDC = RoleType('Freund des Corps', 'FdC')
+
+    @classmethod
+    def from_json(cls, string: str) -> Status:
+        """Creates a Status element from a JSON string."""
+        return cls[string.replace('.', '').upper()]
 
     def to_json(self) -> dict[str, str]:
         """Returns a JSON-ish dict."""
