@@ -1,6 +1,7 @@
 """User roles."""
 
 from __future__ import annotations
+from contextlib import suppress
 from enum import Enum
 from typing import Iterator, NamedTuple, Optional
 
@@ -16,6 +17,10 @@ class RoleType(NamedTuple):
 
     def __str__(self):
         return self.abbreviation or self.name
+
+    def match(self, string: str) -> bool:
+        """Matches a string."""
+        return string in {self.name, self.abbreviation}
 
     def to_json(self) -> dict[str, str]:
         """Returns a JSON-ish dict."""
@@ -43,7 +48,14 @@ class Status(Enum):
     @classmethod
     def from_json(cls, string: str) -> Status:
         """Creates a Status element from a JSON string."""
-        return cls[string.replace('.', '').upper()]
+        with suppress(ValueError):
+            return cls[string]
+
+        for status in cls:
+            if status.value.match(string):
+                return status
+
+        raise ValueError(f'No status matching "{string}".')
 
     def to_json(self) -> dict[str, str]:
         """Returns a JSON-ish dict."""
@@ -83,6 +95,18 @@ class Commission(Enum):
     AHV_STELLV = RoleType('stellvertretender Altherrenvorstandsvorsitzender',
                           'stellv. AHV')
     AHKW = RoleType('Altherren-Kassenwart', 'AHKW')
+
+    @classmethod
+    def from_json(cls, string: str) -> Commission:
+        """Creates a Commission element from a JSON string."""
+        with suppress(ValueError):
+            return cls[string]
+
+        for commission in cls:
+            if commission.value.match(string):
+                return commission
+
+        raise ValueError(f'No commission matching "{string}".')
 
     def to_json(self) -> dict[str, str]:
         """Returns a JSON-ish dict."""
