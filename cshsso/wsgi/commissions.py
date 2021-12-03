@@ -18,11 +18,17 @@ def pass_commission() -> Response:
 
     try:
         commission = Commission.from_string(request.json['commission'])
+    except KeyError:
+        return ('No commission specified.', 400)
     except ValueError:
         return ('No such commission.', 404)
 
     try:
         dst = get_user(request.json['user'])
+    except KeyError:
+        return ('No user specified.', 400)
+    except (TypeError, ValueError):
+        return ('User ID must be an int.', 400)
     except User.DoesNotExist:
         return ('No such user.', 404)
 
