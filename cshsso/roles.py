@@ -36,7 +36,7 @@ class Status(Enum):
     # Guests
     SPEF = RoleType('Spefuchs', 'Spef.')
     VG = RoleType('Verkehrsgast', 'VG')
-    CS = RoleType('Corpsschwester')
+    CORPSSCHWESTER = RoleType('Corpsschwester')
     FDC = RoleType('Freund des Corps', 'FdC')
 
     def to_json(self) -> dict[str, str]:
@@ -49,7 +49,7 @@ class Circle(Enum):
 
     INNER = {Status.EB, Status.CB, Status.IACB, Status.AH}
     OUTER = {Status.IACBOB, Status.BBZ, Status.F, Status.FCK}
-    GUESTS = {Status.SPEF, Status.CS, Status.FDC, Status.VG}
+    GUESTS = {Status.SPEF, Status.CORPSSCHWESTER, Status.FDC, Status.VG}
 
     def __contains__(self, value: Status) -> bool:
         return value in self.value
