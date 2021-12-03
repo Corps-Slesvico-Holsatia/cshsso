@@ -5,6 +5,7 @@ from functools import partial
 from flask import request
 from werkzeug.local import LocalProxy
 
+from cshsso.constants import USER_ID
 from cshsso.orm import Session, User
 from cshsso.ormfuncs import get_user
 from cshsso.session import get_session
@@ -20,7 +21,7 @@ def get_current_user(session: Session) -> User:
         return session.user
 
     try:
-        uid = int(request.cookies['cshsso-user-id'])
+        uid = int(request.cookies[USER_ID])
     except KeyError:
         return session.user
 
