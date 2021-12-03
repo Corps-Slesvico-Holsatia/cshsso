@@ -104,7 +104,8 @@ class User(CSHSSOModel):     # pylint: disable=R0903
 class Session(CSHSSOModel):     # pylint: disable=R0903
     """A user session."""
 
-    user = ForeignKeyField(User, column_name='user', on_delete='CASCADE')
+    user = ForeignKeyField(User, column_name='user', on_delete='CASCADE',
+                           lazy_load=False)
     secret = Argon2Field()
 
 
@@ -112,7 +113,8 @@ class UserCommission(CSHSSOModel):  # pylint: disable=R0903
     """User commissions."""
 
     occupant = ForeignKeyField(User, column_name='occupant',
-                               backref='user_commissions', on_delete='CASCADE')
+                               backref='user_commissions', on_delete='CASCADE',
+                               lazy_load=False)
     commission = EnumField(Commission, use_name=True, unique=True)
 
 
@@ -121,7 +123,8 @@ class PasswordResetToken(CSHSSOModel):  # pylint: disable=R0903
 
     VALIDITY = timedelta(days=1)
 
-    user = ForeignKeyField(User, column_name='user', on_delete='CASCADE')
+    user = ForeignKeyField(User, column_name='user', on_delete='CASCADE',
+                           lazy_load=False)
     token = UUIDField(default=uuid4)
     issued = DateTimeField(default=datetime.now)
 
