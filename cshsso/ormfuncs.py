@@ -17,21 +17,23 @@ def get_user(uid: int) -> User:
         join_type=JOIN.LEFT_OUTER).where(User.id == uid).group_by(User).get()
 
 
+def can_pass_commission(user: User, commission: Commission) -> bool:
+    """Checks whether the user can pass on the given commission."""
+
+    return user.admin or user.has_commission(commission)
+
+
 def pass_commission(commission: Commission, src: User, dst: User) -> bool:
     """Passes a commission from one user to another."""
 
-    try:
-        src_commission = UserCommission.get(UserCommission.occupant == src.id)
-    except UserCommission.DoesNotExist:
-        src_commission = None
-
-    if src_commission is None and not src.admin:
+    if not can_pass_commission(src, commission):
         return False
 
-    dst_commission = UserCommission(occupant=dst, commission=commission)
-    dst_commission.save()
+    # Delete all current user commissions to avoid duplicate occupants.
+    for user_commission in UserCommission.select().where(
+            UserCommission.commission == commission):
+        user_commission.delete_instance()
 
-    if src_commission is not None:
-        src_commission.delete_instance()
-
+    user_commission = UserCommission(occupant=dst, commission=commission)
+    user_commission.save()
     return True
