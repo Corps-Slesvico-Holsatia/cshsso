@@ -21,7 +21,7 @@ def pass_commission(commission: Commission, src: User, dst: User) -> None:
     """Passes a commission from one user to another."""
 
     try:
-        src_commission = UserCommission.get(UserCommission.occupant == src)
+        src_commission = UserCommission.get(UserCommission.occupant == src.id)
     except UserCommission.DoesNotExist:
         src_commission = None
 
