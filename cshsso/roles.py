@@ -48,7 +48,7 @@ class Status(Enum):
     @classmethod
     def from_string(cls, string: str) -> Status:
         """Creates a Status element from a JSON string."""
-        with suppress(ValueError):
+        with suppress(KeyError):
             return cls[string]
 
         for status in cls:
@@ -99,7 +99,7 @@ class Commission(Enum):
     @classmethod
     def from_string(cls, string: str) -> Commission:
         """Creates a Commission element from a string."""
-        with suppress(ValueError):
+        with suppress(KeyError):
             return cls[string]
 
         for commission in cls:
