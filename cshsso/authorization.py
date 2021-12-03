@@ -52,10 +52,22 @@ def can_sit_ahc(user: User) -> bool:
             or user.has_commission(Commission.SENIOR))
 
 
+def can_vote_ahc(user: User) -> bool:
+    """Checks whether the user can vote on the AHC."""
+
+    return user.status in {Status.AH, Status.EB}
+
+
 def check_ahc(user: User, vote: bool) -> bool:
     """Checks authorization for the AHC."""
 
-    return user.status in {Status.AH, Status.EB} if vote else can_sit_ahc(user)
+    return can_vote_ahc(user) if vote else can_sit_ahc(user)
+
+
+def can_sit_cc(user: User) -> bool:
+    """Checks whether the user can sit on the CC."""
+
+    return user.status in Circle.INNER
 
 
 def can_vote_cc(user: User) -> bool:
@@ -68,7 +80,13 @@ def can_vote_cc(user: User) -> bool:
 def check_cc(user: User, vote: bool) -> bool:
     """Checks authorization for the CC."""
 
-    return can_vote_cc(user) if vote else user.status in Circle.INNER
+    return can_vote_cc(user) if vote else can_sit_cc(user)
+
+
+def can_sit_fc(user: User):
+    """Checks whether the user can sit on the FC."""
+
+    return user.status in INNER_OUTER
 
 
 def can_vote_fc(user: User) -> bool:
@@ -81,7 +99,7 @@ def can_vote_fc(user: User) -> bool:
 def check_fc(user: User, vote: bool) -> bool:
     """Checks authorization for the FC."""
 
-    return can_vote_fc(user) if vote else user.status in INNER_OUTER
+    return can_vote_fc(user) if vote else can_sit_fc(user)
 
 
 def check_convent(user: User, convent: ConventAuth) -> bool:
