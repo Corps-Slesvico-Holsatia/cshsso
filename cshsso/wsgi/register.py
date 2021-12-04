@@ -1,10 +1,11 @@
 """User registration."""
 
-from flask import request, Response, jsonify
+from flask import request
 from peewee import IntegrityError
 
 from emaillib import EMail
 from recaptcha import recaptcha
+from wsgilib import JSONMessage
 
 from cshsso.config import CONFIG
 from cshsso.decorators import authenticated, Authorization
@@ -38,40 +39,40 @@ def get_email(user: User, *, section: str = 'registration') -> EMail:
 
 
 @recaptcha(CONFIG)
-def register() -> Response:
+def register() -> JSONMessage:
     """Registers a new user."""
 
     try:
         user = user_from_json(request.json)
     except KeyError as error:
-        return (str(error), 400)
+        return JSONMessage(str(error), status=400)
 
     try:
         user.save()
     except ValueError:
-        return ('Invalid value(s) provided.', 400)
+        return JSONMessage('Invalid value(s) provided.', status=400)
     except IntegrityError:
-        return ('User already exists.', 400)
+        return JSONMessage('User already exists.', status=400)
 
     sent = send([get_email(user)])
-    return (jsonify(message='User added.', email_sent=sent, id=user.id), 201)
+    return JSONMessage('User added.', email_sent=sent, id=user.id, status=201)
 
 
 @authenticated
 @Authorization.CHARGES
-def confirm_registration() -> Response:
+def confirm_registration() -> JSONMessage:
     """Confirms a registration."""
 
     if not (user_id := request.json.get('user')):
-        return ('No user ID specified.', 400)
+        return JSONMessage('No user ID specified.', status=400)
 
     try:
         user = User.select().where(User.id == user_id).get()
     except ValueError:
-        return ('Invalid user ID.', 400)
+        return JSONMessage('Invalid user ID.', status=400)
     except User.DoesNotExist:
-        return ('No such user.', 404)
+        return JSONMessage('No such user.', status=404)
 
     user.verified = True
     user.save()
-    return ('User verified.', 200)
+    return JSONMessage('User verified.', status=200)

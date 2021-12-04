@@ -1,6 +1,10 @@
 """User login."""
 
+from typing import Union
+
 from flask import request, Response, make_response
+
+from wsgilib import JSONMessage
 
 from cshsso.orm import User
 from cshsso.session import for_user, set_session_cookies
@@ -12,7 +16,7 @@ __all__ = ['login']
 INVALID_USER_NAME_OR_PASSWORD = ('Invalid user name or password.', 400)
 
 
-def login() -> Response:
+def login() -> Union[JSONMessage, Response]:
     """Logs in a user.
     POST: application/json
     {
@@ -22,10 +26,10 @@ def login() -> Response:
     """
 
     if not (email := request.json.get('email')):
-        return ('No email address provided.', 400)
+        return JSONMessage('No email address provided.', status=400)
 
     if not (passwd := request.json.get('passwd')):
-        return ('No password provided.', 400)
+        return JSONMessage('No password provided.', status=400)
 
     try:
         user = User.get(User.email == email)
@@ -40,5 +44,5 @@ def login() -> Response:
 
     session, secret = for_user(user)
     session.save()
-    response = make_response(('Login successful.', 200))
+    response = make_response(JSONMessage('Login successful.', status=200))
     return set_session_cookies(response, session, secret=secret)
