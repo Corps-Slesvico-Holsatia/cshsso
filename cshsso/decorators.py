@@ -1,5 +1,6 @@
 """Decorators for authentication and authorization."""
 
+from __future__ import annotations
 from enum import Enum
 from functools import partial, wraps
 from typing import Any, Callable
@@ -82,3 +83,12 @@ class Authorization(Enum):
     def __call__(self, *args, **kwargs) -> Any:
         """Delegate to decorator function."""
         return self.value(*args, **kwargs)
+
+    @staticmethod
+    def any(*authorizations: Authorization) -> Decorator:
+        """Combine authorization checks via the any() function."""
+        def checkfunc(user: User) -> bool:
+            return any(a.__closure__[0].cell_contents(user)
+                       for a in authorizations)
+
+        return authorized(checkfunc)
