@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from uuid import uuid4
 
 from argon2.exceptions import VerifyMismatchError
+from peewee import AutoField
 from peewee import BooleanField
 from peewee import CharField
 from peewee import DateField
@@ -45,6 +46,7 @@ class CSHSSOModel(Model):   # pylint: disable=R0903
 class User(CSHSSOModel):     # pylint: disable=R0903
     """A user account."""
 
+    id = AutoField()
     email = CharField(unique=True)
     passwd = Argon2Field()
     first_name = CharField()
@@ -99,6 +101,7 @@ class User(CSHSSOModel):     # pylint: disable=R0903
 class Session(CSHSSOModel):     # pylint: disable=R0903
     """A user session."""
 
+    id = AutoField()
     user = ForeignKeyField(User, column_name='user', on_delete='CASCADE',
                            lazy_load=False)
     secret = Argon2Field()
@@ -107,6 +110,7 @@ class Session(CSHSSOModel):     # pylint: disable=R0903
 class UserCommission(CSHSSOModel):  # pylint: disable=R0903
     """User commissions."""
 
+    id = AutoField()
     occupant = ForeignKeyField(User, column_name='occupant',
                                backref='user_commissions', on_delete='CASCADE',
                                lazy_load=False)
@@ -118,6 +122,7 @@ class PasswordResetToken(CSHSSOModel):  # pylint: disable=R0903
 
     VALIDITY = timedelta(days=1)
 
+    id = AutoField()
     user = ForeignKeyField(User, column_name='user', on_delete='CASCADE',
                            lazy_load=False)
     token = UUIDField(default=uuid4)
