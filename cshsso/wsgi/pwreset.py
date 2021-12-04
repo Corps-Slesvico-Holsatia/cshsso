@@ -10,25 +10,12 @@ from peeweeplus import PasswordTooShort
 from recaptcha import recaptcha
 
 from cshsso.config import CONFIG
+from cshsso.constants import PW_RESET_TEXT, PW_RESET_URL
 from cshsso.email import send
 from cshsso.orm import PasswordResetToken, User
 
 
 __all__ = ['request_pw_reset', 'confirm_pw_reset']
-
-
-EMAIL_TEXT = '''Sehr geehrter Nutzer,
-
-bitte folgen Sie dem unten stehenden Link um
-Ihr Password zurückzusetzen.
-
-{}
-
-Mit freundlichen Grüßen
-
-Der CC der Slesvico-Holsatia
-'''
-RESET_URL = 'https://cshsso.slesvico-holsatia.org/pwreset/confirm?token={}'
 
 
 def password_reset_pending(user: Union[User, int]) -> bool:
@@ -58,8 +45,8 @@ def get_email(password_reset_token: str, email_address: str, *,
         CONFIG.get(section, 'sender',
                    fallback='noreply@cshsso.slesvico-holsatia.org'),
         email_address,
-        plain=CONFIG.get(section, 'template', fallback=EMAIL_TEXT).format(
-            CONFIG.get(section, 'url', fallback=RESET_URL).format(
+        plain=CONFIG.get(section, 'template', fallback=PW_RESET_TEXT).format(
+            CONFIG.get(section, 'url', fallback=PW_RESET_URL).format(
                 password_reset_token
             )
         )
