@@ -110,6 +110,9 @@ class Session(CSHSSOModel):     # pylint: disable=R0903
 class UserCommission(CSHSSOModel):  # pylint: disable=R0903
     """User commissions."""
 
+    class Meta:     # pylint: disable=C0115,R0903
+        table_name = 'user_commission'
+
     id = AutoField()
     occupant = ForeignKeyField(User, column_name='occupant',
                                backref='user_commissions', on_delete='CASCADE',
@@ -121,6 +124,9 @@ class PasswordResetToken(CSHSSOModel):  # pylint: disable=R0903
     """A per-user password reset token."""
 
     VALIDITY = timedelta(days=1)
+
+    class Meta:     # pylint: disable=C0115,R0903
+        table_name = 'password_reset_token'
 
     id = AutoField()
     user = ForeignKeyField(User, column_name='user', on_delete='CASCADE',
