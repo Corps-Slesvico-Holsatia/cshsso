@@ -144,7 +144,7 @@ Payload
 ```
 
 ### Confirm a new user
-Authorized groups: `CHARGES`  
+Charges can confirm new users.  
 `POST` `/register/confirm`
 Payload
 ```JSON
@@ -337,5 +337,24 @@ Admins do not need to specify a password to delete another user's account.
         }
     },
     "required": []
+}
+```
+
+## Set user status
+Charges can set the status of an arbitrary user.  
+`POST` `/account/status`
+```JSON
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "User status change",
+    "description": "Change the status of a user",
+    "type": "object",
+    "properties": {
+        "passwd": {
+            "status": "The user's status",
+            "type": "string"
+        }
+    },
+    "required": ["status"]
 }
 ```
