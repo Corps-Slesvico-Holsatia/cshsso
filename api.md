@@ -201,6 +201,10 @@ Payload
             "description": "The user's registration date",
             "type": "string"
         },
+        "admin": {
+            "description": "Flag whether the user is an admin",
+            "type": "boolean"
+        },
         "acception": {
             "description": "The user's acception date",
             "type": "string"
@@ -217,7 +221,7 @@ Payload
             "uniqueItems": true
         }
     },
-    "required": ["id", "email", "passwd", "first_name", "last_name", "status", "registered", "commissions"]
+    "required": ["id", "email", "passwd", "first_name", "last_name", "status", "registered", "admin", "commissions"]
 }
 ```
 ### Admin view
@@ -240,13 +244,9 @@ An admin can *additionally* see the following fields:
         "failed_logins": {
             "description": "Amount of failed logins",
             "type": "integer"
-        },
-        "admin": {
-            "description": "Flag whether the user is an admin",
-            "type": "boolean"
         }
     },
-    "required": ["verified", "locked", "failed_logins", "admin"]
+    "required": ["verified", "locked", "failed_logins"]
 }
 ```
 
