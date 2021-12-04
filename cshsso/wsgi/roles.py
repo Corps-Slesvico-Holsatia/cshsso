@@ -24,7 +24,7 @@ def list_circles() -> JSON:
 
     return JSON([{
         'name': circle.name,
-        'status': [status.to_json() for status in circle.value]
+        'status': [status.to_json() for status in circle]
     } for circle in Circle])
 
 
@@ -38,6 +38,6 @@ def list_commission_groups() -> JSON:
     """Lists available commission groups."""
 
     return JSON([{
-        'name': commission_group.name,
-        'status': [status.to_json() for status in commission_group.value]
-    } for commission_group in CommissionGroup])
+        'name': cgroup.name,
+        'status': [status.to_json() for status in cgroup]
+    } for cgroup in CommissionGroup])
