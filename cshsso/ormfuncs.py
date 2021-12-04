@@ -54,6 +54,7 @@ def get_user_as_json(session: Session, user: User) -> dict:
         'last_name': user.last_name,
         'status': user.status.to_json(),
         'registered': user.registered.isoformat(),
+        'admin': user.admin,
         'acception': user.acception.isodormat() if user.acception else None,
         'reception': user.reception.isoformat() if user.reception else None,
         'commissions': [c.to_json() for c in user.commissions]
@@ -63,8 +64,7 @@ def get_user_as_json(session: Session, user: User) -> dict:
         json.update({
             'verified': user.verified,
             'locked': user.locked,
-            'failed_logins': user.failed_logins,
-            'admin': user.admin
+            'failed_logins': user.failed_logins
         })
 
     return json
