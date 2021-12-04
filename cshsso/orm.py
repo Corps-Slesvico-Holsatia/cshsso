@@ -11,10 +11,11 @@ from peewee import DateField
 from peewee import DateTimeField
 from peewee import ForeignKeyField
 from peewee import IntegerField
+from peewee import Model
 from peewee import ModelSelect
 from peewee import UUIDField
 
-from peeweeplus import Argon2Field, EnumField, JSONModel, MySQLDatabaseProxy
+from peeweeplus import Argon2Field, EnumField, MySQLDatabaseProxy
 
 from cshsso.config import CONFIG
 from cshsso.roles import Status, Commission
@@ -33,7 +34,7 @@ __all__ = [
 DATABASE = MySQLDatabaseProxy('cshsso')
 
 
-class CSHSSOModel(JSONModel):   # pylint: disable=R0903
+class CSHSSOModel(Model):   # pylint: disable=R0903
     """Base model for the CSH-SSO database."""
 
     class Meta:     # pylint: disable=C0115,R0903
@@ -93,12 +94,6 @@ class User(CSHSSOModel):     # pylint: disable=R0903
         """Selects commissions of the given type of the user."""
         return self.user_commissions.where(
             UserCommission.commission == commission)
-
-    def to_json(self, *args, **kwargs) -> dict:
-        """Returns a JSON-ish dict of core information."""
-        json = super().to_json(*args, **kwargs)
-        json['commissions'] = [c.to_json() for c in self.commissions]
-        return json
 
 
 class Session(CSHSSOModel):     # pylint: disable=R0903
