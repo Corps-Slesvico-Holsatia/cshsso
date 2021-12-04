@@ -53,20 +53,6 @@ def for_user(user: User) -> tuple[Session, str]:
     return (session, secret)
 
 
-def set_cookie(response: Response, *args, **kwargs):
-    """A workaround for explicitly setting SameSite to None
-    Until the following fix is released:
-    https://github.com/pallets/werkzeug/issues/1549
-    """
-
-    cookie = dump_cookie(*args, **kwargs)
-
-    if 'samesite' in kwargs and kwargs['samesite'] is None:
-        cookie = f'{cookie}; SameSite=None'
-
-    response.headers.add('Set-Cookie', cookie)
-
-
 def set_session_cookies(response: Response, session: Session,
                         secret: str = None) -> Response:
     """Sets the session cookie."""
@@ -76,12 +62,12 @@ def set_session_cookies(response: Response, session: Session,
         session.save()
 
     for domain in CONFIG.get('auth', 'domains').split():
-        set_cookie(
-            response, SESSION_ID, str(session.id),
-            expires=session.end, domain=domain, secure=True, samesite=None)
-        set_cookie(
-            response, SESSION_SECRET, secret,
-            expires=session.end, domain=domain, secure=True, samesite=None)
+        response.set_cookie(
+            SESSION_ID, str(session.id), expires=session.end, domain=domain,
+            secure=True, samesite=None)
+        response.set_cookie(
+            SESSION_SECRET, secret, expires=session.end, domain=domain,
+            secure=True, samesite=None)
 
     return response
 
