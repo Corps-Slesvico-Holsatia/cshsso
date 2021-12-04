@@ -7,7 +7,6 @@ from uuid import uuid4
 from argon2.exceptions import VerifyMismatchError
 from peewee import AutoField
 from peewee import BooleanField
-from peewee import CharField
 from peewee import DateField
 from peewee import DateTimeField
 from peewee import ForeignKeyField
@@ -16,16 +15,22 @@ from peewee import Model
 from peewee import ModelSelect
 from peewee import UUIDField
 
-from peeweeplus import Argon2Field, EnumField, MySQLDatabaseProxy
+from peeweeplus import Argon2Field
+from peeweeplus import EnumField
+from peeweeplus import HTMLTextField
+from peeweeplus import MySQLDatabaseProxy
+from peeweeplus import RestrictedCharField
 
 from cshsso.config import CONFIG
-from cshsso.constants import PW_RESET_TOKEN_VALIDITY, SESSION_VALIDITY
+from cshsso.constants import EMAIL_REGEX
+from cshsso.constants import NAME_REGEX
+from cshsso.constants import PW_RESET_TOKEN_VALIDITY
+from cshsso.constants import SESSION_VALIDITY
 from cshsso.roles import Status, Commission
 
 
 __all__ = [
     'DATABASE',
-    'MODELS',
     'User',
     'Session',
     'UserCommission',
@@ -48,15 +53,16 @@ class User(CSHSSOModel):     # pylint: disable=R0903
     """A user account."""
 
     id = AutoField()
-    email = CharField(unique=True)
+    email = RestrictedCharField(EMAIL_REGEX, unique=True)
     passwd = Argon2Field()
-    first_name = CharField()
-    last_name = CharField()
+    first_name = RestrictedCharField(NAME_REGEX)
+    last_name = RestrictedCharField(NAME_REGEX)
     registered = DateTimeField(default=datetime.now)
     verified = BooleanField(default=False)
     locked = BooleanField(default=False)
     failed_logins = IntegerField(default=0)
     admin = BooleanField(default=False)
+    bio = HTMLTextField(null=True)
     # Corps-related information
     status = EnumField(Status, use_name=True)
     name_number = IntegerField(null=True)
@@ -151,6 +157,3 @@ class PasswordResetToken(CSHSSOModel):  # pylint: disable=R0903
     def is_valid(self) -> bool:
         """Determines whether the password reset token is currently valid."""
         return self.issued + PW_RESET_TOKEN_VALIDITY > datetime.now()
-
-
-MODELS = [User, Session, UserCommission, PasswordResetToken]

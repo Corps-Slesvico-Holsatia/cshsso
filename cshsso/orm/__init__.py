@@ -7,7 +7,6 @@ from cshsso.orm.functions import user_to_json
 from cshsso.orm.functions import patch_user
 from cshsso.orm.functions import set_commissions
 from cshsso.orm.models import DATABASE
-from cshsso.orm.models import MODELS
 from cshsso.orm.models import PasswordResetToken
 from cshsso.orm.models import Session
 from cshsso.orm.models import User
@@ -28,3 +27,6 @@ __all__ = [
     'patch_user',
     'set_commissions'
 ]
+
+
+MODELS = [User, Session, UserCommission, PasswordResetToken]
