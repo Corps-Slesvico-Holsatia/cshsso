@@ -57,6 +57,7 @@ def user_to_json(user: User, *, actor: User) -> dict:
         'status': user.status.to_json(),
         'registered': user.registered.isoformat(),
         'admin': user.admin,
+        'bio': user.bio,
         'corps_list_number': user.corps_list_number,
         'acception': user.acception.isodormat() if user.acception else None,
         'reception': user.reception.isoformat() if user.reception else None,
@@ -123,6 +124,9 @@ def patch_user(user: User, json: dict, *, actor: User) -> User:
 
     with suppress(KeyError):
         user.last_name = json['last_name']
+
+    with suppress(KeyError):
+        user.bio = json['bio']
 
     if actor.admin:
         patch_user_admin(user, json)

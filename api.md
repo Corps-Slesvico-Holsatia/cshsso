@@ -205,6 +205,10 @@ Payload
             "description": "Flag whether the user is an admin",
             "type": "boolean"
         },
+        "bio": {
+            "description": "The user's biography (free text)",
+            "type": "string"
+        },
         "status": {
             "description": "The user's status",
             "type": "string"
@@ -279,6 +283,10 @@ A regular user can change the following fields:
         },
         "last_name": {
             "description": "The user's last name",
+            "type": "string"
+        },
+        "bio": {
+            "description": "The user's biography (free text)",
             "type": "string"
         },
         "name_number": {
