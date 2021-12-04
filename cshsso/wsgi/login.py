@@ -6,7 +6,7 @@ from flask import request, Response, make_response
 
 from wsgilib import JSONMessage
 
-from cshsso.orm import User
+from cshsso.orm.models import User
 from cshsso.session import for_user, set_session_cookies
 
 
