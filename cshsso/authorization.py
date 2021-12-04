@@ -5,7 +5,14 @@ from cshsso.orm import User
 from cshsso.roles import Circle, Commission, CommissionGroup, Status
 
 
-__all__ = ['check_circle', 'check_convent', 'check_group']
+__all__ = [
+    'is_in_inner_circle',
+    'is_in_outer_circle',
+    'is_corps_member',
+    'check_circle',
+    'check_convent',
+    'check_group'
+]
 
 
 INNER_OUTER = {*Circle.INNER, *Circle.OUTER}
@@ -22,6 +29,12 @@ def is_in_outer_circle(user: User) -> bool:
     """Checks whether the user is member of the outer circle."""
 
     return user.status in Circle.OUTER
+
+
+def is_corps_member(user: User) -> bool:
+    """Checks whether the user is a member of the corps."""
+
+    return is_in_inner_circle(user) or is_in_outer_circle(user)
 
 
 def check_circle(user: User, circle: Circle) -> bool:

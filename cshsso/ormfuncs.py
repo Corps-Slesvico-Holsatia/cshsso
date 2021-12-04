@@ -7,6 +7,7 @@ from typing import Iterable, Optional
 from flask import request
 from peewee import JOIN
 
+from cshsso.authorization import is_corps_member, is_in_inner_circle
 from cshsso.constants import USER_ID
 from cshsso.exceptions import InvalidPassword
 from cshsso.orm import Session, User, UserCommission
@@ -52,9 +53,11 @@ def get_user_as_json(session: Session, user: User) -> dict:
         'email': user.email,
         'first_name': user.first_name,
         'last_name': user.last_name,
+        'name_number': user.name_number,
         'status': user.status.to_json(),
         'registered': user.registered.isoformat(),
         'admin': user.admin,
+        'corps_list_number': user.corps_list_number,
         'acception': user.acception.isodormat() if user.acception else None,
         'reception': user.reception.isoformat() if user.reception else None,
         'commissions': [c.to_json() for c in user.commissions]
@@ -73,7 +76,7 @@ def get_user_as_json(session: Session, user: User) -> dict:
 def patch_user(session: Session, user: User, json: dict) -> User:
     """Patches the user."""
 
-    if session.user.admin:
+    if (actor := session.user).admin:
         with suppress(KeyError):
             user.email = json['email']
 
@@ -92,9 +95,17 @@ def patch_user(session: Session, user: User, json: dict) -> User:
         with suppress(KeyError):
             user.admin = json['admin']
 
+    if actor.admin or is_corps_member(actor):
+        with suppress(KeyError):
+            user.name_number = json['name_number']
+
         with suppress(KeyError):
             user.acception = date.fromisoformat(json['acception'])
 
+        with suppress(KeyError):
+            user.corps_list_number = json['corps_list_number']
+
+    if actor.admin or is_in_inner_circle(actor):
         with suppress(KeyError):
             user.reception = date.fromisoformat(json['reception'])
 

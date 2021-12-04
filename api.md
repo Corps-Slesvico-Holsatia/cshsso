@@ -197,10 +197,6 @@ Payload
             "description": "The user's last name",
             "type": "string"
         },
-        "status": {
-            "description": "The user's status",
-            "type": "string"
-        },
         "registered": {
             "description": "The user's registration date",
             "type": "string"
@@ -208,6 +204,18 @@ Payload
         "admin": {
             "description": "Flag whether the user is an admin",
             "type": "boolean"
+        },
+        "status": {
+            "description": "The user's status",
+            "type": "string"
+        },
+        "name_number": {
+            "description": "The user's last name enumeration number",
+            "type": "integer"
+        },
+        "corps_list_number": {
+            "description": "The user's corps list number",
+            "type": "integer"
         },
         "acception": {
             "description": "The user's acception date",
@@ -225,7 +233,7 @@ Payload
             "uniqueItems": true
         }
     },
-    "required": ["id", "email", "passwd", "first_name", "last_name", "status", "registered", "admin", "commissions"]
+    "required": ["id", "email", "passwd", "first_name", "last_name", "registered", "admin", "status", "commissions"]
 }
 ```
 ### Admin view
@@ -272,13 +280,29 @@ A regular user can change the following fields:
         "last_name": {
             "description": "The user's last name",
             "type": "string"
-        }
+        },
+        "name_number": {
+            "description": "The user's last name enumeration number",
+            "type": "integer"
+        },
+        "corps_list_number": {
+            "description": "The user's corps list number",
+            "type": "integer"
+        },
+        "acception": {
+            "description": "The user's acception date",
+            "type": "string"
+        },
+        "reception": {
+            "description": "The user's reception date",
+            "type": "string"
+        },
     },
     "required": []
 }
 ```
 ### Admin fields
-An admin can *additionally* see the following fields:
+An admin can *additionally* modify the following fields:
 ```JSON
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -309,14 +333,6 @@ An admin can *additionally* see the following fields:
         "admin": {
             "description": "Flag whether the user is an admin",
             "type": "boolean"
-        },
-        "acception": {
-            "description": "The user's acception date",
-            "type": "string"
-        },
-        "reception": {
-            "description": "The user's reception date",
-            "type": "string"
         }
     },
     "required": []

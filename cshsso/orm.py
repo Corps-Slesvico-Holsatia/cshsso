@@ -52,12 +52,15 @@ class User(CSHSSOModel):     # pylint: disable=R0903
     passwd = Argon2Field()
     first_name = CharField()
     last_name = CharField()
-    status = EnumField(Status, use_name=True)
     registered = DateTimeField(default=datetime.now)
     verified = BooleanField(default=False)
     locked = BooleanField(default=False)
     failed_logins = IntegerField(default=0)
     admin = BooleanField(default=False)
+    # Corps-related information
+    status = EnumField(Status, use_name=True)
+    name_number = IntegerField(null=True)
+    corps_list_number = IntegerField(null=True)
     acception = DateField(null=True)
     reception = DateField(null=True)
 
