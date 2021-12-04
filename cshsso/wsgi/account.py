@@ -9,6 +9,7 @@ from cshsso.exceptions import InvalidPassword
 from cshsso.functions import date_or_none
 from cshsso.localproxies import SESSION, USER
 from cshsso.ormfuncs import delete_user
+from cshsso.ormfuncs import get_current_user
 from cshsso.ormfuncs import get_user_as_json
 from cshsso.ormfuncs import patch_user
 from cshsso.ormfuncs import set_commissions as _set_commissions
@@ -59,16 +60,16 @@ def delete() -> JSONMessage:
 def set_acception() -> JSONMessage:
     """Set the acception date."""
 
-    user = USER._get_current_object()   # pylint: disable=W0212
+    with USER as user:
+        try:
+            user.acception = date_or_none(request.json['acception'])
+        except KeyError:
+            return JSONMessage('No acception date provided.', status=400)
+        except ValueError:
+            return JSONMessage('Invalid acception date provided.', status=400)
 
-    try:
-        user.acception = date_or_none(request.json['acception'])
-    except KeyError:
-        return JSONMessage('No acception date provided.', status=400)
-    except ValueError:
-        return JSONMessage('Invalid acception date provided.', status=400)
+        user.save()
 
-    user.save()
     return JSONMessage('Acception date set.', status=200)
 
 
@@ -77,16 +78,16 @@ def set_acception() -> JSONMessage:
 def set_reception() -> JSONMessage:
     """Set the reception date."""
 
-    user = USER._get_current_object()   # pylint: disable=W0212
+    with USER as user:
+        try:
+            user.reception = date_or_none(request.json['reception'])
+        except KeyError:
+            return JSONMessage('No reception date provided.', status=400)
+        except ValueError:
+            return JSONMessage('Invalid reception date provided.', status=400)
 
-    try:
-        user.reception = date_or_none(request.json['reception'])
-    except KeyError:
-        return JSONMessage('No reception date provided.', status=400)
-    except ValueError:
-        return JSONMessage('Invalid reception date provided.', status=400)
+        user.save()
 
-    user.save()
     return JSONMessage('Reception date set.', status=200)
 
 
@@ -102,10 +103,9 @@ def set_status() -> JSONMessage:
     except ValueError:
         return JSONMessage('Invalid status provied.', status=400)
 
-    with USER as user:
-        old_status, user.status = user.status, status
-        user.save()
-
+    user = get_current_user(SESSION, allow_other=True)
+    old_status, user.status = user.status, status
+    user.save()
     return JSONMessage('Status updated.', old=old_status.to_json(),
                        new=status.to_json(), status=200)
 
