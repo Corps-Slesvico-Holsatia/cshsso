@@ -88,7 +88,7 @@ class Authorization(Enum):
     def any(*authorizations: Authorization) -> Decorator:
         """Combine authorization checks via the any() function."""
         def checkfunc(user: User) -> bool:
-            return any(a.__closure__[0].cell_contents(user)
+            return any(c.cell_contents(user) for c in a.__closure__
                        for a in authorizations)
 
         return authorized(checkfunc)
