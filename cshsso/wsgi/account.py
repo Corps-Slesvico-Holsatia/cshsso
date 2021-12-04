@@ -8,11 +8,11 @@ from cshsso.decorators import authenticated, Authorization
 from cshsso.exceptions import InvalidPassword
 from cshsso.functions import date_or_none
 from cshsso.localproxies import SESSION, USER
-from cshsso.ormfuncs import delete_user
-from cshsso.ormfuncs import get_current_user
-from cshsso.ormfuncs import get_user_as_json
-from cshsso.ormfuncs import patch_user
-from cshsso.ormfuncs import set_commissions as _set_commissions
+from cshsso.orm import delete_user
+from cshsso.orm import get_current_user
+from cshsso.orm import user_to_json
+from cshsso.orm import patch_user
+from cshsso.orm import set_commissions as _set_commissions
 from cshsso.roles import Commission, Status
 
 
@@ -31,14 +31,17 @@ __all__ = [
 def show() -> JSON:
     """Shows the user's profile."""
 
-    return JSON(get_user_as_json(SESSION, USER))
+    with USER as user:
+        return JSON(user_to_json(user, actor=SESSION.user))
 
 
 @authenticated
 def patch() -> JSONMessage:
     """Updates the user's profile."""
 
-    user = patch_user(SESSION, USER, request.json)
+    with USER as user:
+        user = patch_user(user, request.json, actor=SESSION.user)
+
     user.save()
     return JSONMessage('User patched.', status=200)
 
@@ -48,7 +51,9 @@ def delete() -> JSONMessage:
     """Deletes the user's account."""
 
     try:
-        delete_user(SESSION, USER, passwd=request.json.get('passwd'))
+        with USER as user:
+            delete_user(user, actor=SESSION.user,
+                        passwd=request.json.get('passwd'))
     except InvalidPassword:
         return JSONMessage('Invalid password provided.', status=403)
 

@@ -4,7 +4,7 @@ from functools import partial
 
 from werkzeug.local import LocalProxy
 
-from cshsso.ormfuncs import get_current_user
+from cshsso.orm import get_current_user
 from cshsso.session import get_session
 
 

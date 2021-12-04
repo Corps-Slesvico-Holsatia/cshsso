@@ -27,6 +27,8 @@ setup(
     maintainer_email='<mail@richard-neumann.de>',
     packages=[
         'cshsso',
+        'cshsso.orm',
+        'cshsso.orm.functions',
         'cshsso.wsgi'
     ],
     entry_points={
