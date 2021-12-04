@@ -1,13 +1,22 @@
 """ORM-related functions."""
 
+from typing import Iterable, Optional
+
 from peewee import JOIN
 
-from cshsso.authorization import check_group
-from cshsso.orm import User, UserCommission
-from cshsso.roles import Commission, CommissionGroup, Status
+from cshsso.exceptions import InvalidPassword
+from cshsso.orm import Session, User, UserCommission
+from cshsso.roles import Commission
 
 
-__all__ = ['get_user', 'pass_commission']
+__all__ = ['get_user', 'get_user_as_json', 'patch_user', 'delete_user']
+
+
+USER_VIEW_FIELDS = {
+    'email', 'first_name', 'last_name', 'status', 'registered', 'acception',
+    'reception'
+}
+USER_PATCH_FIELDS = {'first_name', 'last_name'}
 
 
 def get_user(uid: int) -> User:
@@ -18,40 +27,47 @@ def get_user(uid: int) -> User:
         join_type=JOIN.LEFT_OUTER).where(User.id == uid).group_by(User).get()
 
 
-def can_pass_commission(user: User, commission: Commission) -> bool:
-    """Checks whether the user can pass on the given commission."""
+def get_user_as_json(session: Session, user: User) -> dict:
+    """Returns the current user as JSON."""
 
-    return user.admin or user.has_commission(commission)
+    if session.user.admin:
+        return user.to_json()
+
+    return user.to_json(only=USER_VIEW_FIELDS)
 
 
-def pass_commission(commission: Commission, src: User, dst: User) -> bool:
-    """Passes a commission from one user to another."""
+def patch_user(session: Session, user: User, json: dict) -> User:
+    """Patches the user."""
 
-    if not can_pass_commission(src, commission):
-        return False
+    if session.user.admin:
+        return user.patch_json(json).save()
 
-    # Delete all current user commissions to avoid duplicate occupants.
-    for user_commission in UserCommission.select().where(
-            UserCommission.commission == commission):
+    return user.patch_json(json, only=USER_PATCH_FIELDS).save()
+
+
+def delete_user(session: Session, user: User, *,
+                passwd: Optional[str] = None) -> bool:
+    """Deletes the user."""
+
+    if session.user.admin:
+        return user.delete_instance()
+
+    if passwd is not None and user.login(passwd):
+        return user.delete_instance()
+
+    raise InvalidPassword()
+
+
+def set_commissions(user: User, commissions: Iterable[Commission]) -> None:
+    """Sets the commissions of the user."""
+
+    current = user.user_commissions
+    new = {c for c in commissions if c not in {c.commission for c in current}}
+    delete = {uc for uc in current if uc.commission not in commissions}
+
+    for user_commission in delete:
         user_commission.delete_instance()
 
-    user_commission = UserCommission(occupant=dst, commission=commission)
-    user_commission.save()
-    return True
-
-
-def can_change_status(user: User) -> bool:
-    """Checks whether the user can change status of arbitrary users."""
-
-    return user.admin or check_group(user, CommissionGroup.CHARGES)
-
-
-def set_status(status: Status, actor: User, target: User) -> bool:
-    """Sets the status of the target user."""
-
-    if not can_change_status(actor):
-        return False
-
-    target.status = status
-    target.save()
-    return True
+    for commission in new:
+        user_commission = UserCommission(user=user.id, commission=commission)
+        user_commission.save()

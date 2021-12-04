@@ -1,16 +1,16 @@
 """Manage accounts."""
 
-from typing import Optional
-
 from flask import request
 
 from wsgilib import JSON, JSONMessage
 
 from cshsso.decorators import authenticated, Authorization
-from cshsso.exceptions import InvalidPassword
 from cshsso.functions import date_or_none
 from cshsso.localproxies import SESSION, USER
-from cshsso.orm import Session, User, UserCommission
+from cshsso.ormfuncs import delete_user
+from cshsso.ormfuncs import get_user_as_json
+from cshsso.ormfuncs import patch_user
+from cshsso.ormfuncs import set_commissions as _set_commissions
 from cshsso.roles import Commission, Status
 
 
@@ -23,44 +23,6 @@ __all__ = [
     'set_status',
     'set_commissions'
 ]
-
-
-USER_VIEW_FIELDS = {
-    'email', 'first_name', 'last_name', 'status', 'registered', 'acception',
-    'reception'
-}
-USER_PATCH_FIELDS = {'first_name', 'last_name'}
-
-
-def get_user_as_json(session: Session, user: User) -> dict:
-    """Returns the current user as JSON."""
-
-    if session.user.admin:
-        return user.to_json()
-
-    return user.to_json(only=USER_VIEW_FIELDS)
-
-
-def patch_user(session: Session, user: User, json: dict) -> User:
-    """Patches the user."""
-
-    if session.user.admin:
-        return user.patch_json(json).save()
-
-    return user.patch_json(json, only=USER_PATCH_FIELDS).save()
-
-
-def delete_user(session: Session, user: User, *,
-                passwd: Optional[str] = None) -> bool:
-    """Deletes the user."""
-
-    if session.user.admin:
-        return user.delete_instance()
-
-    if passwd is not None and user.login(passwd):
-        return user.delete_instance()
-
-    raise InvalidPassword()
 
 
 @authenticated
@@ -154,18 +116,7 @@ def set_commissions() -> JSONMessage:
     except ValueError:
         return JSONMessage('Invalid commission provied.', status=400)
 
-    user = USER._get_current_object()   # pylint: disable=W0212
-    old_commissions = set()
-
-    for user_commission in user.commissions:
-        old_commissions.add(user_commission.commission)
-        user_commission.delete_instance()
-
-    for commission in commissions:
-        user_commission = UserCommission(user=user, commission=commission)
-        user_commission.save()
-
+    _set_commissions(USER, commissions)
     return JSONMessage('Commissions updated.',
-                       old={c.name for c in old_commissions},
-                       new={c.name for c in commissions},
+                       commissions={c.to_json() for c in commissions},
                        status=200)
