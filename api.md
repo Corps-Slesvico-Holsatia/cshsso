@@ -6,7 +6,7 @@ and `cshsso-session-secret` respectively.
 Both must be sent by the client on each request that requres authentication.
 
 ## Login
-Does not require authentication, duh!
+Does not require authentication, duh!  
 `POST` `/login`
 `Content-Type: application/json`
 ```JSON
@@ -36,7 +36,7 @@ the actual password reset endpoint.
 `Content-Type: application/json`
 ```JSON
 {
-    "email" <str:email_address>
+    "email": <str:email_address>
 }
 ```
 
@@ -58,7 +58,7 @@ In order to be able to use the new user account, a Charge must confirm
 the new user.
 
 ### Register a new user
-No authentication, but a ReCAPTCHA response is required!
+No authentication, but a ReCAPTCHA response is required!  
 `POST` `/register`
 `Content-Type: application/json`
 ```JSON
@@ -73,7 +73,7 @@ No authentication, but a ReCAPTCHA response is required!
 ```
 
 ### Confirm a new user
-Authorization: `CHARGES`
+Authorized groups: `CHARGES`  
 `POST` `/register/confirm`
 `Content-Type: application/json`
 ```JSON
