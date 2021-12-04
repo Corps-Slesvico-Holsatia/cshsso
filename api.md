@@ -170,8 +170,8 @@ Authorized groups: `CHARGES`
 ```JSON
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "title": "New user",
-    "description": "Register a new user",
+    "title": "User view",
+    "description": "User view for regular users",
     "type": "object",
     "properties": {
         "id": {
@@ -226,8 +226,8 @@ An admin can *additionally* see the following fields:
 ```JSON
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "title": "New user",
-    "description": "Register a new user",
+    "title": "Admin user view",
+    "description": "Addisional fields an admin can see of a user",
     "type": "object",
     "properties": {
         "verified": {
