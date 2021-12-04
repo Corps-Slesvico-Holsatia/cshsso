@@ -22,7 +22,7 @@ setup(
         'wsgilib'
     ],
     author='Corps Slesvico-Holsatia',
-    author_email='<cc@slesvico-holsatia.orf>',
+    author_email='<cc@slesvico-holsatia.org>',
     maintainer='Richard Neumann',
     maintainer_email='<mail@richard-neumann.de>',
     packages=[
