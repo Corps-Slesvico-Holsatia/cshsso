@@ -8,7 +8,7 @@ Both must be sent by the client on each request that requres authentication.
 ## Login
 Does not require authentication, duh!  
 `POST` `/login`
-`Content-Type: application/json`
+Payload
 ```JSON
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -31,7 +31,7 @@ Does not require authentication, duh!
 
 ## Logout
 `POST` `/logout`
-`Content-Type: application/json`
+Payload
 ```JSON
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -56,7 +56,7 @@ the actual password reset endpoint.
 
 ### Request reset link
 `POST` `/pwreset`
-`Content-Type: application/json`
+Payload
 ```JSON
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -75,7 +75,7 @@ the actual password reset endpoint.
 
 ### Perform password reset
 `POST` `/pwreset/confirm`
-`Content-Type: application/json`
+Payload
 ```JSON
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -106,7 +106,7 @@ the new user.
 ### Register a new user
 No authentication, but a ReCAPTCHA response is required!  
 `POST` `/register`
-`Content-Type: application/json`
+Payload
 ```JSON
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -146,7 +146,7 @@ No authentication, but a ReCAPTCHA response is required!
 ### Confirm a new user
 Authorized groups: `CHARGES`  
 `POST` `/register/confirm`
-`Content-Type: application/json`
+Payload
 ```JSON
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -165,7 +165,6 @@ Authorized groups: `CHARGES`
 
 ## Show account data
 `GET` `/account`
-`Accept: application/json`
 ### User view
 ```JSON
 {
@@ -252,4 +251,91 @@ An admin can *additionally* see the following fields:
 ```
 
 ## Modify account data
-TODO...
+`PATCH` `/account`
+### User fields
+A regular user can change the following fields:
+```JSON
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "User patch request",
+    "description": "Change account information for a user",
+    "type": "object",
+    "properties": {
+        "first_name": {
+            "description": "The user's first name",
+            "type": "string"
+        },
+        "last_name": {
+            "description": "The user's last name",
+            "type": "string"
+        }
+    },
+    "required": []
+}
+```
+### Admin fields
+An admin can *additionally* see the following fields:
+```JSON
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Admin user patch request",
+    "description": "Addisional fields an admin can mdify of a user",
+    "type": "object",
+    "properties": {
+        "email": {
+            "description": "The user's email address",
+            "type": "string"
+        },
+        "status": {
+            "description": "The user's status",
+            "type": "string"
+        },
+        "verified": {
+            "description": "Flag whether the user has been verified",
+            "type": "boolean"
+        },
+        "locked": {
+            "description": "Flag whether the user has been locked",
+            "type": "boolean"
+        },
+        "failed_logins": {
+            "description": "Amount of failed logins",
+            "type": "integer"
+        },
+        "admin": {
+            "description": "Flag whether the user is an admin",
+            "type": "boolean"
+        },
+        "acception": {
+            "description": "The user's acception date",
+            "type": "string"
+        },
+        "reception": {
+            "description": "The user's reception date",
+            "type": "string"
+        }
+    },
+    "required": []
+}
+```
+
+## Delete account
+`POST` `/account/delete`
+To delete their own account, regular users must specify their password in the
+delete request.
+Admins do not need to specify a password to delete another user's account.
+```JSON
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "User delete request",
+    "description": "Request to delete a user",
+    "type": "object",
+    "properties": {
+        "passwd": {
+            "description": "The user's email password",
+            "type": "string"
+        }
+    },
+    "required": []
+}
+```
