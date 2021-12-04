@@ -109,5 +109,5 @@ def set_commissions(user: User, commissions: Iterable[Commission]) -> None:
         user_commission.delete_instance()
 
     for commission in new:
-        user_commission = UserCommission(user=user.id, commission=commission)
+        user_commission = UserCommission(user=user, commission=commission)
         user_commission.save()

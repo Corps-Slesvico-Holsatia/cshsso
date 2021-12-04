@@ -16,7 +16,7 @@ def terminate_all_sessions(user: User) -> Response:
 
     sessions = []
 
-    for session in Session.select().where(Session.user == user.id):
+    for session in Session.select().where(Session.user == user):
         sessions.append(session.id)
         session.delete_instance()
 
