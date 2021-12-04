@@ -73,8 +73,8 @@ def delete_session_cookies(response: Response) -> Response:
     """Deletes the session cookie."""
 
     for domain in CONFIG.get('auth', 'domains').split():
-        response.delete_cookie('cshsso-session-id', domain=domain)
-        response.delete_cookie('cshsso-session-secret', domain=domain)
+        response.delete_cookie(SESSION_ID, domain=domain)
+        response.delete_cookie(SESSION_SECRET, domain=domain)
 
     return response
 
