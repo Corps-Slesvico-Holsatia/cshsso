@@ -3,20 +3,16 @@
 from datetime import timedelta
 
 __all__ = [
+    'PW_RESET_TEXT',
+    'PW_RESET_TOKEN_VALIDITY',
+    'PW_RESET_URL',
     'SESSION_ID',
     'SESSION_SECRET',
     'SESSION_VALIDITY',
-    'USER_ID',
-    'PW_RESET_TEXT',
-    'PW_RESET_TOKEN_VALIDITY',
-    'PW_RESET_URL'
+    'USER_ID'
 ]
 
 
-SESSION_ID = 'cshsso-session-id'
-SESSION_SECRET = 'cshsso-session-secret'
-SESSION_VALIDITY = timedelta(weeks=1)
-USER_ID = 'cshsso-user-id'
 PW_RESET_TEXT = '''Sehr geehrter Nutzer,
 
 bitte folgen Sie dem unten stehenden Link um
@@ -30,3 +26,7 @@ Der CC der Slesvico-Holsatia
 '''
 PW_RESET_TOKEN_VALIDITY = timedelta(days=1)
 PW_RESET_URL = 'https://cshsso.slesvico-holsatia.org/pwreset/confirm?token={}'
+SESSION_ID = 'cshsso-session-id'
+SESSION_SECRET = 'cshsso-session-secret'
+SESSION_VALIDITY = timedelta(weeks=1)
+USER_ID = 'cshsso-user-id'
