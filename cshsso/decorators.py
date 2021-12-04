@@ -87,8 +87,9 @@ class Authorization(Enum):
     @staticmethod
     def any(*authorizations: Authorization) -> Decorator:
         """Combine authorization checks via the any() function."""
-        def checkfunc(user: User) -> bool:
+        def any_auth(user: User) -> bool:
+            """Checks whether any authorization function succeeds."""
             return any(cell.cell_contents(user) for auth in authorizations
                        for cell in auth.__closure__)
 
-        return authorized(checkfunc)
+        return authorized(any_auth)
