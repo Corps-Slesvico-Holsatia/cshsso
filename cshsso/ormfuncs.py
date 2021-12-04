@@ -44,7 +44,7 @@ def get_user_as_json(session: Session, user: User) -> dict:
             'verified': user.verified,
             'locked': user.locked,
             'failed_logins': user.failed_logins,
-            'admin': user.admin,
+            'admin': user.admin
         })
 
     return json
