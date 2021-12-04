@@ -332,7 +332,7 @@ Admins do not need to specify a password to delete another user's account.
     "type": "object",
     "properties": {
         "passwd": {
-            "description": "The user's email password",
+            "description": "The user's password",
             "type": "string"
         }
     },
