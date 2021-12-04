@@ -11,8 +11,21 @@ Does not require authentication, duh!
 `Content-Type: application/json`
 ```JSON
 {
-    "email": <str:email_address>,
-    "passwd": <str:password>
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Login request",
+    "description": "Log a user in",
+    "type": "object",
+    "properties": {
+        "email": {
+            "description": "The email address of the user who wants to log in",
+            "type": "string"
+        },
+        "passwd": {
+            "description": "The password of the user who wants to log in",
+            "type": "string"
+        }
+    },
+    "required": ["email", "passwd"]
 }
 ```
 
@@ -21,7 +34,17 @@ Does not require authentication, duh!
 `Content-Type: application/json`
 ```JSON
 {
-    "all": <bool:terminate_all_sessions>
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Logout request",
+    "description": "Logout a user",
+    "type": "object",
+    "properties": {
+        "all": {
+            "description": "Flag, whether all sessions of the user shall be terminated",
+            "type": "boolean"
+        }
+    },
+    "required": []
 }
 ```
 
@@ -36,7 +59,17 @@ the actual password reset endpoint.
 `Content-Type: application/json`
 ```JSON
 {
-    "email": <str:email_address>
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Password reset link request",
+    "description": "Request a password reset link",
+    "type": "object",
+    "properties": {
+        "email": {
+            "description": "The email address of the user account",
+            "type": "string"
+        }
+    },
+    "required": ["email"]
 }
 ```
 
@@ -45,8 +78,21 @@ the actual password reset endpoint.
 `Content-Type: application/json`
 ```JSON
 {
-    "token": <str:password_reset_token>,
-    "passwd": <str:new_password>
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Password reset request",
+    "description": "Perform actual password reset",
+    "type": "object",
+    "properties": {
+        "token": {
+            "description": "The password reset token from the email",
+            "type": "string"
+        },
+        "passwd": {
+            "description": "The new password for the user account",
+            "type": "string"
+        }
+    },
+    "required": ["token", "passwd"]
 }
 ```
 
@@ -63,12 +109,37 @@ No authentication, but a ReCAPTCHA response is required!
 `Content-Type: application/json`
 ```JSON
 {
-    "response": <str:recaptcha_response>,
-    "email": <str:email_address>,
-    "passwd": <str:password>,
-    "first_name": <str:first_name>,
-    "last_name": <str:last_name>,
-    "status": <str:status>
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "New user",
+    "description": "Register a new user",
+    "type": "object",
+    "properties": {
+        "response": {
+            "description": "The ReCAPTCHA response",
+            "type": "string"
+        },
+        "email": {
+            "description": "The user's email address",
+            "type": "string"
+        },
+        "passwd": {
+            "description": "The user's password",
+            "type": "string"
+        },
+        "first_name": {
+            "description": "The user's first name",
+            "type": "string"
+        },
+        "last_name": {
+            "description": "The user's last name",
+            "type": "string"
+        },
+        "status": {
+            "description": "The user's status",
+            "type": "string"
+        }
+    },
+    "required": ["response", "email", "passwd", "first_name", "last_name", "status"]
 }
 ```
 
@@ -78,7 +149,17 @@ Authorized groups: `CHARGES`
 `Content-Type: application/json`
 ```JSON
 {
-    "user": <int:user_id>
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Confirm user",
+    "description": "Confirm a new user",
+    "type": "object",
+    "properties": {
+        "user": {
+            "description": "The user's ID",
+            "type": "integer"
+        }
+    },
+    "required": ["user"]
 }
 ```
 
@@ -88,28 +169,85 @@ Authorized groups: `CHARGES`
 ### User view
 ```JSON
 {
-    "id": <int:user_id>,
-    "email": <str:email_address>,
-    "first_name": <str:first_name>,
-    "last_name": <str:last_name>,
-    "status": <JSON:status>,
-    "registered": <str:registration_date>,
-    "acception": <str|null:acception_date>,
-    "reception": <str|null:reception_date>,
-    "commissions": [
-        <JSON:commission>,
-        ...
-    ]
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "New user",
+    "description": "Register a new user",
+    "type": "object",
+    "properties": {
+        "id": {
+            "description": "The user's ID",
+            "type": "integer"
+        },
+        "email": {
+            "description": "The user's email address",
+            "type": "string"
+        },
+        "passwd": {
+            "description": "The user's password",
+            "type": "string"
+        },
+        "first_name": {
+            "description": "The user's first name",
+            "type": "string"
+        },
+        "last_name": {
+            "description": "The user's last name",
+            "type": "string"
+        },
+        "status": {
+            "description": "The user's status",
+            "type": "string"
+        },
+        "registered": {
+            "description": "The user's registration date",
+            "type": "string"
+        },
+        "acception": {
+            "description": "The user's acception date",
+            "type": "string"
+        },
+        "reception": {
+            "description": "The user's reception date",
+            "type": "string"
+        },
+        "commissions": {"type": "array",
+            "items": {
+                "type": "object"
+            },
+            "minItems": 0,
+            "uniqueItems": true
+        }
+    },
+    "required": ["id", "email", "passwd", "first_name", "last_name", "status", "registered", "commissions"]
 }
 ```
 ### Admin view
 An admin can *additionally* see the following fields:
 ```JSON
 {
-    "verified": <bool:user_is_verified>,
-    "locked": <bool:user_is_locked>,
-    "failed_logins": <int:amount_of_failed_logins>,
-    "admin": <bool:user_is_admin>
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "New user",
+    "description": "Register a new user",
+    "type": "object",
+    "properties": {
+        "verified": {
+            "description": "Flag whether the user has been verified",
+            "type": "boolean"
+        },
+        "locked": {
+            "description": "Flag whether the user has been locked",
+            "type": "boolean"
+        },
+        "failed_logins": {
+            "description": "Amount of failed logins",
+            "type": "integer"
+        },
+        "admin": {
+            "description": "Flag whether the user is an admin",
+            "type": "boolean"
+        }
+    },
+    "required": ["verified", "locked", "failed_logins", "admin"]
 }
 ```
 
