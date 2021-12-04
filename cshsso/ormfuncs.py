@@ -1,6 +1,7 @@
 """ORM-related functions."""
 
 from contextlib import suppress
+from datetime import date
 from typing import Iterable, Optional
 
 from peewee import JOIN
@@ -73,10 +74,10 @@ def patch_user(session: Session, user: User, json: dict) -> User:
             user.admin = json['admin']
 
         with suppress(KeyError):
-            user.acception = json['acception']
+            user.acception = date.fromisoformat(json['acception'])
 
         with suppress(KeyError):
-            user.reception = json['reception']
+            user.reception = date.fromisoformat(json['reception'])
 
     with suppress(KeyError):
         user.first_name = json['first_name']
