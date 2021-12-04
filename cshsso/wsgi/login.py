@@ -44,5 +44,8 @@ def login() -> Union[JSONMessage, Response]:
 
     session, secret = for_user(user)
     session.save()
-    response = make_response(JSONMessage('Login successful.', status=200))
-    return set_session_cookies(response, session, secret=secret)
+    return set_session_cookies(
+        make_response(JSONMessage('Login successful.', status=200)),
+        session,
+        secret=secret
+    )
