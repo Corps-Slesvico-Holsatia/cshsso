@@ -5,6 +5,7 @@ from flask import request
 from wsgilib import JSON, JSONMessage
 
 from cshsso.decorators import authenticated, Authorization
+from cshsso.exceptions import InvalidPassword
 from cshsso.functions import date_or_none
 from cshsso.localproxies import SESSION, USER
 from cshsso.ormfuncs import delete_user
@@ -45,7 +46,11 @@ def patch() -> JSONMessage:
 def delete() -> JSONMessage:
     """Deletes the user's account."""
 
-    delete_user(SESSION, USER, passwd=request.json.get('passwd'))
+    try:
+        delete_user(SESSION, USER, passwd=request.json.get('passwd'))
+    except InvalidPassword:
+        return JSONMessage('Invalid password provided.', status=403)
+
     return JSONMessage('User deleted.', status=200)
 
 

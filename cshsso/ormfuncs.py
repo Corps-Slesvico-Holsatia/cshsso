@@ -84,6 +84,8 @@ def patch_user(session: Session, user: User, json: dict) -> User:
     with suppress(KeyError):
         user.last_name = json['last_name']
 
+    return user
+
 
 def delete_user(session: Session, user: User, *,
                 passwd: Optional[str] = None) -> bool:
