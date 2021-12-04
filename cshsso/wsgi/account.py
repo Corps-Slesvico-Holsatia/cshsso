@@ -8,11 +8,11 @@ from cshsso.decorators import authenticated, Authorization
 from cshsso.exceptions import InvalidPassword
 from cshsso.functions import date_or_none
 from cshsso.localproxies import SESSION, USER
-from cshsso.orm import delete_user
-from cshsso.orm import get_current_user
-from cshsso.orm import user_to_json
-from cshsso.orm import patch_user
-from cshsso.orm import set_commissions as _set_commissions
+from cshsso.orm.functions import delete_user
+from cshsso.orm.functions import get_current_user
+from cshsso.orm.functions import user_to_json
+from cshsso.orm.functions import patch_user
+from cshsso.orm.functions import set_commissions as _set_commissions
 from cshsso.roles import Commission, Status
 
 

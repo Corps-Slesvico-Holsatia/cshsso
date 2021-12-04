@@ -9,7 +9,7 @@ from cshsso.exceptions import InvalidPassword
 from cshsso.exceptions import NotAuthenticated
 from cshsso.exceptions import NotAuthorized
 from cshsso.exceptions import NotLoggedIn
-from cshsso.orm import User, Session
+from cshsso.orm.models import User, Session
 
 
 __all__ = ['ERRORS']

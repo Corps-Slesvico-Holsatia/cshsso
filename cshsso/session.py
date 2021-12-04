@@ -8,7 +8,7 @@ from cshsso.config import CONFIG
 from cshsso.constants import SESSION_ID, SESSION_SECRET
 from cshsso.exceptions import NotLoggedIn
 from cshsso.functions import genpw
-from cshsso.orm import User, Session, UserCommission
+from cshsso.orm.models import User, Session, UserCommission
 from cshsso.typing import SessionCredentials
 
 

@@ -4,7 +4,7 @@ from flask import request, Response, jsonify, make_response
 
 from cshsso.decorators import authenticated
 from cshsso.localproxies import USER, SESSION
-from cshsso.orm import User, Session
+from cshsso.orm.models import User, Session
 from cshsso.session import delete_session_cookies
 
 

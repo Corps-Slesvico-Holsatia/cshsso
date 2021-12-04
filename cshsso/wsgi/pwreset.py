@@ -13,7 +13,7 @@ from wsgilib import JSONMessage
 from cshsso.config import CONFIG
 from cshsso.constants import PW_RESET_TEXT
 from cshsso.email import send
-from cshsso.orm import PasswordResetToken, User
+from cshsso.orm.models import PasswordResetToken, User
 
 
 __all__ = ['request_pw_reset', 'confirm_pw_reset']

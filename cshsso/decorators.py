@@ -9,7 +9,7 @@ from cshsso.authorization import check_circle, check_convent, check_group
 from cshsso.convents import ConventAuth
 from cshsso.exceptions import NotAuthenticated, NotAuthorized
 from cshsso.localproxies import USER, SESSION
-from cshsso.orm import User
+from cshsso.orm.models import User
 from cshsso.roles import Circle, CommissionGroup
 from cshsso.typing import Decorator
 

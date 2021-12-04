@@ -1,7 +1,7 @@
 """Authorization checks."""
 
 from cshsso.convents import Convent, ConventAuth
-from cshsso.orm import User
+from cshsso.orm.models import User
 from cshsso.roles import Circle, Commission, CommissionGroup, Status
 
 

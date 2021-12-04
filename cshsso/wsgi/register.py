@@ -10,7 +10,7 @@ from wsgilib import JSONMessage
 from cshsso.config import CONFIG
 from cshsso.decorators import authenticated, Authorization
 from cshsso.email import send
-from cshsso.orm import User
+from cshsso.orm.models import User
 from cshsso.roles import Status
 
 

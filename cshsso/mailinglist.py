@@ -5,7 +5,7 @@ from typing import Iterator, Union
 
 from peewee import Expression, ModelSelect
 
-from cshsso.orm import User, UserCommission
+from cshsso.orm.models import User, UserCommission
 from cshsso.roles import Status, Circle, Commission, CommissionGroup
 
 
