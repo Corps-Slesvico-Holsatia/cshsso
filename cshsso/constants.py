@@ -3,8 +3,8 @@
 from datetime import timedelta
 
 __all__ = [
-'EMAIL_REGEX',
-'NAME_REGEX',
+    'EMAIL_REGEX',
+    'NAME_REGEX',
     'PW_RESET_TEXT',
     'PW_RESET_TOKEN_VALIDITY',
     'SESSION_ID',
@@ -24,7 +24,7 @@ EMAIL_REGEX = (
     r'''1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c'''
     r'''\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])'''
 )
-NAME_REGEX = r'''^[A-Za-zÄäÖöÜü '-]+$'''
+NAME_REGEX = r'''^[A-Za-zÄäÖöÜüß '-]+$'''
 PW_RESET_TEXT = '''Sehr geehrter Nutzer,
 
 bitte folgen Sie dem unten stehenden Link um
