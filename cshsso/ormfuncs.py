@@ -4,17 +4,22 @@ from contextlib import suppress
 from datetime import date
 from typing import Iterable, Optional
 
+from flask import request
 from peewee import JOIN
 
+from cshsso.constants import USER_ID
 from cshsso.exceptions import InvalidPassword
 from cshsso.orm import Session, User, UserCommission
 from cshsso.roles import Commission, Status
 
 
-__all__ = ['get_user', 'get_user_as_json', 'patch_user', 'delete_user']
-
-
-USER_PATCH_FIELDS = {'first_name', 'last_name'}
+__all__ = [
+    'get_user',
+    'get_current_user',
+    'get_user_as_json',
+    'patch_user',
+    'delete_user'
+]
 
 
 def get_user(uid: int) -> User:
@@ -23,6 +28,20 @@ def get_user(uid: int) -> User:
     return User.select(User, UserCommission).join(
         UserCommission, on=UserCommission.occupant == User.id,
         join_type=JOIN.LEFT_OUTER).where(User.id == uid).group_by(User).get()
+
+
+def get_current_user(session: Session, *, allow_other: bool = False) -> User:
+    """Returns the current user."""
+
+    if session.user.admin or allow_other:
+        try:
+            uid = int(request.cookies[USER_ID])
+        except KeyError:
+            return session.user
+
+        return get_user(uid)
+
+    return session.user
 
 
 def get_user_as_json(session: Session, user: User) -> dict:
