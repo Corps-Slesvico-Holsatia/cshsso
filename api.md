@@ -111,3 +111,7 @@ An admin can *additionally* see the following fields:
     "failed_logins": <int:amount_of_failed_logins>,
     "admin": <bool:user_is_admin>
 }
+```
+
+## Modify account data
+TODO...
