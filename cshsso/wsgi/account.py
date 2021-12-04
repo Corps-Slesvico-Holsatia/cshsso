@@ -96,17 +96,18 @@ def set_status() -> JSONMessage:
     """Sets the status of a user."""
 
     try:
-        status = Status[request.json['status']]
+        status = Status.from_string(request.json['status'])
     except KeyError:
         return JSONMessage('No status provied.', status=400)
     except ValueError:
         return JSONMessage('Invalid status provied.', status=400)
 
-    user = USER._get_current_object()   # pylint: disable=W0212
-    old_status, user.status = user.status, status
-    user.save()
-    return JSONMessage('Status updated.', old=old_status.name, new=status.name,
-                       status=200)
+    with USER as user:
+        old_status, user.status = user.status, status
+        user.save()
+
+    return JSONMessage('Status updated.', old=old_status.to_json(),
+                       new=status.to_json(), status=200)
 
 
 @authenticated
