@@ -36,7 +36,7 @@ def authorized(check_func: partial[[User], bool]) -> Decorator:
     def decorator(function: Callable[..., Any]) -> Callable[..., Any]:
         @wraps(function)
         def wrapper(*args, **kwargs) -> Any:
-            if check_func(USER):
+            if USER.admin or check_func(USER):
                 return function(*args, **kwargs)
 
             raise NotAuthorized(list(check_func.keywords.values())[0].name)
