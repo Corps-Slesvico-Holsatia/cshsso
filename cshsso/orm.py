@@ -19,6 +19,7 @@ from peewee import UUIDField
 from peeweeplus import Argon2Field, EnumField, MySQLDatabaseProxy
 
 from cshsso.config import CONFIG
+from cshsso.constants import PW_RESET_TOKEN_VALIDITY, SESSION_VALIDITY
 from cshsso.roles import Status, Commission
 
 
@@ -105,6 +106,18 @@ class Session(CSHSSOModel):     # pylint: disable=R0903
     user = ForeignKeyField(User, column_name='user', on_delete='CASCADE',
                            lazy_load=False)
     secret = Argon2Field()
+    valid_until = DateTimeField(
+        default=lambda: datetime.now() + SESSION_VALIDITY)
+
+    def is_valid(self) -> bool:
+        """Checks whether the session is valid."""
+        return self.valid_until > datetime.now()
+
+    def extend(self, duration: timedelta = SESSION_VALIDITY) -> Session:
+        """Extends the session."""
+        self.valid_until = datetime.now() + duration
+        self.save()
+        return self
 
 
 class UserCommission(CSHSSOModel):  # pylint: disable=R0903
@@ -123,8 +136,6 @@ class UserCommission(CSHSSOModel):  # pylint: disable=R0903
 class PasswordResetToken(CSHSSOModel):  # pylint: disable=R0903
     """A per-user password reset token."""
 
-    VALIDITY = timedelta(days=1)
-
     class Meta:     # pylint: disable=C0115,R0903
         table_name = 'password_reset_token'
 
@@ -136,7 +147,7 @@ class PasswordResetToken(CSHSSOModel):  # pylint: disable=R0903
 
     def is_valid(self) -> bool:
         """Determines whether the password reset token is currently valid."""
-        return self.issued + self.VALIDITY > datetime.now()
+        return self.issued + PW_RESET_TOKEN_VALIDITY > datetime.now()
 
 
 MODELS = [User, Session, UserCommission, PasswordResetToken]

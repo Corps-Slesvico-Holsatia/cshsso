@@ -37,12 +37,16 @@ def get_session() -> Session:
     except Session.DoesNotExist:
         raise NotLoggedIn() from None
 
+    if not session.is_valid():
+        session.delete_instance()
+        raise NotLoggedIn() from None
+
     try:
         session.secret.verify(secret)
     except VerifyMismatchError:
         raise NotLoggedIn() from None
 
-    return session
+    return session.extend()
 
 
 def for_user(user: User) -> tuple[Session, str]:
