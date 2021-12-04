@@ -9,6 +9,7 @@ from cshsso.constants import SESSION_ID, SESSION_SECRET
 from cshsso.exceptions import NotLoggedIn
 from cshsso.functions import genpw
 from cshsso.orm import User, Session, UserCommission
+from cshsso.typing import SessionCredentials
 
 
 __all__ = [
@@ -20,8 +21,8 @@ __all__ = [
 ]
 
 
-def get_session() -> Session:
-    """Returns the current session object."""
+def get_session_credentials() -> SessionCredentials:
+    """Returns the session credentials from the request."""
 
     try:
         session_id = request.cookies[SESSION_ID]
@@ -29,15 +30,27 @@ def get_session() -> Session:
     except KeyError:
         raise NotLoggedIn() from None
 
+    return SessionCredentials(session_id, secret)
+
+
+def get_session_record(session_id: int) -> Session:
+    """Returns the session database record."""
+
     try:
-        session = Session.select(Session, User, UserCommission).join(
-            User).join(UserCommission, on=UserCommission.user == User.id,
+        return Session.select(Session, User, UserCommission).join(
+            User).join(UserCommission, on=UserCommission.occupant == User.id,
                        join_type=JOIN.LEFT_OUTER).group_by(Session).where(
             Session.id == session_id).get()
     except Session.DoesNotExist:
         raise NotLoggedIn() from None
 
-    if not session.is_valid():
+
+def get_session() -> Session:
+    """Returns the current session object."""
+
+    session_id, secret = get_session_credentials()
+
+    if not (session := get_session_record(session_id)).is_valid():
         session.delete_instance()
         raise NotLoggedIn() from None
 
