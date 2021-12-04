@@ -5,7 +5,6 @@ from datetime import timedelta
 __all__ = [
     'PW_RESET_TEXT',
     'PW_RESET_TOKEN_VALIDITY',
-    'PW_RESET_URL',
     'SESSION_ID',
     'SESSION_SECRET',
     'SESSION_VALIDITY',
@@ -25,7 +24,6 @@ Mit freundlichen Grüßen
 Der CC der Slesvico-Holsatia
 '''
 PW_RESET_TOKEN_VALIDITY = timedelta(days=1)
-PW_RESET_URL = 'https://cshsso.slesvico-holsatia.org/pwreset/confirm?token={}'
 SESSION_ID = 'cshsso-session-id'
 SESSION_SECRET = 'cshsso-session-secret'
 SESSION_VALIDITY = timedelta(weeks=1)

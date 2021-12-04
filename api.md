@@ -51,7 +51,7 @@ Payload
 ## Password reset
 To reset a password, the user must first request a password reset.
 After that, they get an email containing a reset link.
-The reset link, contains a reset token, that must be passed to 
+The reset link, contains a reset token, that must be passed to
 the actual password reset endpoint.
 
 ### Request reset link
@@ -67,9 +67,13 @@ Payload
         "email": {
             "description": "The email address of the user account",
             "type": "string"
+        },
+        "url": {
+            "description": "URL template for emailing of reset link",
+            "type": "string"
         }
     },
-    "required": ["email"]
+    "required": ["email", "url"]
 }
 ```
 

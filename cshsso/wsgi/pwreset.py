@@ -11,7 +11,7 @@ from recaptcha import recaptcha
 from wsgilib import JSONMessage
 
 from cshsso.config import CONFIG
-from cshsso.constants import PW_RESET_TEXT, PW_RESET_URL
+from cshsso.constants import PW_RESET_TEXT
 from cshsso.email import send
 from cshsso.orm import PasswordResetToken, User
 
@@ -40,7 +40,7 @@ def password_reset_pending(user: Union[User, int]) -> bool:
     return result
 
 
-def get_email(password_reset_token: str, email_address: str, *,
+def get_email(password_reset_token: str, email_address: str, url: str, *,
               section: str = 'pwreset') -> EMail:
     """Returns an email object."""
 
@@ -51,9 +51,7 @@ def get_email(password_reset_token: str, email_address: str, *,
                    fallback='noreply@cshsso.slesvico-holsatia.org'),
         email_address,
         plain=CONFIG.get(section, 'template', fallback=PW_RESET_TEXT).format(
-            CONFIG.get(section, 'url', fallback=PW_RESET_URL).format(
-                password_reset_token
-            )
+            url.format(password_reset_token)
         )
     )
 
@@ -64,6 +62,9 @@ def request_pw_reset() -> JSONMessage:
 
     if not (email := request.json.get('email')):
         return JSONMessage('No email address specified.', status=400)
+
+    if not (url := request.json.get('url')):
+        return JSONMessage('No URL specified.', status=400)
 
     try:
         user = User.select().where(User.email == email).get()
@@ -78,7 +79,7 @@ def request_pw_reset() -> JSONMessage:
     password_reset_token = PasswordResetToken(user=user)
     password_reset_token.save()
 
-    if send([get_email(password_reset_token.token.hex, user.email)]):
+    if send([get_email(password_reset_token.token.hex, user.email, url)]):
         return RESET_SUCCEEDED
 
     return JSONMessage('Could not email reset token.', status=500)
