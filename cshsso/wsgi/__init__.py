@@ -6,7 +6,6 @@ from cshsso.wsgi.account import patch as patch_account
 from cshsso.wsgi.account import delete as delete_account
 from cshsso.wsgi.account import set_status
 from cshsso.wsgi.account import set_commissions
-from cshsso.wsgi.commissions import pass_commission
 from cshsso.wsgi.login import login
 from cshsso.wsgi.logout import logout
 from cshsso.wsgi.pwreset import request_pw_reset, confirm_pw_reset
@@ -21,7 +20,6 @@ __all__ = ['APPLICATION']
 
 
 APPLICATION = Application('CSHSSO')
-APPLICATION.route('/pass-commission', methods=['POST'])(pass_commission)
 APPLICATION.route('/login', methods=['POST'])(login)
 APPLICATION.route('/logout', methods=['POST'])(logout)
 APPLICATION.route('/pwreset', methods=['POST'])(request_pw_reset)
