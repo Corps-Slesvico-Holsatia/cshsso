@@ -20,7 +20,7 @@ def get_user(uid: int) -> User:
     """Returns the destination user."""
 
     return User.select(User, UserCommission).join(
-        UserCommission, on=UserCommission.user == User.id,
+        UserCommission, on=UserCommission.occupant == User.id,
         join_type=JOIN.LEFT_OUTER).where(User.id == uid).group_by(User).get()
 
 
