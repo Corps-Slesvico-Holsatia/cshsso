@@ -89,7 +89,7 @@ def delete_user(session: Session, user: User, *,
                 passwd: Optional[str] = None) -> bool:
     """Deletes the user."""
 
-    if session.user.admin:
+    if (actor := session.user).admin and actor != user:
         return user.delete_instance()
 
     if passwd is not None and user.login(passwd):
