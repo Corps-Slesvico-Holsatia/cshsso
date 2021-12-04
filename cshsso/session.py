@@ -3,7 +3,6 @@
 from argon2.exceptions import VerifyMismatchError
 from flask import request, Response
 from peewee import JOIN
-from werkzeug.http import dump_cookie
 
 from cshsso.config import CONFIG
 from cshsso.constants import SESSION_ID, SESSION_SECRET
