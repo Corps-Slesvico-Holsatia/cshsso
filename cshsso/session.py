@@ -56,17 +56,15 @@ def set_session_cookies(response: Response, session: Session,
                         secret: str = None) -> Response:
     """Sets the session cookie."""
 
-    if secret is None:
-        session.secret = secret = genpw()
-        session.save()
-
     for domain in CONFIG.get('auth', 'domains').split():
         response.set_cookie(
             SESSION_ID, str(session.id), expires=session.end, domain=domain,
             secure=True, samesite=None)
-        response.set_cookie(
-            SESSION_SECRET, secret, expires=session.end, domain=domain,
-            secure=True, samesite=None)
+
+        if secret is not None:
+            response.set_cookie(
+                SESSION_SECRET, secret, expires=session.end, domain=domain,
+                secure=True, samesite=None)
 
     return response
 
