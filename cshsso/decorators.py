@@ -64,32 +64,27 @@ class Authorization(Enum):
     """Authorization modes."""
 
     # Circles
-    INNER = authorized(partial(check_circle, circle=Circle.INNER))
-    OUTER = authorized(partial(check_circle, circle=Circle.OUTER))
-    GUESTS = authorized(partial(check_circle, circle=Circle.GUESTS))
+    INNER = partial(check_circle, circle=Circle.INNER)
+    OUTER = partial(check_circle, circle=Circle.OUTER)
+    GUESTS = partial(check_circle, circle=Circle.GUESTS)
     # Commissions
-    CHARGES = authorized(partial(check_group, group=CommissionGroup.CHARGES))
-    AHV = authorized(partial(check_group, group=CommissionGroup.AHV))
+    CHARGES = partial(check_group, group=CommissionGroup.CHARGES)
+    AHV = partial(check_group, group=CommissionGroup.AHV)
     # Convents
-    AHC = authorized(partial(check_convent, convent=ConventAuth.AHC))
-    AHC_VOTE = authorized(partial(check_convent, convent=ConventAuth.AHC_VOTE))
-    CC = authorized(partial(check_convent, convent=ConventAuth.CC))
-    CC_VOTE = authorized(partial(check_convent, convent=ConventAuth.CC_VOTE))
-    FC = authorized(partial(check_convent, convent=ConventAuth.FC))
-    FC_VOTE = authorized(partial(check_convent, convent=ConventAuth.FC_VOTE))
-    FCC = authorized(partial(check_convent, convent=ConventAuth.FCC))
-    FCC_VOTE = authorized(partial(check_convent, convent=ConventAuth.FCC_VOTE))
+    AHC = partial(check_convent, convent=ConventAuth.AHC)
+    AHC_VOTE = partial(check_convent, convent=ConventAuth.AHC_VOTE)
+    CC = partial(check_convent, convent=ConventAuth.CC)
+    CC_VOTE = partial(check_convent, convent=ConventAuth.CC_VOTE)
+    FC = partial(check_convent, convent=ConventAuth.FC)
+    FC_VOTE = partial(check_convent, convent=ConventAuth.FC_VOTE)
+    FCC = partial(check_convent, convent=ConventAuth.FCC)
+    FCC_VOTE = partial(check_convent, convent=ConventAuth.FCC_VOTE)
 
     def __call__(self, *args, **kwargs) -> Any:
         """Delegate to decorator function."""
-        return self.value(*args, **kwargs)
+        return authorized(self.value)(*args, **kwargs)
 
     @staticmethod
     def any(*authorizations: Authorization) -> Decorator:
         """Combine authorization checks via the any() function."""
-        def any_auth(user: User) -> bool:
-            """Checks whether any authorization function succeeds."""
-            return any(cell.cell_contents(user) for auth in authorizations
-                       for cell in auth.__closure__)
-
-        return authorized(any_auth)
+        return authorized(lambda u: any(a.value(u) for a in authorizations))
