@@ -3,7 +3,7 @@
 from __future__ import annotations
 from enum import Enum
 from functools import partial, wraps
-from typing import Any, Callable
+from typing import Any
 
 from cshsso.authorization import check_circle, check_convent, check_group
 from cshsso.convents import ConventAuth
@@ -11,13 +11,13 @@ from cshsso.exceptions import NotAuthenticated, NotAuthorized
 from cshsso.localproxies import USER, SESSION
 from cshsso.orm.models import User
 from cshsso.roles import Circle, CommissionGroup
-from cshsso.typing import Decorator
+from cshsso.typing import AnyCallable, Decorator
 
 
 __all__ = ['authenticated', 'admin', 'Authorization']
 
 
-def authenticated(function: Callable[..., Any]) -> Callable[..., Any]:
+def authenticated(function: AnyCallable) -> AnyCallable:
     """Ensures authentication."""
 
     @wraps(function)
@@ -34,7 +34,7 @@ def authenticated(function: Callable[..., Any]) -> Callable[..., Any]:
 def authorized(check_func: partial[[User], bool]) -> Decorator:
     """Determines whether the current user is authorized."""
 
-    def decorator(function: Callable[..., Any]) -> Callable[..., Any]:
+    def decorator(function: AnyCallable) -> AnyCallable:
         @wraps(function)
         def wrapper(*args, **kwargs) -> Any:
             if USER.admin or check_func(USER):
@@ -47,7 +47,7 @@ def authorized(check_func: partial[[User], bool]) -> Decorator:
     return decorator
 
 
-def admin(function: Callable[..., Any]) -> Callable[..., Any]:
+def admin(function: AnyCallable) -> AnyCallable:
     """Checks whether the user is an admin."""
 
     @wraps(function)
@@ -80,9 +80,9 @@ class Authorization(Enum):
     FCC = partial(check_convent, convent=ConventAuth.FCC)
     FCC_VOTE = partial(check_convent, convent=ConventAuth.FCC_VOTE)
 
-    def __call__(self, *args, **kwargs) -> Any:
+    def __call__(self, function: AnyCallable) -> AnyCallable:
         """Delegate to decorator function."""
-        return authorized(self.value)(*args, **kwargs)
+        return authorized(self.value)(function)
 
     @staticmethod
     def any(*authorizations: Authorization) -> Decorator:
