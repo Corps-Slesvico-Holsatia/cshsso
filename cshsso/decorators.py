@@ -85,6 +85,14 @@ class Authorization(Enum):
         return authorized(NamedFunction.from_enum(self))(function)
 
     @staticmethod
+    def all(*authorizations: Authorization) -> Decorator:
+        """Combine authorization checks via the all() function."""
+        return authorized(NamedFunction(
+             ' & '.join(a.name for a in authorizations),
+             lambda user: all(a.value(user) for a in authorizations)
+        ))
+
+    @staticmethod
     def any(*authorizations: Authorization) -> Decorator:
         """Combine authorization checks via the any() function."""
         return authorized(NamedFunction(
