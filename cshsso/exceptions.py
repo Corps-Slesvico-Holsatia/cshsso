@@ -18,7 +18,7 @@ class NotAuthenticated(Exception):
 
     def __init__(self, verified: bool, locked: bool,
                  failed_logins_exceeded: bool):
-        super().__init__(verified, locked)
+        super().__init__(verified, locked, failed_logins_exceeded)
         self.verified = verified
         self.locked = locked
         self.failed_logins_exceeded = failed_logins_exceeded
