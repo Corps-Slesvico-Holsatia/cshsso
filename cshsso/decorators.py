@@ -81,7 +81,7 @@ class Authorization(Enum):
 
     def __call__(self, function: AnyCallable) -> AnyCallable:
         """Delegate to decorator function."""
-        return authorized(NamedFunction.from_enum(self))(function)
+        return authorized(NamedFunction(self.name, self.value))(function)
 
     @staticmethod
     def all(*authorizations: Authorization) -> Decorator:

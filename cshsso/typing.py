@@ -1,7 +1,6 @@
 """Common type hints."""
 
 from __future__ import annotations
-from enum import EnumMeta
 from typing import Any, Callable, NamedTuple
 
 from flask import Response
@@ -32,11 +31,6 @@ class NamedFunction(NamedTuple):
     def __call__(self, *args, **kwargs) -> Any:
         """Calls the function."""
         return self.function(*args, **kwargs)
-
-    @classmethod
-    def from_enum(cls, enum: EnumMeta) -> NamedFunction:
-        """Creates a named function from an enum."""
-        return cls(enum.name, enum.value)
 
 
 class SessionCredentials(NamedTuple):
