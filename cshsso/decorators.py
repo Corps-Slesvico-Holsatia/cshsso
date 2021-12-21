@@ -11,7 +11,7 @@ from cshsso.exceptions import NotAuthenticated, NotAuthorized
 from cshsso.localproxies import USER, SESSION
 from cshsso.orm.models import User
 from cshsso.roles import Circle, CommissionGroup
-from cshsso.typing import AnyCallable, Decorator
+from cshsso.typing import AnyCallable, Decorator, NamedFunction
 
 
 __all__ = ['authenticated', 'admin', 'Authorization']
@@ -31,7 +31,7 @@ def authenticated(function: AnyCallable) -> AnyCallable:
     return wrapper
 
 
-def authorized(check_func: partial[[User], bool]) -> Decorator:
+def authorized(check_func: NamedFunction) -> Decorator:
     """Determines whether the current user is authorized."""
 
     def decorator(function: AnyCallable) -> AnyCallable:
@@ -40,7 +40,7 @@ def authorized(check_func: partial[[User], bool]) -> Decorator:
             if USER.admin or check_func(USER):
                 return function(*args, **kwargs)
 
-            raise NotAuthorized(list(check_func.keywords.values())[0].name)
+            raise NotAuthorized(check_func.name)
 
         return wrapper
 
@@ -82,9 +82,13 @@ class Authorization(Enum):
 
     def __call__(self, function: AnyCallable) -> AnyCallable:
         """Delegate to decorator function."""
-        return authorized(self.value)(function)
+        return authorized(NamedFunction.from_enum(self))(function)
 
     @staticmethod
     def any(*authorizations: Authorization) -> Decorator:
         """Combine authorization checks via the any() function."""
-        return authorized(lambda u: any(a.value(u) for a in authorizations))
+        def any_wrapper(user: User):
+            return any(a.value(user) for a in authorizations)
+
+        name = ' | '.join(a.name for a in authorizations)
+        return authorized(NamedFunction(name, any_wrapper))
