@@ -27,7 +27,7 @@ class NamedFunction(NamedTuple):
     """A function with a given name."""
 
     name: str
-    function: Callable[..., Any]
+    function: AnyCallable
 
     def __call__(self, *args, **kwargs) -> Any:
         """Calls the function."""
