@@ -80,7 +80,7 @@ class Authorization(Enum):
     FCC_VOTE = partial(check_convent, convent=ConventAuth.FCC_VOTE)
 
     def __call__(self, function: AnyCallable) -> AnyCallable:
-        """Delegate to decorator function."""
+        """Decorate the given function."""
         return authorized(NamedFunction(self.name, self.value))(function)
 
     @staticmethod
