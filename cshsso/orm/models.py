@@ -31,6 +31,7 @@ from cshsso.roles import Status, Commission
 
 __all__ = [
     'DATABASE',
+    'BaseModel',
     'User',
     'Session',
     'UserCommission',
@@ -41,7 +42,7 @@ __all__ = [
 DATABASE = MySQLDatabaseProxy('cshsso')
 
 
-class CSHSSOModel(Model):   # pylint: disable=R0903
+class BaseModel(Model):   # pylint: disable=R0903
     """Base model for the CSH-SSO database."""
 
     class Meta:     # pylint: disable=C0115,R0903
@@ -49,7 +50,7 @@ class CSHSSOModel(Model):   # pylint: disable=R0903
         schema = database.database
 
 
-class User(CSHSSOModel):     # pylint: disable=R0903
+class User(BaseModel):     # pylint: disable=R0903
     """A user account."""
 
     id = AutoField()
@@ -108,7 +109,7 @@ class User(CSHSSOModel):     # pylint: disable=R0903
             UserCommission.commission == commission)
 
 
-class Session(CSHSSOModel):     # pylint: disable=R0903
+class Session(BaseModel):     # pylint: disable=R0903
     """A user session."""
 
     id = AutoField()
@@ -129,7 +130,7 @@ class Session(CSHSSOModel):     # pylint: disable=R0903
         return self
 
 
-class UserCommission(CSHSSOModel):  # pylint: disable=R0903
+class UserCommission(BaseModel):  # pylint: disable=R0903
     """User commissions."""
 
     class Meta:     # pylint: disable=C0115,R0903
@@ -142,7 +143,7 @@ class UserCommission(CSHSSOModel):  # pylint: disable=R0903
     commission = EnumField(Commission, use_name=True, unique=True)
 
 
-class PasswordResetToken(CSHSSOModel):  # pylint: disable=R0903
+class PasswordResetToken(BaseModel):  # pylint: disable=R0903
     """A per-user password reset token."""
 
     class Meta:     # pylint: disable=C0115,R0903
