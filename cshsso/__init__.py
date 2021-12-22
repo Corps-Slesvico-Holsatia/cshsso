@@ -1,6 +1,7 @@
 """Single Sign-On framework for the Corps."""
 
 from cshsso.application import Application
+from cshsso.convents import Convent
 from cshsso.decorators import admin, authenticated, Authorization
 from cshsso.localproxies import SESSION, USER
 from cshsso.mailinglist import get_emails
@@ -21,6 +22,7 @@ __all__ = [
     'Circle',
     'Commission',
     'CommissionGroup',
+    'Convent',
     'Semester',
     'Status',
     'User',
