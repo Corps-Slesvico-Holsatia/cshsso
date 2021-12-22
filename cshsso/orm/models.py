@@ -16,14 +16,13 @@ from peewee import ModelSelect
 from peewee import UUIDField
 
 from peeweeplus import Argon2Field
+from peeweeplus import EMailField
 from peeweeplus import EnumField
 from peeweeplus import HTMLTextField
 from peeweeplus import MySQLDatabaseProxy
-from peeweeplus import RestrictedCharField
+from peeweeplus import UserNameField
 
 from cshsso.config import CONFIG
-from cshsso.constants import EMAIL_REGEX
-from cshsso.constants import NAME_REGEX
 from cshsso.constants import PW_RESET_TOKEN_VALIDITY
 from cshsso.constants import SESSION_VALIDITY
 from cshsso.roles import Status, Commission
@@ -54,10 +53,10 @@ class User(BaseModel):     # pylint: disable=R0903
     """A user account."""
 
     id = AutoField()
-    email = RestrictedCharField(EMAIL_REGEX, unique=True)
+    email = EMailField(unique=True)
     passwd = Argon2Field()
-    first_name = RestrictedCharField(NAME_REGEX)
-    last_name = RestrictedCharField(NAME_REGEX)
+    first_name = UserNameField()
+    last_name = UserNameField()
     registered = DateTimeField(default=datetime.now)
     verified = BooleanField(default=False)
     locked = BooleanField(default=False)
