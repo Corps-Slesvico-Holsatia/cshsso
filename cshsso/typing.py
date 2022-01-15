@@ -11,7 +11,10 @@ __all__ = [
     'Decorator',
     'ErrorHandler',
     'ErrorHandlers',
+    'Initializer',
+    'Initializers',
     'NamedFunction',
+    'ResponseProcessor',
     'SessionCredentials'
 ]
 
@@ -20,6 +23,9 @@ AnyCallable = Callable[..., Any]
 Decorator = Callable[[AnyCallable], AnyCallable]
 ErrorHandler = Callable[[Exception], Response]
 ErrorHandlers = dict[type, ErrorHandler]
+Initializer = Callable[[], None]
+Initializers = set[Initializer]
+ResponseProcessor = Callable[[Response], Response]
 
 
 class NamedFunction(NamedTuple):
