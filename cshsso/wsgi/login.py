@@ -13,10 +13,12 @@ from cshsso.session import for_user, set_session_cookies
 __all__ = ['login']
 
 
-INVALID_USER_NAME_OR_PASSWORD = ('Invalid user name or password.', 400)
+INVALID_USER_NAME_OR_PASSWORD = JSONMessage(
+    'Invalid user name or password.', status=403
+)
 
 
-def login() -> Union[JSONMessage, Response, tuple[str, int]]:
+def login() -> Union[JSONMessage, Response]:
     """Logs in a user.
     POST: application/json
     {
