@@ -15,14 +15,14 @@ __all__ = ['Application']
 class Application(Flask):
     """Common CSH-SSO base application."""
 
-    errors = dict(ERRORS)
+    error_handlers = dict(ERRORS)
     initializers = {lambda: CONFIG.read(CONFIG_FILE)}
     post_processor = postprocess_response
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        for exception, function in self.errors.items():
+        for exception, function in self.error_handlers.items():
             self.register_error_handler(exception, function)
 
         for initializer in self.initializers:
@@ -32,12 +32,12 @@ class Application(Flask):
 
     def __init_subclass__(
             cls,
-            errors: Optional[ErrorHandlers] = None,
+            error_handlers: Optional[ErrorHandlers] = None,
             initializers: Optional[Initializers] = None,
             post_processor: Optional[ResponseProcessor] = None
     ):
-        if errors is not None:
-            cls.errors.update(errors)
+        if error_handlers is not None:
+            cls.error_handlers.update(error_handlers)
 
         if initializers:
             cls.initializers.update(initializers)
