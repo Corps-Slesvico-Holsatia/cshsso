@@ -16,7 +16,7 @@ __all__ = ['login']
 INVALID_USER_NAME_OR_PASSWORD = ('Invalid user name or password.', 400)
 
 
-def login() -> Union[JSONMessage, Response]:
+def login() -> Union[JSONMessage, Response, tuple[str, int]]:
     """Logs in a user.
     POST: application/json
     {
