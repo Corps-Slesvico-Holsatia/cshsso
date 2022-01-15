@@ -15,7 +15,7 @@ __all__ = ['Application']
 class Application(Flask):
     """Common CSH-SSO base application."""
 
-    error_handlers = dict(ERRORS)
+    error_handlers = ERRORS
     initializers = {lambda: CONFIG.read(CONFIG_FILE)}
     post_processor = postprocess_response
 
@@ -37,10 +37,10 @@ class Application(Flask):
             post_processor: Optional[ResponseProcessor] = None
     ):
         if error_handlers is not None:
-            cls.error_handlers.update(error_handlers)
+            cls.error_handlers = {**cls.error_handlers, **error_handlers}
 
         if initializers:
-            cls.initializers.update(initializers)
+            cls.initializers = {*cls.initializers, *initializers}
 
         if post_processor:
             cls.post_processor = post_processor
