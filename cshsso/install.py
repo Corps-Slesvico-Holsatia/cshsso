@@ -11,10 +11,12 @@ __all__ = ['setup_db']
 
 
 DB_SETUP_PARSER = ArgumentParser(description='Setup CSHSSO database.')
-DB_SETUP_PARSER.add_argument('-s', '--safe', action='store_true',
-                             help='ignore existing databse tables')
-DB_SETUP_PARSER.add_argument('-v', '--verbose', action='store_true',
-                             help='be gassy')
+DB_SETUP_PARSER.add_argument(
+    '-s', '--safe', action='store_true', help='ignore existing databse tables'
+)
+DB_SETUP_PARSER.add_argument(
+    '-v', '--verbose', action='store_true', help='be gassy'
+)
 
 
 def setup_db() -> int:

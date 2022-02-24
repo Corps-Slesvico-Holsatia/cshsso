@@ -37,10 +37,11 @@ def get_session_record(session_id: int) -> Session:
     """Returns the session database record."""
 
     try:
-        return Session.select(Session, User, UserCommission).join(
-            User).join(UserCommission, on=UserCommission.occupant == User.id,
-                       join_type=JOIN.LEFT_OUTER).group_by(Session).where(
-            Session.id == session_id).get()
+        return Session.select(Session, User, UserCommission).join(User).join(
+            UserCommission, on=UserCommission.occupant == User.id,
+            join_type=JOIN.LEFT_OUTER).group_by(Session).where(
+            Session.id == session_id
+        ).get()
     except Session.DoesNotExist:
         raise NotLoggedIn() from None
 
@@ -66,7 +67,7 @@ def for_user(user: User) -> tuple[Session, str]:
     """Opens a new session for the given user."""
 
     session = Session(user=user, secret=(secret := genpw()))
-    return (session, secret)
+    return session, secret
 
 
 def set_session_cookies(response: Response, session: Session,
@@ -76,12 +77,14 @@ def set_session_cookies(response: Response, session: Session,
     for domain in CONFIG.get('auth', 'domains').split():
         response.set_cookie(
             SESSION_ID, str(session.id), expires=session.end, domain=domain,
-            secure=True, samesite=None)
+            secure=True, samesite=None
+        )
 
         if secret is not None:
             response.set_cookie(
                 SESSION_SECRET, secret, expires=session.end, domain=domain,
-                secure=True, samesite=None)
+                secure=True, samesite=None
+            )
 
     return response
 

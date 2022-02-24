@@ -25,8 +25,10 @@ def get_condition(*targets: Target) -> Expression:
 
     commissions = {comm for comm in targets if isinstance(comm, Commission)}
 
-    for cgroup in filter(partial(isinstance, class_or_tuple=CommissionGroup),
-                         targets):
+    for cgroup in filter(
+            partial(isinstance, class_or_tuple=CommissionGroup),
+            targets
+    ):
         commissions |= set(cgroup)
 
     user_ids = {user.id for user in targets if isinstance(user, User)}
@@ -49,7 +51,8 @@ def get_users(*targets: Target) -> ModelSelect:
     """Yields email addresses."""
 
     return User.select(User, UserCommission).join(UserCommission).where(
-        get_condition(targets))
+        get_condition(targets)
+    )
 
 
 def get_emails(*targets: Target) -> Iterator[str]:

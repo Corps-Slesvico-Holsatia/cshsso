@@ -22,8 +22,10 @@ def authenticated(function: AnyCallable) -> AnyCallable:
     @wraps(function)
     def wrapper(*args, **kwargs) -> Any:
         if (user := SESSION.user).disabled:
-            raise NotAuthenticated(user.verified, user.locked,
-                                   user.failed_logins_exceeded)
+            raise NotAuthenticated(
+                user.verified, user.locked,
+                user.failed_logins_exceeded
+            )
 
         return function(*args, **kwargs)
 
