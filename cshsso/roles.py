@@ -92,8 +92,10 @@ class Commission(Enum):
     EDV = RoleType('EDV-Wart')
     # AHV
     AHV = RoleType('Altherrenvorstandsvorsitzender', 'AHV')
-    AHV_STELLV = RoleType('stellvertretender Altherrenvorstandsvorsitzender',
-                          'stellv. AHV')
+    AHV_STELLV = RoleType(
+        'stellvertretender Altherrenvorstandsvorsitzender',
+        'stellv. AHV'
+    )
     AHKW = RoleType('Altherren-Kassenwart', 'AHKW')
 
     @classmethod
