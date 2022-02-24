@@ -52,8 +52,9 @@ def delete() -> JSONMessage:
 
     try:
         with USER as user:
-            delete_user(user, actor=SESSION.user,
-                        passwd=request.json.get('passwd'))
+            delete_user(
+                user, actor=SESSION.user, passwd=request.json.get('passwd')
+            )
     except InvalidPassword:
         return JSONMessage('Invalid password provided.', status=403)
 
@@ -128,6 +129,8 @@ def set_commissions() -> JSONMessage:
         return JSONMessage('Invalid commission provied.', status=400)
 
     _set_commissions(USER, commissions)
-    return JSONMessage('Commissions updated.',
-                       commissions={c.to_json() for c in commissions},
-                       status=200)
+    return JSONMessage(
+        'Commissions updated.',
+        commissions={c.to_json() for c in commissions},
+        status=200
+    )

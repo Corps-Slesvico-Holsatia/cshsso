@@ -31,7 +31,8 @@ def password_reset_pending(user: Union[User, int]) -> bool:
     result = False
 
     for pw_reset_token in PasswordResetToken.select().where(
-                PasswordResetToken.user == user):
+            PasswordResetToken.user == user
+    ):
         if pw_reset_token.is_valid():
             result = True
         else:
@@ -40,15 +41,23 @@ def password_reset_pending(user: Union[User, int]) -> bool:
     return result
 
 
-def get_email(password_reset_token: str, email_address: str, url: str, *,
-              section: str = 'pwreset') -> EMail:
+def get_email(
+        password_reset_token: str,
+        email_address: str,
+        url: str,
+        *,
+        section: str = 'pwreset'
+) -> EMail:
     """Returns an email object."""
 
     return EMail(
-        CONFIG.get(section, 'subject',
-                   fallback='Zurücklsetzen Ihres Passworts'),
-        CONFIG.get(section, 'sender',
-                   fallback='noreply@cshsso.slesvico-holsatia.org'),
+        CONFIG.get(
+            section, 'subject', fallback='Zurücklsetzen Ihres Passworts'
+        ),
+        CONFIG.get(
+            section, 'sender',
+            fallback='noreply@cshsso.slesvico-holsatia.org'
+        ),
         email_address,
         plain=CONFIG.get(section, 'template', fallback=PW_RESET_TEXT).format(
             url.format(password_reset_token)
@@ -77,8 +86,9 @@ def request_pw_reset() -> JSONMessage:
         return RESET_SUCCEEDED
 
     if password_reset_pending(user):
-        return JSONMessage('You already requested a password reset.',
-                           status=400)
+        return JSONMessage(
+            'You already requested a password reset.', status=400
+        )
 
     password_reset_token = PasswordResetToken(user=user)
     password_reset_token.save()
@@ -105,7 +115,8 @@ def confirm_pw_reset() -> JSONMessage:
     try:
         password_reset_token = PasswordResetToken.select(
             PasswordResetToken, User).join(User).where(
-            PasswordResetToken.token == token).get()
+            PasswordResetToken.token == token
+        ).get()
     except PasswordResetToken.DoesNotExist:
         return INVALID_TOKEN
 
