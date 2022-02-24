@@ -12,7 +12,7 @@ __all__ = ['setup_db']
 
 DB_SETUP_PARSER = ArgumentParser(description='Setup CSHSSO database.')
 DB_SETUP_PARSER.add_argument(
-    '-s', '--safe', action='store_true', help='ignore existing databse tables'
+    '-s', '--safe', action='store_true', help='ignore existing database tables'
 )
 DB_SETUP_PARSER.add_argument(
     '-v', '--verbose', action='store_true', help='be gassy'
@@ -30,7 +30,7 @@ def setup_db() -> int:
     for model in MODELS:
         try:
             model.create_table(safe=args.safe)
-        except Exception as error:  # pylint: disable=W0703
+        except Exception as error:
             logger.error(str(error))
             return 1
 
