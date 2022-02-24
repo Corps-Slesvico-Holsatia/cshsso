@@ -56,7 +56,11 @@ def get_email(password_reset_token: str, email_address: str, url: str, *,
     )
 
 
-@recaptcha(CONFIG)
+@recaptcha(
+    lambda: CONFIG['recaptcha'],
+    lambda: request.json.pop('response'),
+    lambda: request.remote_addr
+)
 def request_pw_reset() -> JSONMessage:
     """Requests a password reset."""
 
@@ -85,7 +89,11 @@ def request_pw_reset() -> JSONMessage:
     return JSONMessage('Could not email reset token.', status=500)
 
 
-@recaptcha(CONFIG)
+@recaptcha(
+    lambda: CONFIG['recaptcha'],
+    lambda: request.json.pop('response'),
+    lambda: request.remote_addr
+)
 def confirm_pw_reset() -> JSONMessage:
     """Resets the user's password."""
 

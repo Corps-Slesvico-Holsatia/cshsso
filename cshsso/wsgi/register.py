@@ -38,7 +38,11 @@ def get_email(user: User, *, section: str = 'registration') -> EMail:
     )
 
 
-@recaptcha(CONFIG)
+@recaptcha(
+    lambda: CONFIG['recaptcha'],
+    lambda: request.json.pop('response'),
+    lambda: request.remote_addr
+)
 def register() -> JSONMessage:
     """Registers a new user."""
 
