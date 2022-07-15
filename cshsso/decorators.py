@@ -95,7 +95,7 @@ class Authorization(Enum):
 
     @staticmethod
     def any(*authorizations: Authorization) -> Decorator:
-        """Combine authorization checks via the any() function."""
+        """Combine authorization checks via any()."""
         return authorized(NamedFunction(
              ' | '.join(a.name for a in authorizations),
              lambda user: any(a.value(user) for a in authorizations)
