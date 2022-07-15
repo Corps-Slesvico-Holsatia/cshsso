@@ -48,13 +48,13 @@ class Semester(NamedTuple):
     def next(self) -> Semester:
         """Returns the next semester."""
         if self.type == SemesterType.WS:
-            return type(self)(SemesterType.SS, [self.years[1]])
+            return Semester(SemesterType.SS, [self.years[1]])
 
-        return type(self)(SemesterType.WS, [year := self.years[0], year + 1])
+        return Semester(SemesterType.WS, [year := self.years[0], year + 1])
 
     def previous(self) -> Semester:
         """Returns the previous semester."""
         if self.type == SemesterType.WS:
-            return type(self)(SemesterType.SS, [self.years[0]])
+            return Semester(SemesterType.SS, [self.years[0]])
 
-        return type(self)(SemesterType.WS, [self.years[0] - 1, self.years[0]])
+        return Semester(SemesterType.WS, [self.years[0] - 1, self.years[0]])
