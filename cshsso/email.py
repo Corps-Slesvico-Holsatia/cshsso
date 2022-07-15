@@ -21,7 +21,7 @@ def get_mailer(*, section: str = 'email') -> Mailer:
     )
 
 
-def send(emails: Iterable[EMail]) -> bool:
+def send(emails: Iterable[EMail]) -> None:
     """Sends the provided emails."""
 
     return get_mailer().send(emails)
