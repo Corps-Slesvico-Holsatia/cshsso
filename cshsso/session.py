@@ -30,7 +30,7 @@ def get_session_credentials() -> SessionCredentials:
     except KeyError:
         raise NotLoggedIn() from None
 
-    return SessionCredentials(session_id, secret)
+    return SessionCredentials(int(session_id), secret)
 
 
 def get_session_record(session_id: int) -> Session:
