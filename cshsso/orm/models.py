@@ -74,7 +74,8 @@ class User(BaseModel):
     def failed_logins_exceeded(self) -> bool:
         """Checks whether the failed logins are exceeded."""
         return self.failed_logins > CONFIG.getint(
-            'user', 'max_failed_logins', fallback=3)
+            'user', 'max_failed_logins', fallback=3
+        )
 
     @property
     def disabled(self) -> bool:
@@ -105,7 +106,8 @@ class User(BaseModel):
     def has_commission(self, commission: Commission) -> ModelSelect:
         """Selects commissions of the given type of the user."""
         return self.user_commissions.where(
-            UserCommission.commission == commission)
+            UserCommission.commission == commission
+        )
 
 
 class Session(BaseModel):
@@ -120,7 +122,8 @@ class Session(BaseModel):
     )
     secret = Argon2Field()
     valid_until = DateTimeField(
-        default=lambda: datetime.now() + SESSION_VALIDITY)
+        default=lambda: datetime.now() + SESSION_VALIDITY
+    )
 
     def is_valid(self) -> bool:
         """Checks whether the session is valid."""
