@@ -41,15 +41,15 @@ __all__ = [
 DATABASE = MySQLDatabaseProxy('cshsso')
 
 
-class BaseModel(Model):   # pylint: disable=R0903
+class BaseModel(Model):
     """Base model for the CSH-SSO database."""
 
-    class Meta:     # pylint: disable=C0115,R0903
+    class Meta:
         database = DATABASE
         schema = database.database
 
 
-class User(BaseModel):     # pylint: disable=R0903
+class User(BaseModel):
     """A user account."""
 
     id = AutoField()
@@ -108,7 +108,7 @@ class User(BaseModel):     # pylint: disable=R0903
             UserCommission.commission == commission)
 
 
-class Session(BaseModel):     # pylint: disable=R0903
+class Session(BaseModel):
     """A user session."""
 
     id = AutoField()
@@ -129,10 +129,10 @@ class Session(BaseModel):     # pylint: disable=R0903
         return self
 
 
-class UserCommission(BaseModel):  # pylint: disable=R0903
+class UserCommission(BaseModel):
     """User commissions."""
 
-    class Meta:     # pylint: disable=C0115,R0903
+    class Meta:
         table_name = 'user_commission'
 
     id = AutoField()
@@ -142,10 +142,10 @@ class UserCommission(BaseModel):  # pylint: disable=R0903
     commission = EnumField(Commission, use_name=True, unique=True)
 
 
-class PasswordResetToken(BaseModel):  # pylint: disable=R0903
+class PasswordResetToken(BaseModel):
     """A per-user password reset token."""
 
-    class Meta:     # pylint: disable=C0115,R0903
+    class Meta:
         table_name = 'password_reset_token'
 
     id = AutoField()
