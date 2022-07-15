@@ -104,8 +104,17 @@ class Commission(RoleType, Enum):
 class CommissionGroup(set, Enum):
     """Commission groups."""
 
-    CHARGES = {Commission.SENIOR, Commission.CONSENIOR, Commission.SUBSENIOR,
-               Commission.FM}
-    COMMISSIONS = {Commission.KW, Commission.HW, Commission.GW,
-                   Commission.KEILWART, Commission.EDV}
+    CHARGES = {
+        Commission.SENIOR,
+        Commission.CONSENIOR,
+        Commission.SUBSENIOR,
+        Commission.FM
+    }
+    COMMISSIONS = {
+        Commission.KW,
+        Commission.HW,
+        Commission.GW,
+        Commission.KEILWART,
+        Commission.EDV
+    }
     AHV = {Commission.AHV, Commission.AHV_STELLV, Commission.AHKW}
