@@ -3,7 +3,7 @@
 from __future__ import annotations
 from contextlib import suppress
 from enum import Enum
-from typing import Iterator, NamedTuple, Optional
+from typing import NamedTuple, Optional
 
 
 __all__ = ['RoleType', 'Status', 'Circle', 'Commission', 'CommissionGroup']
@@ -27,7 +27,7 @@ class RoleType(NamedTuple):
         return {'name': self.name, 'abbreviation': self.abbreviation}
 
 
-class Status(Enum):
+class Status(RoleType, Enum):
     """Member status."""
 
     # Members
@@ -57,26 +57,16 @@ class Status(Enum):
 
         raise ValueError(f'No status matching "{string}".')
 
-    def to_json(self) -> dict[str, str]:
-        """Returns a JSON-ish dict."""
-        return self.value.to_json()
 
-
-class Circle(Enum):
+class Circle(set, Enum):
     """Corps circles."""
 
     INNER = {Status.EB, Status.CB, Status.IACB, Status.AH}
     OUTER = {Status.IACBOB, Status.BBZ, Status.F, Status.FCK}
     GUESTS = {Status.SPEF, Status.CORPSSCHWESTER, Status.FDC, Status.VG}
 
-    def __contains__(self, value: Status) -> bool:
-        return value in self.value
 
-    def __iter__(self) -> Iterator[Status]:
-        return iter(self.value)
-
-
-class Commission(Enum):
+class Commission(RoleType, Enum):
     """Commission types."""
 
     # Chargen
@@ -110,12 +100,8 @@ class Commission(Enum):
 
         raise ValueError(f'No commission matching "{string}".')
 
-    def to_json(self) -> dict[str, str]:
-        """Returns a JSON-ish dict."""
-        return self.value.to_json()
 
-
-class CommissionGroup(Enum):
+class CommissionGroup(set, Enum):
     """Commission groups."""
 
     CHARGES = {Commission.SENIOR, Commission.CONSENIOR, Commission.SUBSENIOR,
@@ -123,9 +109,3 @@ class CommissionGroup(Enum):
     COMMISSIONS = {Commission.KW, Commission.HW, Commission.GW,
                    Commission.KEILWART, Commission.EDV}
     AHV = {Commission.AHV, Commission.AHV_STELLV, Commission.AHKW}
-
-    def __contains__(self, value: Commission) -> bool:
-        return value in self.value
-
-    def __iter__(self) -> Iterator[Commission]:
-        return iter(self.value)

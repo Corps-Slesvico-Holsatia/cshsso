@@ -10,7 +10,7 @@ from typing import NamedTuple
 __all__ = ['SemesterType', 'Semester']
 
 
-class SemesterType(Enum):
+class SemesterType(str, Enum):
     """Type of semester."""
 
     WS = 'Wintersemester'

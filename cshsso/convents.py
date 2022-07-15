@@ -18,17 +18,13 @@ class ConventType(NamedTuple):
         return {'name': self.name, 'abbreviation': self.abbreviation}
 
 
-class Convent(Enum):
+class Convent(ConventType, Enum):
     """The Corps' convents."""
 
     AHC = ConventType('Altherrenconvent', 'AHC')
     CC = ConventType('Corpsburschenconvent', 'CC')
     FC = ConventType('Fuchsenconvent', 'FC')
     FCC = ConventType('Feierlicher Corpsburschenconvent', 'FCC')
-
-    def to_json(self) -> dict:
-        """Returns a JSON-ish dict."""
-        return self.value.to_json()
 
 
 class ConventAuthType(NamedTuple):
@@ -38,7 +34,7 @@ class ConventAuthType(NamedTuple):
     vote: bool
 
 
-class ConventAuth(Enum):
+class ConventAuth(ConventAuthType, Enum):
     """Available convent authorizations."""
 
     AHC = ConventAuthType(Convent.AHC, False)
@@ -49,13 +45,3 @@ class ConventAuth(Enum):
     FC_VOTE = ConventAuthType(Convent.FC, True)
     FCC = ConventAuthType(Convent.FCC, False)
     FCC_VOTE = ConventAuthType(Convent.FCC, True)
-
-    @property
-    def convent(self) -> Convent:
-        """Returns the Convent type."""
-        return self.value.convent
-
-    @property
-    def vote(self) -> bool:
-        """Returns the vote flag."""
-        return self.value.vote
