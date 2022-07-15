@@ -39,7 +39,8 @@ def get_session_record(session_id: int) -> Session:
     try:
         return Session.select(Session, User, UserCommission).join(User).join(
             UserCommission, on=UserCommission.occupant == User.id,
-            join_type=JOIN.LEFT_OUTER).group_by(Session).where(
+            join_type=JOIN.LEFT_OUTER
+        ).group_by(Session).where(
             Session.id == session_id
         ).get()
     except Session.DoesNotExist:
