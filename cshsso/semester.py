@@ -36,9 +36,9 @@ class Semester(NamedTuple):
         return cls(SemesterType.WS, [date.year, date.year + 1])
 
     @classmethod
-    def from_datetime(cls, datetime: datetime, **kwargs) -> Semester:
+    def from_datetime(cls, timestamp: datetime, **kwargs) -> Semester:
         """Creates a semester from the given datetime."""
-        return cls.from_date(datetime.date(), **kwargs)
+        return cls.from_date(timestamp.date(), **kwargs)
 
     @classmethod
     def now(cls, **kwargs) -> Semester:
