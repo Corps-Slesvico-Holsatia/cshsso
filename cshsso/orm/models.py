@@ -112,8 +112,12 @@ class Session(BaseModel):
     """A user session."""
 
     id = AutoField()
-    user = ForeignKeyField(User, column_name='user', on_delete='CASCADE',
-                           lazy_load=False)
+    user = ForeignKeyField(
+        User,
+        column_name='user',
+        on_delete='CASCADE',
+        lazy_load=False
+    )
     secret = Argon2Field()
     valid_until = DateTimeField(
         default=lambda: datetime.now() + SESSION_VALIDITY)
@@ -136,9 +140,12 @@ class UserCommission(BaseModel):
         table_name = 'user_commission'
 
     id = AutoField()
-    occupant = ForeignKeyField(User, column_name='occupant',
-                               backref='user_commissions', on_delete='CASCADE',
-                               lazy_load=False)
+    occupant = ForeignKeyField(
+        User,
+        column_name='occupant',
+        backref='user_commissions', on_delete='CASCADE',
+        lazy_load=False
+    )
     commission = EnumField(Commission, use_name=True, unique=True)
 
 
@@ -149,8 +156,12 @@ class PasswordResetToken(BaseModel):
         table_name = 'password_reset_token'
 
     id = AutoField()
-    user = ForeignKeyField(User, column_name='user', on_delete='CASCADE',
-                           lazy_load=False)
+    user = ForeignKeyField(
+        User,
+        column_name='user',
+        on_delete='CASCADE',
+        lazy_load=False
+    )
     token = UUIDField(default=uuid4)
     issued = DateTimeField(default=datetime.now)
 
