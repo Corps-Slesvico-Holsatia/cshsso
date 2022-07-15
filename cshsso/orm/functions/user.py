@@ -28,7 +28,10 @@ def get_user(uid: int) -> User:
 
     return User.select(User, UserCommission).join(
         UserCommission, on=UserCommission.occupant == User.id,
-        join_type=JOIN.LEFT_OUTER).where(User.id == uid).group_by(User).get()
+        join_type=JOIN.LEFT_OUTER
+    ).where(
+        User.id == uid
+    ).group_by(User).get()
 
 
 def get_current_user(session: Session, *, allow_other: bool = False) -> User:
