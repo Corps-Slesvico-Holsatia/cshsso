@@ -24,8 +24,13 @@ class Semester(NamedTuple):
     years: list[int]
 
     @classmethod
-    def from_date(cls, date: date, *, summer_begin: int = 4,
-                  winter_begin: int = 10) -> Semester:
+    def from_date(
+            cls,
+            date: date,
+            *,
+            summer_begin: int = 4,
+            winter_begin: int = 10
+    ) -> Semester:
         """Creates a semester from the given date."""
         if summer_begin <= date.month < winter_begin:
             return cls(SemesterType.SS, [date.year])
