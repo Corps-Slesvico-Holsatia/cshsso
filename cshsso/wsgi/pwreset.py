@@ -52,7 +52,7 @@ def get_email(
 
     return EMail(
         CONFIG.get(
-            section, 'subject', fallback='Zurücklsetzen Ihres Passworts'
+            section, 'subject', fallback='Zurücksetzen Ihres Passworts'
         ),
         CONFIG.get(
             section, 'sender',
