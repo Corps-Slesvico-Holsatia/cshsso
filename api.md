@@ -304,7 +304,7 @@ A regular user can change the following fields:
         "reception": {
             "description": "The user's reception date",
             "type": "string"
-        },
+        }
     },
     "required": []
 }
