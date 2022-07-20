@@ -36,7 +36,7 @@ class Status(RoleType, Enum):
     IACB = RoleType('inaktiver Corpsbursche', 'iaCB')
     IACBOB = RoleType('inaktiver Corpsbursche ohne Band', 'iaCBoB')
     AH = RoleType('Alter Herr', 'AH')
-    BBZ = RoleType('Burschenbierzipfler', 'BBZ')
+    BBZ = RoleType('Träger des Burschenbierzipfels', 'BBZ')
     F = RoleType('Fuchs', 'F')
     FCK = RoleType('Fuchsenconkneipant', 'FCK')
     # Guests
