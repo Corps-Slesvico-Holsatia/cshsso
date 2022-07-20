@@ -115,8 +115,10 @@ def set_status() -> JSONMessage:
     user = get_current_user(SESSION, allow_other=True)
     old_status, user.status = user.status, status
     user.save()
-    return JSONMessage('Status updated.', old=old_status.to_json(),
-                       new=status.to_json(), status=200)
+    return JSONMessage(
+        'Status updated.', old=old_status.to_json(), new=status.to_json(),
+        status=200
+    )
 
 
 @authenticated
