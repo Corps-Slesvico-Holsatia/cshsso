@@ -17,7 +17,7 @@ class Application(Flask):
 
     error_handlers = ERRORS
     initializers = {lambda: CONFIG.read(CONFIG_FILE)}
-    post_processor = postprocess_response
+    post_processor = staticmethod(postprocess_response)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
