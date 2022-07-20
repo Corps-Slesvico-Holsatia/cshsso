@@ -5,6 +5,7 @@ from typing import Optional
 
 from flask import request
 from peewee import JOIN
+from wsgilib import JSONMessage
 
 from cshsso.authorization import is_corps_member, is_in_inner_circle
 from cshsso.constants import USER_ID
@@ -83,8 +84,15 @@ def patch_user_admin(user: User, json: dict) -> None:
     with suppress(KeyError):
         user.email = json['email']
 
-    with suppress(KeyError):
-        user.status = Status.from_string(json['status'])
+    try:
+        status = json['status']
+    except KeyError:
+        pass
+    else:
+        try:
+            user.status = Status[status]
+        except KeyError:
+            raise JSONMessage('Invalid status provided.', status=400)
 
     with suppress(KeyError):
         user.verified = json['verified']

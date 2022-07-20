@@ -103,11 +103,14 @@ def set_status() -> JSONMessage:
     """Sets the status of a user."""
 
     try:
-        status = Status.from_string(request.json['status'])
+        status = request.json['status']
     except KeyError:
-        return JSONMessage('No status provied.', status=400)
-    except ValueError:
-        return JSONMessage('Invalid status provied.', status=400)
+        return JSONMessage('No status provided.', status=400)
+
+    try:
+        status = Status[status]
+    except KeyError:
+        return JSONMessage('Invalid status provided.', status=400)
 
     user = get_current_user(SESSION, allow_other=True)
     old_status, user.status = user.status, status

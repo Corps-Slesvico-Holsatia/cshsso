@@ -1,7 +1,6 @@
 """User roles."""
 
 from __future__ import annotations
-from contextlib import suppress
 from enum import Enum
 from typing import NamedTuple, Optional
 
@@ -45,18 +44,6 @@ class Status(RoleType, Enum):
     CORPSSCHWESTER = RoleType('Corpsschwester')
     FDC = RoleType('Freund des Corps', 'FdC')
 
-    @classmethod
-    def from_string(cls, string: str) -> Status:
-        """Creates a Status element from a JSON string."""
-        with suppress(KeyError):
-            return cls[string]
-
-        for status in cls:
-            if status.value.match(string):
-                return status
-
-        raise ValueError(f'No status matching "{string}".')
-
 
 class Circle(set, Enum):
     """Corps circles."""
@@ -87,18 +74,6 @@ class Commission(RoleType, Enum):
         'stellv. AHV'
     )
     AHKW = RoleType('Altherren-Kassenwart', 'AHKW')
-
-    @classmethod
-    def from_string(cls, string: str) -> Commission:
-        """Creates a Commission element from a string."""
-        with suppress(KeyError):
-            return cls[string]
-
-        for commission in cls:
-            if commission.value.match(string):
-                return commission
-
-        raise ValueError(f'No commission matching "{string}".')
 
 
 class CommissionGroup(set, Enum):
