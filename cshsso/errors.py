@@ -24,7 +24,7 @@ ERRORS = {
     NotAuthorized: lambda error: JSONMessage(
         'Not authorized.', target=error.target, status=403
     ),
-    NotLoggedIn: lambda _: ('Not logged in.', 400),
+    NotLoggedIn: lambda _: ('Not logged in.', 401),
     Session.DoesNotExist: lambda _: ('No such session.', 404),
     User.DoesNotExist: lambda _: ('No such user.', 404),
     VerificationError: lambda error: (jsonify(error.json), 400)
