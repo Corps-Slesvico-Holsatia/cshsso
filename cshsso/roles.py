@@ -17,10 +17,6 @@ class RoleType(NamedTuple):
     def __str__(self):
         return self.abbreviation or self.name
 
-    def match(self, string: str) -> bool:
-        """Matches a string."""
-        return string in {self.name, self.abbreviation}
-
     def to_json(self) -> dict[str, str]:
         """Returns a JSON-ish dict."""
         return {'name': self.name, 'abbreviation': self.abbreviation}
