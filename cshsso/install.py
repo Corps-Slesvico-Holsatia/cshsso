@@ -20,7 +20,7 @@ DB_SETUP_PARSER.add_argument(
 
 
 def setup_db() -> int:
-    """Setup the databases."""
+    """Set up the databases."""
 
     args = DB_SETUP_PARSER.parse_args()
     basicConfig(level=DEBUG if args.verbose else INFO)
