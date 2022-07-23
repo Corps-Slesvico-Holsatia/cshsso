@@ -19,10 +19,10 @@ ERRORS = {
     InvalidPassword: lambda _: ('Invalid password.', 400),
     NotAuthenticated: lambda error: JSONMessage(
         'Not authenticated.', verified=error.verified, locked=error.locked,
-        failed_logins_exceeded=error.failed_logins_exceeded, status=400
+        failed_logins_exceeded=error.failed_logins_exceeded, status=401
     ),
     NotAuthorized: lambda error: JSONMessage(
-        'Not authorized.', target=error.target, status=400
+        'Not authorized.', target=error.target, status=403
     ),
     NotLoggedIn: lambda _: ('Not logged in.', 400),
     Session.DoesNotExist: lambda _: ('No such session.', 404),
