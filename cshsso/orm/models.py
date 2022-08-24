@@ -80,7 +80,7 @@ class User(BaseModel):
 
     @property
     def disabled(self) -> bool:
-        """Determines whether the user is diabled."""
+        """Determines whether the user is disabled."""
         return not self.verified or self.locked or self.failed_logins_exceeded
 
     @property
