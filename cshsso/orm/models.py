@@ -26,6 +26,7 @@ from cshsso.config import CONFIG
 from cshsso.constants import PW_RESET_TOKEN_VALIDITY
 from cshsso.constants import SESSION_VALIDITY
 from cshsso.roles import Status, Commission
+from cshsso.roman import roman
 
 
 __all__ = [
@@ -86,6 +87,14 @@ class User(BaseModel):
     def commissions(self) -> set[Commission]:
         """Returns the user's commissions."""
         return {uc.commission for uc in self.user_commissions}
+
+    @property
+    def numbered_last_name(self) -> str:
+        """Return the numbered last name, if applicable, else the last name."""
+        if not self.name_number:
+            return self.last_name
+
+        return f'{self.last_name}{roman(self.name_number)}'
 
     def login(self, passwd: str) -> bool:
         """Attempts a login."""
