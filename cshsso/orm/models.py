@@ -73,19 +73,19 @@ class User(BaseModel):
 
     @property
     def failed_logins_exceeded(self) -> bool:
-        """Checks whether the failed logins are exceeded."""
+        """Check whether the failed logins are exceeded."""
         return self.failed_logins > CONFIG.getint(
             'user', 'max_failed_logins', fallback=3
         )
 
     @property
     def disabled(self) -> bool:
-        """Determines whether the user is disabled."""
+        """Determine whether the user is disabled."""
         return not self.verified or self.locked or self.failed_logins_exceeded
 
     @property
     def commissions(self) -> set[Commission]:
-        """Returns the user's commissions."""
+        """Return the user's commissions."""
         return {uc.commission for uc in self.user_commissions}
 
     @property
@@ -97,7 +97,7 @@ class User(BaseModel):
         return f'{self.last_name} {roman(self.name_number)}'
 
     def login(self, passwd: str) -> bool:
-        """Attempts a login."""
+        """Attempt a login."""
         try:
             self.passwd.verify(passwd)
         except VerifyMismatchError:
@@ -113,7 +113,7 @@ class User(BaseModel):
         return True
 
     def has_commission(self, commission: Commission) -> ModelSelect:
-        """Selects commissions of the given type of the user."""
+        """Select commissions of the given type of the user."""
         return self.user_commissions.where(
             UserCommission.commission == commission
         )
@@ -135,11 +135,11 @@ class Session(BaseModel):
     )
 
     def is_valid(self) -> bool:
-        """Checks whether the session is valid."""
+        """Check whether the session is valid."""
         return self.valid_until > datetime.now()
 
     def extend(self, duration: timedelta = SESSION_VALIDITY) -> Session:
-        """Extends the session."""
+        """Extend the session."""
         self.valid_until = datetime.now() + duration
         self.save()
         return self
@@ -178,5 +178,5 @@ class PasswordResetToken(BaseModel):
     issued = DateTimeField(default=datetime.now)
 
     def is_valid(self) -> bool:
-        """Determines whether the password reset token is currently valid."""
+        """Determine whether the password reset token is currently valid."""
         return self.issued + PW_RESET_TOKEN_VALIDITY > datetime.now()
