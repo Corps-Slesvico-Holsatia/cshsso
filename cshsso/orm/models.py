@@ -94,7 +94,7 @@ class User(BaseModel):
         if not self.name_number:
             return self.last_name
 
-        return f'{self.last_name}{roman(self.name_number)}'
+        return f'{self.last_name} {roman(self.name_number)}'
 
     def login(self, passwd: str) -> bool:
         """Attempts a login."""
