@@ -73,14 +73,14 @@ class User(BaseModel):
 
     @property
     def failed_logins_exceeded(self) -> bool:
-        """Check whether the failed logins are exceeded."""
+        """Return True if the failed logins are exceeded else False."""
         return self.failed_logins > CONFIG.getint(
             'user', 'max_failed_logins', fallback=3
         )
 
     @property
     def disabled(self) -> bool:
-        """Determine whether the user is disabled."""
+        """Return True if the user is disabled else False."""
         return not self.verified or self.locked or self.failed_logins_exceeded
 
     @property
@@ -113,7 +113,7 @@ class User(BaseModel):
         return True
 
     def has_commission(self, commission: Commission) -> ModelSelect:
-        """Select commissions of the given type of the user."""
+        """Select user commissions of the given type of this user."""
         return self.user_commissions.where(
             UserCommission.commission == commission
         )
@@ -135,11 +135,11 @@ class Session(BaseModel):
     )
 
     def is_valid(self) -> bool:
-        """Check whether the session is valid."""
+        """Return True if the session is valid, else False."""
         return self.valid_until > datetime.now()
 
     def extend(self, duration: timedelta = SESSION_VALIDITY) -> Session:
-        """Extend the session."""
+        """Extend the session by the given duration."""
         self.valid_until = datetime.now() + duration
         self.save()
         return self
@@ -178,5 +178,7 @@ class PasswordResetToken(BaseModel):
     issued = DateTimeField(default=datetime.now)
 
     def is_valid(self) -> bool:
-        """Determine whether the password reset token is currently valid."""
+        """Return True if the password reset
+        token is currently valid, else False.
+        """
         return self.issued + PW_RESET_TOKEN_VALIDITY > datetime.now()
