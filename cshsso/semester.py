@@ -6,14 +6,14 @@ from enum import Enum
 from typing import NamedTuple
 
 
-__all__ = ['SemesterType', 'Semester']
+__all__ = ["SemesterType", "Semester"]
 
 
 class SemesterType(str, Enum):
     """Type of semester."""
 
-    WS = 'Wintersemester'
-    SS = 'Sommersemester'
+    WS = "Wintersemester"
+    SS = "Sommersemester"
 
 
 class Semester(NamedTuple):
@@ -24,11 +24,7 @@ class Semester(NamedTuple):
 
     @classmethod
     def from_date(
-            cls,
-            date: date,
-            *,
-            summer_begin: int = 4,
-            winter_begin: int = 10
+        cls, date: date, *, summer_begin: int = 4, winter_begin: int = 10
     ) -> Semester:
         """Creates a semester from the given date."""
         if summer_begin <= date.month < winter_begin:

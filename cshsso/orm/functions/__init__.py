@@ -8,10 +8,10 @@ from cshsso.orm.functions.user import patch_user
 from cshsso.orm.functions.user import user_to_json
 
 __all__ = [
-    'delete_user',
-    'get_current_user',
-    'get_user',
-    'patch_user',
-    'set_commissions',
-    'user_to_json'
+    "delete_user",
+    "get_current_user",
+    "get_user",
+    "patch_user",
+    "set_commissions",
+    "user_to_json",
 ]

@@ -13,11 +13,11 @@ from cshsso.typing import SessionCredentials
 
 
 __all__ = [
-    'get_session',
-    'for_user',
-    'set_session_cookies',
-    'delete_session_cookies',
-    'postprocess_response'
+    "get_session",
+    "for_user",
+    "set_session_cookies",
+    "delete_session_cookies",
+    "postprocess_response",
 ]
 
 
@@ -37,12 +37,18 @@ def get_session_record(session_id: int) -> Session:
     """Returns the session database record."""
 
     try:
-        return Session.select(Session, User, UserCommission).join(User).join(
-            UserCommission, on=UserCommission.occupant == User.id,
-            join_type=JOIN.LEFT_OUTER
-        ).group_by(Session).where(
-            Session.id == session_id
-        ).get()
+        return (
+            Session.select(Session, User, UserCommission)
+            .join(User)
+            .join(
+                UserCommission,
+                on=UserCommission.occupant == User.id,
+                join_type=JOIN.LEFT_OUTER,
+            )
+            .group_by(Session)
+            .where(Session.id == session_id)
+            .get()
+        )
     except Session.DoesNotExist:
         raise NotLoggedIn() from None
 
@@ -71,20 +77,29 @@ def for_user(user: User) -> tuple[Session, str]:
     return session, secret
 
 
-def set_session_cookies(response: Response, session: Session,
-                        secret: str = None) -> Response:
+def set_session_cookies(
+    response: Response, session: Session, secret: str = None
+) -> Response:
     """Sets the session cookie."""
 
-    for domain in CONFIG.get('auth', 'domains').split():
+    for domain in CONFIG.get("auth", "domains").split():
         response.set_cookie(
-            SESSION_ID, str(session.id), expires=session.end, domain=domain,
-            secure=True, samesite=None
+            SESSION_ID,
+            str(session.id),
+            expires=session.end,
+            domain=domain,
+            secure=True,
+            samesite=None,
         )
 
         if secret is not None:
             response.set_cookie(
-                SESSION_SECRET, secret, expires=session.end, domain=domain,
-                secure=True, samesite=None
+                SESSION_SECRET,
+                secret,
+                expires=session.end,
+                domain=domain,
+                secure=True,
+                samesite=None,
             )
 
     return response
@@ -93,7 +108,7 @@ def set_session_cookies(response: Response, session: Session,
 def delete_session_cookies(response: Response) -> Response:
     """Deletes the session cookie."""
 
-    for domain in CONFIG.get('auth', 'domains').split():
+    for domain in CONFIG.get("auth", "domains").split():
         response.delete_cookie(SESSION_ID, domain=domain)
         response.delete_cookie(SESSION_SECRET, domain=domain)
 
@@ -104,7 +119,7 @@ def postprocess_response(response: Response) -> Response:
     """Sets the session cookie on the respective response."""
 
     # Do not override an already set session cookie i.e. on deletion.
-    if 'Set-Cookie' in response.headers:
+    if "Set-Cookie" in response.headers:
         return response
 
     try:

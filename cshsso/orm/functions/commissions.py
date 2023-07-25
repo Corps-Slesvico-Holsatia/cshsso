@@ -5,7 +5,7 @@ from typing import Iterable
 from cshsso.orm.models import Commission, User, UserCommission
 
 
-__all__ = ['set_commissions']
+__all__ = ["set_commissions"]
 
 
 def set_commissions(user: User, commissions: Iterable[Commission]) -> None:

@@ -7,16 +7,14 @@ from cshsso.config import CONFIG, CONFIG_FILE
 from cshsso.orm import MODELS
 
 
-__all__ = ['setup_db']
+__all__ = ["setup_db"]
 
 
-DB_SETUP_PARSER = ArgumentParser(description='Setup CSHSSO database.')
+DB_SETUP_PARSER = ArgumentParser(description="Setup CSHSSO database.")
 DB_SETUP_PARSER.add_argument(
-    '-s', '--safe', action='store_true', help='ignore existing database tables'
+    "-s", "--safe", action="store_true", help="ignore existing database tables"
 )
-DB_SETUP_PARSER.add_argument(
-    '-v', '--verbose', action='store_true', help='be gassy'
-)
+DB_SETUP_PARSER.add_argument("-v", "--verbose", action="store_true", help="be gassy")
 
 
 def setup_db() -> int:
@@ -24,7 +22,7 @@ def setup_db() -> int:
 
     args = DB_SETUP_PARSER.parse_args()
     basicConfig(level=DEBUG if args.verbose else INFO)
-    logger = getLogger('cshsso-setup-db')
+    logger = getLogger("cshsso-setup-db")
     CONFIG.read(CONFIG_FILE)
 
     for model in MODELS:

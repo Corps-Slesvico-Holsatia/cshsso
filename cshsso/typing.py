@@ -7,15 +7,15 @@ from flask import Response
 
 
 __all__ = [
-    'AnyCallable',
-    'Decorator',
-    'ErrorHandler',
-    'ErrorHandlers',
-    'Initializer',
-    'Initializers',
-    'NamedFunction',
-    'ResponseProcessor',
-    'SessionCredentials'
+    "AnyCallable",
+    "Decorator",
+    "ErrorHandler",
+    "ErrorHandlers",
+    "Initializer",
+    "Initializers",
+    "NamedFunction",
+    "ResponseProcessor",
+    "SessionCredentials",
 ]
 
 

@@ -17,13 +17,13 @@ from cshsso.roles import Commission, Status
 
 
 __all__ = [
-    'show',
-    'patch',
-    'delete',
-    'set_acception',
-    'set_reception',
-    'set_status',
-    'set_commissions'
+    "show",
+    "patch",
+    "delete",
+    "set_acception",
+    "set_reception",
+    "set_status",
+    "set_commissions",
 ]
 
 
@@ -43,7 +43,7 @@ def patch() -> JSONMessage:
         user = patch_user(user, request.json, actor=SESSION.user)
 
     user.save()
-    return JSONMessage('User patched.', status=200)
+    return JSONMessage("User patched.", status=200)
 
 
 @authenticated
@@ -52,13 +52,11 @@ def delete() -> JSONMessage:
 
     try:
         with USER as user:
-            delete_user(
-                user, actor=SESSION.user, passwd=request.json.get('passwd')
-            )
+            delete_user(user, actor=SESSION.user, passwd=request.json.get("passwd"))
     except InvalidPassword:
-        return JSONMessage('Invalid password provided.', status=403)
+        return JSONMessage("Invalid password provided.", status=403)
 
-    return JSONMessage('User deleted.', status=200)
+    return JSONMessage("User deleted.", status=200)
 
 
 @authenticated
@@ -68,15 +66,15 @@ def set_acception() -> JSONMessage:
 
     with USER as user:
         try:
-            user.acception = date_or_none(request.json['acception'])
+            user.acception = date_or_none(request.json["acception"])
         except KeyError:
-            return JSONMessage('No acception date provided.', status=400)
+            return JSONMessage("No acception date provided.", status=400)
         except ValueError:
-            return JSONMessage('Invalid acception date provided.', status=400)
+            return JSONMessage("Invalid acception date provided.", status=400)
 
         user.save()
 
-    return JSONMessage('Acception date set.', status=200)
+    return JSONMessage("Acception date set.", status=200)
 
 
 @authenticated
@@ -86,15 +84,15 @@ def set_reception() -> JSONMessage:
 
     with USER as user:
         try:
-            user.reception = date_or_none(request.json['reception'])
+            user.reception = date_or_none(request.json["reception"])
         except KeyError:
-            return JSONMessage('No reception date provided.', status=400)
+            return JSONMessage("No reception date provided.", status=400)
         except ValueError:
-            return JSONMessage('Invalid reception date provided.', status=400)
+            return JSONMessage("Invalid reception date provided.", status=400)
 
         user.save()
 
-    return JSONMessage('Reception date set.', status=200)
+    return JSONMessage("Reception date set.", status=200)
 
 
 @authenticated
@@ -103,21 +101,20 @@ def set_status() -> JSONMessage:
     """Sets the status of a user."""
 
     try:
-        status = request.json['status']
+        status = request.json["status"]
     except KeyError:
-        return JSONMessage('No status provided.', status=400)
+        return JSONMessage("No status provided.", status=400)
 
     try:
         status = Status[status]
     except KeyError:
-        return JSONMessage('Invalid status provided.', status=400)
+        return JSONMessage("Invalid status provided.", status=400)
 
     user = get_current_user(SESSION, allow_other=True)
     old_status, user.status = user.status, status
     user.save()
     return JSONMessage(
-        'Status updated.', old=old_status.to_json(), new=status.to_json(),
-        status=200
+        "Status updated.", old=old_status.to_json(), new=status.to_json(), status=200
     )
 
 
@@ -127,15 +124,15 @@ def set_commissions() -> JSONMessage:
     """Sets the commissions for a user."""
 
     try:
-        commissions = {Commission[c] for c in request.json['commissions']}
+        commissions = {Commission[c] for c in request.json["commissions"]}
     except KeyError:
-        return JSONMessage('No commissions provied.', status=400)
+        return JSONMessage("No commissions provied.", status=400)
     except ValueError:
-        return JSONMessage('Invalid commission provied.', status=400)
+        return JSONMessage("Invalid commission provied.", status=400)
 
     _set_commissions(USER, commissions)
     return JSONMessage(
-        'Commissions updated.',
+        "Commissions updated.",
         commissions={c.to_json() for c in commissions},
-        status=200
+        status=200,
     )

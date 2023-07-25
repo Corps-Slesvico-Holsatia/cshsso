@@ -9,7 +9,7 @@ from cshsso.orm.models import User, UserCommission
 from cshsso.roles import Status, Circle, Commission, CommissionGroup
 
 
-__all__ = ['get_users', 'get_emails']
+__all__ = ["get_users", "get_emails"]
 
 
 Target = Union[Status, Circle, Commission, CommissionGroup, User, int]
@@ -25,10 +25,7 @@ def get_condition(*targets: Target) -> Expression:
 
     commissions = {comm for comm in targets if isinstance(comm, Commission)}
 
-    for cgroup in filter(
-            partial(isinstance, class_or_tuple=CommissionGroup),
-            targets
-    ):
+    for cgroup in filter(partial(isinstance, class_or_tuple=CommissionGroup), targets):
         commissions |= set(cgroup)
 
     user_ids = {user.id for user in targets if isinstance(user, User)}
@@ -50,8 +47,10 @@ def get_condition(*targets: Target) -> Expression:
 def get_users(*targets: Target) -> ModelSelect:
     """Yields email addresses."""
 
-    return User.select(User, UserCommission).join(UserCommission).where(
-        get_condition(targets)
+    return (
+        User.select(User, UserCommission)
+        .join(UserCommission)
+        .where(get_condition(targets))
     )
 
 

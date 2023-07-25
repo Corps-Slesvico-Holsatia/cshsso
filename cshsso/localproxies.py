@@ -8,7 +8,7 @@ from cshsso.orm.functions import get_current_user
 from cshsso.session import get_session
 
 
-__all__ = ['SESSION', 'USER']
+__all__ = ["SESSION", "USER"]
 
 
 class ModelProxy(LocalProxy):

@@ -15,19 +15,19 @@ from cshsso.orm.models import UserCommission
 
 
 __all__ = [
-    'DATABASE',
-    'MODELS',
-    'delete_user',
-    'get_user',
-    'get_current_user',
-    'user_to_json',
-    'patch_user',
-    'set_commissions',
-    'BaseModel',
-    'PasswordResetToken',
-    'Session',
-    'User',
-    'UserCommission'
+    "DATABASE",
+    "MODELS",
+    "delete_user",
+    "get_user",
+    "get_current_user",
+    "user_to_json",
+    "patch_user",
+    "set_commissions",
+    "BaseModel",
+    "PasswordResetToken",
+    "Session",
+    "User",
+    "UserCommission",
 ]
 
 

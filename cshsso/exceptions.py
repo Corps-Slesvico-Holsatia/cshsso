@@ -1,12 +1,7 @@
 """Common exceptions."""
 
 
-__all__ = [
-    'InvalidPassword',
-    'NotAuthenticated',
-    'NotAuthorized',
-    'NotLoggedIn'
-]
+__all__ = ["InvalidPassword", "NotAuthenticated", "NotAuthorized", "NotLoggedIn"]
 
 
 class InvalidPassword(Exception):
@@ -16,12 +11,7 @@ class InvalidPassword(Exception):
 class NotAuthenticated(Exception):
     """Indicates that the user is not authenticated."""
 
-    def __init__(
-            self,
-            verified: bool,
-            locked: bool,
-            failed_logins_exceeded: bool
-    ):
+    def __init__(self, verified: bool, locked: bool, failed_logins_exceeded: bool):
         super().__init__(verified, locked, failed_logins_exceeded)
         self.verified = verified
         self.locked = locked

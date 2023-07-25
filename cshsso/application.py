@@ -9,7 +9,7 @@ from cshsso.session import postprocess_response
 from cshsso.typing import ErrorHandlers, Initializers, ResponseProcessor
 
 
-__all__ = ['Application']
+__all__ = ["Application"]
 
 
 class Application(Flask):
@@ -31,10 +31,10 @@ class Application(Flask):
         self.after_request(self.post_processor)
 
     def __init_subclass__(
-            cls,
-            error_handlers: Optional[ErrorHandlers] = None,
-            initializers: Optional[Initializers] = None,
-            post_processor: Optional[ResponseProcessor] = None
+        cls,
+        error_handlers: Optional[ErrorHandlers] = None,
+        initializers: Optional[Initializers] = None,
+        post_processor: Optional[ResponseProcessor] = None,
     ):
         if error_handlers is not None:
             cls.error_handlers = {**cls.error_handlers, **error_handlers}

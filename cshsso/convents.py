@@ -4,7 +4,7 @@ from enum import Enum
 from typing import NamedTuple
 
 
-__all__ = ['Convent', 'ConventAuth']
+__all__ = ["Convent", "ConventAuth"]
 
 
 class ConventType(NamedTuple):
@@ -15,16 +15,16 @@ class ConventType(NamedTuple):
 
     def to_json(self) -> dict:
         """Returns a JSON-ish dict."""
-        return {'name': self.name, 'abbreviation': self.abbreviation}
+        return {"name": self.name, "abbreviation": self.abbreviation}
 
 
 class Convent(ConventType, Enum):
     """The Corps' convents."""
 
-    AHC = ConventType('Altherrenconvent', 'AHC')
-    CC = ConventType('Corpsburschenconvent', 'CC')
-    FC = ConventType('Fuchsenconvent', 'FC')
-    FCC = ConventType('Feierlicher Corpsburschenconvent', 'FCC')
+    AHC = ConventType("Altherrenconvent", "AHC")
+    CC = ConventType("Corpsburschenconvent", "CC")
+    FC = ConventType("Fuchsenconvent", "FC")
+    FCC = ConventType("Feierlicher Corpsburschenconvent", "FCC")
 
 
 class ConventAuthType(NamedTuple):

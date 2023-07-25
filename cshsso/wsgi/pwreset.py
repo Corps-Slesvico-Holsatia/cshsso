@@ -16,11 +16,11 @@ from cshsso.email import send
 from cshsso.orm.models import PasswordResetToken, User
 
 
-__all__ = ['request_pw_reset', 'confirm_pw_reset']
+__all__ = ["request_pw_reset", "confirm_pw_reset"]
 
 
-INVALID_TOKEN = JSONMessage('Invalid token.', status=400)
-RESET_SUCCEEDED = JSONMessage('Reset request successful.', status=200)
+INVALID_TOKEN = JSONMessage("Invalid token.", status=400)
+RESET_SUCCEEDED = JSONMessage("Reset request successful.", status=200)
 
 
 def password_reset_pending(user: Union[User, int]) -> bool:
@@ -31,7 +31,7 @@ def password_reset_pending(user: Union[User, int]) -> bool:
     result = False
 
     for pw_reset_token in PasswordResetToken.select().where(
-            PasswordResetToken.user == user
+        PasswordResetToken.user == user
     ):
         if pw_reset_token.is_valid():
             result = True
@@ -42,42 +42,33 @@ def password_reset_pending(user: Union[User, int]) -> bool:
 
 
 def get_email(
-        password_reset_token: str,
-        email_address: str,
-        url: str,
-        *,
-        section: str = 'pwreset'
+    password_reset_token: str, email_address: str, url: str, *, section: str = "pwreset"
 ) -> EMail:
     """Returns an email object."""
 
     return EMail(
-        CONFIG.get(
-            section, 'subject', fallback='Zurücksetzen Ihres Passworts'
-        ),
-        CONFIG.get(
-            section, 'sender',
-            fallback='noreply@cshsso.slesvico-holsatia.org'
-        ),
+        CONFIG.get(section, "subject", fallback="Zurücksetzen Ihres Passworts"),
+        CONFIG.get(section, "sender", fallback="noreply@cshsso.slesvico-holsatia.org"),
         email_address,
-        plain=CONFIG.get(section, 'template', fallback=PW_RESET_TEXT).format(
+        plain=CONFIG.get(section, "template", fallback=PW_RESET_TEXT).format(
             url.format(password_reset_token)
-        )
+        ),
     )
 
 
 @recaptcha(
-    lambda: CONFIG['recaptcha'],
-    lambda: request.json.pop('response'),
-    lambda: request.remote_addr
+    lambda: CONFIG["recaptcha"],
+    lambda: request.json.pop("response"),
+    lambda: request.remote_addr,
 )
 def request_pw_reset() -> JSONMessage:
     """Requests a password reset."""
 
-    if not (email := request.json.get('email')):
-        return JSONMessage('No email address specified.', status=400)
+    if not (email := request.json.get("email")):
+        return JSONMessage("No email address specified.", status=400)
 
-    if not (url := request.json.get('url')):
-        return JSONMessage('No URL specified.', status=400)
+    if not (url := request.json.get("url")):
+        return JSONMessage("No URL specified.", status=400)
 
     try:
         user = User.select().where(User.email == email).get()
@@ -86,9 +77,7 @@ def request_pw_reset() -> JSONMessage:
         return RESET_SUCCEEDED
 
     if password_reset_pending(user):
-        return JSONMessage(
-            'You already requested a password reset.', status=400
-        )
+        return JSONMessage("You already requested a password reset.", status=400)
 
     password_reset_token = PasswordResetToken(user=user)
     password_reset_token.save()
@@ -96,27 +85,29 @@ def request_pw_reset() -> JSONMessage:
     if send([get_email(password_reset_token.token.hex, user.email, url)]):
         return RESET_SUCCEEDED
 
-    return JSONMessage('Could not email reset token.', status=500)
+    return JSONMessage("Could not email reset token.", status=500)
 
 
 @recaptcha(
-    lambda: CONFIG['recaptcha'],
-    lambda: request.json.pop('response'),
-    lambda: request.remote_addr
+    lambda: CONFIG["recaptcha"],
+    lambda: request.json.pop("response"),
+    lambda: request.remote_addr,
 )
 def confirm_pw_reset() -> JSONMessage:
     """Resets the user's password."""
 
     try:
-        token = UUID(request.json.get('token'))
+        token = UUID(request.json.get("token"))
     except (TypeError, ValueError):
         return INVALID_TOKEN
 
     try:
-        password_reset_token = PasswordResetToken.select(
-            PasswordResetToken, User).join(User).where(
-            PasswordResetToken.token == token
-        ).get()
+        password_reset_token = (
+            PasswordResetToken.select(PasswordResetToken, User)
+            .join(User)
+            .where(PasswordResetToken.token == token)
+            .get()
+        )
     except PasswordResetToken.DoesNotExist:
         return INVALID_TOKEN
 
@@ -124,14 +115,14 @@ def confirm_pw_reset() -> JSONMessage:
         password_reset_token.delete_instance()
         return INVALID_TOKEN
 
-    if not (password := request.json.get('passwd')):
-        return JSONMessage('No password specified.', status=400)
+    if not (password := request.json.get("passwd")):
+        return JSONMessage("No password specified.", status=400)
 
     try:
         (user := password_reset_token.user).password = password
     except PasswordTooShort:
-        return JSONMessage('Password is too short.', status=400)
+        return JSONMessage("Password is too short.", status=400)
 
     user.save()
     password_reset_token.delete_instance()
-    return JSONMessage('Password set.', status=200)
+    return JSONMessage("Password set.", status=200)

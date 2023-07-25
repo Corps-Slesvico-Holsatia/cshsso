@@ -30,16 +30,16 @@ from cshsso.roman import roman
 
 
 __all__ = [
-    'DATABASE',
-    'BaseModel',
-    'User',
-    'Session',
-    'UserCommission',
-    'PasswordResetToken'
+    "DATABASE",
+    "BaseModel",
+    "User",
+    "Session",
+    "UserCommission",
+    "PasswordResetToken",
 ]
 
 
-DATABASE = MySQLDatabaseProxy('cshsso')
+DATABASE = MySQLDatabaseProxy("cshsso")
 
 
 class BaseModel(Model):
@@ -75,7 +75,7 @@ class User(BaseModel):
     def failed_logins_exceeded(self) -> bool:
         """Return True if the failed logins are exceeded else False."""
         return self.failed_logins > CONFIG.getint(
-            'user', 'max_failed_logins', fallback=3
+            "user", "max_failed_logins", fallback=3
         )
 
     @property
@@ -94,7 +94,7 @@ class User(BaseModel):
         if not self.name_number:
             return self.last_name
 
-        return f'{self.last_name} {roman(self.name_number)}'
+        return f"{self.last_name} {roman(self.name_number)}"
 
     def login(self, passwd: str) -> bool:
         """Attempt a login."""
@@ -114,9 +114,7 @@ class User(BaseModel):
 
     def has_commission(self, commission: Commission) -> ModelSelect:
         """Select user commissions of the given type of this user."""
-        return self.user_commissions.where(
-            UserCommission.commission == commission
-        )
+        return self.user_commissions.where(UserCommission.commission == commission)
 
 
 class Session(BaseModel):
@@ -124,15 +122,10 @@ class Session(BaseModel):
 
     id = AutoField()
     user = ForeignKeyField(
-        User,
-        column_name='user',
-        on_delete='CASCADE',
-        lazy_load=False
+        User, column_name="user", on_delete="CASCADE", lazy_load=False
     )
     secret = Argon2Field()
-    valid_until = DateTimeField(
-        default=lambda: datetime.now() + SESSION_VALIDITY
-    )
+    valid_until = DateTimeField(default=lambda: datetime.now() + SESSION_VALIDITY)
 
     def is_valid(self) -> bool:
         """Return True if the session is valid, else False."""
@@ -149,14 +142,15 @@ class UserCommission(BaseModel):
     """User commissions."""
 
     class Meta:
-        table_name = 'user_commission'
+        table_name = "user_commission"
 
     id = AutoField()
     occupant = ForeignKeyField(
         User,
-        column_name='occupant',
-        backref='user_commissions', on_delete='CASCADE',
-        lazy_load=False
+        column_name="occupant",
+        backref="user_commissions",
+        on_delete="CASCADE",
+        lazy_load=False,
     )
     commission = EnumField(Commission, use_name=True, unique=True)
 
@@ -165,14 +159,11 @@ class PasswordResetToken(BaseModel):
     """A per-user password reset token."""
 
     class Meta:
-        table_name = 'password_reset_token'
+        table_name = "password_reset_token"
 
     id = AutoField()
     user = ForeignKeyField(
-        User,
-        column_name='user',
-        on_delete='CASCADE',
-        lazy_load=False
+        User, column_name="user", on_delete="CASCADE", lazy_load=False
     )
     token = UUIDField(default=uuid4)
     issued = DateTimeField(default=datetime.now)

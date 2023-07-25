@@ -6,12 +6,12 @@ from cshsso.roles import Circle, Commission, CommissionGroup, Status
 
 
 __all__ = [
-    'is_in_inner_circle',
-    'is_in_outer_circle',
-    'is_corps_member',
-    'check_circle',
-    'check_convent',
-    'check_group'
+    "is_in_inner_circle",
+    "is_in_outer_circle",
+    "is_corps_member",
+    "check_circle",
+    "check_convent",
+    "check_group",
 ]
 
 
@@ -49,7 +49,7 @@ def check_circle(user: User, circle: Circle) -> bool:
     if circle is Circle.GUESTS:
         return user.status in INNER_OUTER_GUEST
 
-    raise NotImplementedError(f'Handling of circle {circle} not implemented.')
+    raise NotImplementedError(f"Handling of circle {circle} not implemented.")
 
 
 def check_group(user: User, group: CommissionGroup) -> bool:
@@ -61,8 +61,9 @@ def check_group(user: User, group: CommissionGroup) -> bool:
 def can_sit_ahc(user: User) -> bool:
     """Determines whether the user can sit on the AHC."""
 
-    return (user.status in {Status.AH, Status.EB, Status.BBZ}
-            or user.has_commission(Commission.SENIOR))
+    return user.status in {Status.AH, Status.EB, Status.BBZ} or user.has_commission(
+        Commission.SENIOR
+    )
 
 
 def can_vote_ahc(user: User) -> bool:
@@ -87,7 +88,8 @@ def can_vote_cc(user: User) -> bool:
     """Determines whether the user can vote on the CC."""
 
     return user.status in {Status.CB, Status.EB} or check_group(
-        user, CommissionGroup.AHV)
+        user, CommissionGroup.AHV
+    )
 
 
 def check_cc(user: User, vote: bool) -> bool:
@@ -105,8 +107,7 @@ def can_sit_fc(user: User):
 def can_vote_fc(user: User) -> bool:
     """Determines whether the user can vote on the FC."""
 
-    return user.status in {Status.F, Status.EB} or user.has_commission(
-        Commission.FM)
+    return user.status in {Status.F, Status.EB} or user.has_commission(Commission.FM)
 
 
 def check_fc(user: User, vote: bool) -> bool:
@@ -130,4 +131,4 @@ def check_convent(user: User, convent: ConventAuth) -> bool:
     if convent.convent is Convent.FC:
         return check_fc(user, convent.vote)
 
-    raise NotImplementedError(f'Convent {convent.convent} is not implemented.')
+    raise NotImplementedError(f"Convent {convent.convent} is not implemented.")

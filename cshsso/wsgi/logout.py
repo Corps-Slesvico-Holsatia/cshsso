@@ -8,7 +8,7 @@ from cshsso.orm.models import User, Session
 from cshsso.session import delete_session_cookies
 
 
-__all__ = ['logout']
+__all__ = ["logout"]
 
 
 def terminate_all_sessions(user: User) -> Response:
@@ -34,7 +34,7 @@ def terminate_session(session: Session) -> Response:
 def logout() -> Response:
     """Terminate sessions for the current user."""
 
-    if request.json.get('all', False):
+    if request.json.get("all", False):
         return terminate_all_sessions(USER)
 
     return terminate_session(SESSION)

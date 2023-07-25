@@ -13,7 +13,7 @@ from cshsso.roles import Circle, CommissionGroup
 from cshsso.typing import AnyCallable, Decorator, NamedFunction
 
 
-__all__ = ['authenticated', 'admin', 'Authorization']
+__all__ = ["authenticated", "admin", "Authorization"]
 
 
 def authenticated(function: AnyCallable) -> AnyCallable:
@@ -23,8 +23,7 @@ def authenticated(function: AnyCallable) -> AnyCallable:
     def wrapper(*args, **kwargs) -> Any:
         if (user := SESSION.user).disabled:
             raise NotAuthenticated(
-                user.verified, user.locked,
-                user.failed_logins_exceeded
+                user.verified, user.locked, user.failed_logins_exceeded
             )
 
         return function(*args, **kwargs)
@@ -56,7 +55,7 @@ def admin(function: AnyCallable) -> AnyCallable:
         if USER.admin:
             return function(*args, **kwargs)
 
-        raise NotAuthorized('Admin')
+        raise NotAuthorized("Admin")
 
     return wrapper
 
@@ -88,15 +87,19 @@ class Authorization(Enum):
     @staticmethod
     def all(*authorizations: Authorization) -> Decorator:
         """Combine authorization checks via the all() function."""
-        return authorized(NamedFunction(
-             ' & '.join(a.name for a in authorizations),
-             lambda user: all(a.value(user) for a in authorizations)
-        ))
+        return authorized(
+            NamedFunction(
+                " & ".join(a.name for a in authorizations),
+                lambda user: all(a.value(user) for a in authorizations),
+            )
+        )
 
     @staticmethod
     def any(*authorizations: Authorization) -> Decorator:
         """Combine authorization checks via any()."""
-        return authorized(NamedFunction(
-             ' | '.join(a.name for a in authorizations),
-             lambda user: any(a.value(user) for a in authorizations)
-        ))
+        return authorized(
+            NamedFunction(
+                " | ".join(a.name for a in authorizations),
+                lambda user: any(a.value(user) for a in authorizations),
+            )
+        )
