@@ -15,6 +15,23 @@ __all__ = ["get_users", "get_emails"]
 Target = Union[Status, Circle, Commission, CommissionGroup, User, int]
 
 
+def get_users(*targets: Target) -> ModelSelect:
+    """Yields email addresses."""
+
+    return (
+        User.select(User, UserCommission)
+        .join(UserCommission)
+        .where(get_condition(targets))
+    )
+
+
+def get_emails(*targets: Target) -> Iterator[str]:
+    """Yields email addresses for the given targets."""
+
+    for user in get_users(*targets):
+        yield user.email
+
+
 def get_condition(targets: tuple[Target, ...]) -> Expression:
     """Returns a select expression."""
 
@@ -42,20 +59,3 @@ def get_condition(targets: tuple[Target, ...]) -> Expression:
         condition |= User.id << user_ids
 
     return condition
-
-
-def get_users(*targets: Target) -> ModelSelect:
-    """Yields email addresses."""
-
-    return (
-        User.select(User, UserCommission)
-        .join(UserCommission)
-        .where(get_condition(targets))
-    )
-
-
-def get_emails(*targets: Target) -> Iterator[str]:
-    """Yields email addresses for the given targets."""
-
-    for user in get_users(*targets):
-        yield user.email
