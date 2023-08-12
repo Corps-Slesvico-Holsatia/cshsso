@@ -12,6 +12,7 @@ __all__ = [
 ]
 
 
+# TODO: Outsource to config file.
 PW_RESET_TEXT = """Sehr geehrter Nutzer,
 
 bitte folgen Sie dem unten stehenden Link um
