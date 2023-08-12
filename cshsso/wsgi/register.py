@@ -60,8 +60,8 @@ def register() -> JSONMessage:
     except IntegrityError:
         return JSONMessage("User already exists.", status=400)
 
-    sent = send([get_email(user)])
-    return JSONMessage("User added.", email_sent=sent, id=user.id, status=201)
+    send([get_email(user)])
+    return JSONMessage("User added.", id=user.id, status=201)
 
 
 @authenticated
