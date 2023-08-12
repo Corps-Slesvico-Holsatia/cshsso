@@ -15,7 +15,7 @@ __all__ = ["get_users", "get_emails"]
 Target = Union[Status, Circle, Commission, CommissionGroup, User, int]
 
 
-def get_condition(*targets: Target) -> Expression:
+def get_condition(targets: tuple[Target, ...]) -> Expression:
     """Returns a select expression."""
 
     status = {status for status in targets if isinstance(status, Status)}
