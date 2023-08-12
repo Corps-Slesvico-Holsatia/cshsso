@@ -1,4 +1,4 @@
-"""Roman numerals conversion."""
+"""Convert positive integers to Roman numerals."""
 
 from typing import Iterator
 
