@@ -126,9 +126,9 @@ def set_commissions() -> JSONMessage:
     try:
         commissions = {Commission[c] for c in request.json["commissions"]}
     except KeyError:
-        return JSONMessage("No commissions provied.", status=400)
+        return JSONMessage("No commissions provided.", status=400)
     except ValueError:
-        return JSONMessage("Invalid commission provied.", status=400)
+        return JSONMessage("Invalid commission provided.", status=400)
 
     _set_commissions(USER, commissions)
     return JSONMessage(

@@ -1,4 +1,4 @@
-"""Maling list creation."""
+"""Mailing list creation."""
 
 from functools import partial
 from typing import Iterator, Union

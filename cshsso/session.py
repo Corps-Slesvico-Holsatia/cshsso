@@ -17,7 +17,7 @@ __all__ = [
     "for_user",
     "set_session_cookies",
     "delete_session_cookies",
-    "postprocess_response",
+    "post_process_response",
 ]
 
 
@@ -115,7 +115,7 @@ def delete_session_cookies(response: Response) -> Response:
     return response
 
 
-def postprocess_response(response: Response) -> Response:
+def post_process_response(response: Response) -> Response:
     """Sets the session cookie on the respective response."""
 
     # Do not override an already set session cookie i.e. on deletion.

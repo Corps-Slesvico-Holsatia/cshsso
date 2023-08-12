@@ -1,4 +1,4 @@
-"""Lising of static roles information."""
+"""Listing of static roles information."""
 
 from wsgilib import JSON
 

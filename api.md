@@ -3,7 +3,7 @@ All API requests, if not specified otherwise, require authentication.
 The authentication is performed via a session ID and a session secret.
 Both data is provided via respective Cookies, namely `cshsso-session-id`
 and `cshsso-session-secret` respectively.
-Both must be sent by the client on each request that requres authentication.
+Both must be sent by the client on each request that requires authentication.
 
 ## Login
 Does not require authentication, duh!  
@@ -101,7 +101,7 @@ Payload
 ```
 
 ## Registration
-To register new users, anybody can registern themselves via an
+To register new users, anybody can register themselves via an
 unauthorized request.
 A valid recaptcha response must be provided to register to avoid spam.
 In order to be able to use the new user account, a Charge must confirm
@@ -246,7 +246,7 @@ An admin can *additionally* see the following fields:
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
     "title": "Admin user view",
-    "description": "Addisional fields an admin can see of a user",
+    "description": "Additional fields an admin can see of a user",
     "type": "object",
     "properties": {
         "verified": {
@@ -315,7 +315,7 @@ An admin can *additionally* modify the following fields:
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
     "title": "Admin user patch request",
-    "description": "Addisional fields an admin can mdify of a user",
+    "description": "Additional fields an admin can modify of a user",
     "type": "object",
     "properties": {
         "email": {

@@ -5,7 +5,7 @@ from flask import Flask
 
 from cshsso.config import CONFIG, CONFIG_FILE
 from cshsso.errors import ERRORS
-from cshsso.session import postprocess_response
+from cshsso.session import post_process_response
 from cshsso.typing import ErrorHandlers, Initializers, ResponseProcessor
 
 
@@ -17,7 +17,7 @@ class Application(Flask):
 
     error_handlers = ERRORS
     initializers = {lambda: CONFIG.read(CONFIG_FILE)}
-    post_processor = staticmethod(postprocess_response)
+    post_processor = staticmethod(post_process_response)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
